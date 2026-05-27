@@ -315,7 +315,7 @@ export default function App() {
             </div>
 
             {!isMobile&&(
-              <div style={{display:"grid",gridTemplateColumns:"44px 1fr 88px 88px 88px 88px 88px 28px",padding:"7px 16px",marginBottom:2}}>
+              <div style={{display:"grid",gridTemplateColumns:"56px 1fr 88px 88px 88px 88px 88px 28px",padding:"7px 16px",marginBottom:2}}>
                 <span/><span style={{fontSize:16,fontWeight:700,color:"#C8C8D2",letterSpacing:".06em",fontFamily:"'IBM Plex Mono',monospace"}}>FIXTURE</span>
                 {["OUTPUT","FRAMING","ZOOM","CRI","WATTS"].map(h=>(
                   <span key={h} style={{fontSize:14,fontWeight:600,color:"#6E6E7C",letterSpacing:".08em",fontFamily:"'IBM Plex Mono',monospace",textAlign:"right"}}>{h}</span>
@@ -399,13 +399,13 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
   return(
     <div style={{borderBottom:last&&!expanded?"none":"1px solid #131316",background:expanded?"#0F0F12":"transparent"}}>
       <div className="fx-row" onClick={onToggle}
-        style={{display:"grid",gridTemplateColumns:isMobile?"44px 1fr auto 24px":"44px 1fr 88px 88px 88px 88px 88px 28px",padding:isMobile?"11px 14px":"12px 16px",cursor:"pointer",alignItems:"center",gap:0}}>
+        style={{display:"grid",gridTemplateColumns:isMobile?"56px 1fr auto 24px":"56px 1fr 88px 88px 88px 88px 88px 28px",padding:isMobile?"11px 14px":"12px 16px",cursor:"pointer",alignItems:"center",gap:0}}>
 
         {/* Thumbnail */}
-        <div style={{width:36,height:36,borderRadius:7,overflow:"hidden",background:"#131316",border:"1px solid #1C1C22",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+        <div style={{width:48,height:48,borderRadius:7,overflow:"hidden",background:"#131316",border:"1px solid #1C1C22",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
           {hasImg
             ?<img src={f.imageUrl} alt={f.model} style={{width:"100%",height:"100%",objectFit:"cover"}} onError={e=>e.target.style.display="none"}/>
-            :<div style={{width:12,height:12,borderRadius:3,background:catCol,opacity:.35}}/>
+            :<div style={{width:14,height:14,borderRadius:3,background:catCol,opacity:.35}}/>
           }
         </div>
 
@@ -464,12 +464,22 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
         <div className="expand-in" style={{padding:isMobile?"0 14px 16px":"0 16px 18px"}}>
           <div style={{background:"#141417",border:"1px solid #18181C",borderRadius:12,overflow:"hidden"}}>
 
-            {/* Hero banner */}
-            <div style={{position:"relative",height:hasImg?(isMobile?155:190):72,background:"#0F0F12",overflow:"hidden"}}>
-              {hasImg&&<img src={f.imageUrl} alt={f.model} style={{width:"100%",height:"100%",objectFit:"cover",opacity:.55}} onError={e=>{e.target.parentNode.style.height="72px";e.target.style.display="none";}}/>}
-              <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(9,9,11,.98) 0%,rgba(9,9,11,.3) 70%,transparent 100%)"}}/>
-              <div style={{position:"absolute",bottom:0,left:0,right:0,padding:isMobile?"14px 16px":"16px 20px"}}>
-                <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:7}}>
+            {/* Card header: image left, text right */}
+            <div style={{display:"flex",flexDirection:isMobile?"column":"row",borderBottom:"1px solid #131316"}}>
+              {/* Image panel */}
+              <div style={{width:isMobile?"100%":240,minWidth:isMobile?undefined:240,height:isMobile?200:220,background:"#0F0F12",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                {hasImg
+                  ?<img src={f.imageUrl} alt={f.model} style={{width:"100%",height:"100%",objectFit:"contain",padding:12}} onError={e=>{e.target.style.display="none";e.target.nextSibling&&(e.target.nextSibling.style.display="flex");}}/>
+                  :null}
+                {hasImg
+                  ?<div style={{display:"none",alignItems:"center",justifyContent:"center",width:"100%",height:"100%"}}>
+                    <div style={{width:48,height:48,borderRadius:8,background:catCol+"22",border:`2px solid ${catCol}44`}}/>
+                  </div>
+                  :<div style={{width:48,height:48,borderRadius:8,background:catCol+"22",border:`2px solid ${catCol}44`}}/>}
+              </div>
+              {/* Text panel */}
+              <div style={{flex:1,padding:isMobile?"14px 16px":"18px 20px",display:"flex",flexDirection:"column",justifyContent:"center"}}>
+                <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:8}}>
                   {(f.applications||[]).map(a=>(
                     <span key={a} style={{fontSize:14,fontWeight:700,color:APP_COLORS[a],background:APP_COLORS[a]+"1A",padding:"2px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:"'IBM Plex Mono',monospace"}}>{a}</span>
                   ))}
@@ -477,16 +487,12 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
                   {f.ipRated&&<span style={{fontSize:14,fontWeight:700,color:"#9D8DF1",background:"#9D8DF11A",padding:"2px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:"'IBM Plex Mono',monospace"}}>{f.ipRating||"IP Rated"}</span>}
                 </div>
                 <div style={{fontSize:isMobile?24:28,fontWeight:800,letterSpacing:"-.03em",lineHeight:1.1,color:"#EDEDEF"}}>{clean(f.model)}</div>
-                <div style={{fontSize:15,fontWeight:600,color:"#C8C8D2",letterSpacing:".06em",textTransform:"uppercase",fontFamily:"'IBM Plex Mono',monospace",marginTop:4}}>{f.brand} · {f.category}</div>
+                <div style={{fontSize:15,fontWeight:600,color:"#C8C8D2",letterSpacing:".06em",textTransform:"uppercase",fontFamily:"'IBM Plex Mono',monospace",marginTop:5}}>{f.brand} · {f.category}</div>
+                {f.description&&(
+                  <div style={{fontSize:16,color:"#707078",lineHeight:1.55,fontStyle:"italic",marginTop:10}}>{f.description}</div>
+                )}
               </div>
             </div>
-
-            {/* Description */}
-            {f.description&&(
-              <div style={{padding:isMobile?"11px 16px 6px":"12px 20px 6px",fontSize:17,color:"#707078",lineHeight:1.6,fontStyle:"italic",borderBottom:"1px solid #131316"}}>
-                {f.description}
-              </div>
-            )}
 
             {/* Spec grid */}
             <div style={{padding:isMobile?"12px 14px":"14px 20px"}}>
