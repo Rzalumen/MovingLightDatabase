@@ -120,18 +120,64 @@ leave the rest as the empty value shown. **Never invent a value.**
 
 Use the highest-priority source available. Record which type was used (it informs trust).
 
-1. **Manufacturer product page** — e.g. `martin.com`, `robe.cz`, `ayrton.eu`. Best for
-   accuracy. Always preferred for the `link` field.
-2. **Manufacturer spec sheet / PDF** — often linked from the product page.
-3. **Reputable rental-house inventory** — e.g. 4Wall, PRG, Encore. Often have clean,
-   complete spec tables (weight, DMX modes, lux). Good for filling gaps.
+1. **Manufacturer product page** — always preferred for accuracy and for the `link` field.
+   Key manufacturer URLs by brand:
+   - Martin: `martin.com/en-US/products/`
+   - Robe: `robe.cz/products/`
+   - Ayrton: `ayrton.eu/products/`
+   - Elation: `elationlighting.com/products/`
+   - Claypaky: `claypaky.it/en/products/`
+   - GLP: `glp.de/en/products/`
+   - Chauvet: `chauvetprofessional.com/products/`
+   - Vari-Lite: `vari-lite.com/en-US/products/`
+   - High End Systems: `highend.com/products/`
+   - PRG (own fixtures): `prg.com` or `prggear.com`
+
+2. **Manufacturer spec sheet / PDF** — often linked from the product page. Preferred over
+   rental-house pages for technical accuracy.
+
+3. **Trusted rental-house inventory** — use these three specifically. They carry clean,
+   complete spec tables (weight, dimensions, DMX, power) and are reliable secondary sources:
+   - **4Wall**: `4wall.com/rentals/lighting-equipment/moving-lights/` — organized by brand,
+     individual product pages have weight, size, DMX. Two pages of moving lights inventory.
+   - **PRG Gear**: `prggear.com/product-category/lighting-rental/` — curated touring inventory,
+     individual pages have size and weight tables. Primary source for PRG's own fixtures
+     (Best Boy, Icon Edge, Bad Boy) which are not available elsewhere.
+   - **Christie Lites**: `christielites.com/profile/228w2w10w159w` (Profile),
+     `christielites.com/wash/228w2w10w161w` (Wash),
+     `christielites.com/beam/228w2w10w167w` (Beam),
+     `christielites.com/hybrid/228w2w10w160w` (Hybrid).
+     Good for confirming fixtures are actively used in professional rental.
+
 4. **Open Fixture Library** (`open-fixture-library.org`) — reliable for DMX channel counts,
-   dimensions, weight.
-5. **Distributor/reseller pages** — e.g. Full Compass, Solotech. Use only as a last resort
-   for specs, and **never** as the `link` value.
+   dimensions, weight, and RDM data.
+
+5. **Distributor/reseller pages** — e.g. Full Compass, Solotech. Use only as a last resort,
+   and **never** as the `link` value.
 
 If sources disagree, prefer the manufacturer. If the manufacturer is silent on a field,
 a rental-house number is acceptable.
+
+## New fixture discovery
+
+When growing the database, check these rental-house inventories for fixtures not yet in
+`fixtures.json`. If a fixture appears in multiple rental inventories, it is actively used
+in the industry and belongs in the database.
+
+Sweep order for discovery:
+1. `4wall.com/rentals/lighting-equipment/moving-lights/` (pages 1 and 2)
+2. `prggear.com/product-category/lighting-rental/?fwp_categories=profile-and-spot-lights`
+3. Christie Lites Profile, Wash, Beam, Hybrid pages (URLs above)
+4. `mainlight.com/rentals?category=moving-lights` — inventory is JavaScript-rendered so
+   browse manually or search `site:mainlight.com rentals moving lights` to surface fixtures.
+   Good source for newer Robe, Ayrton, and ETC fixtures they tend to stock early.
+
+Compare found fixtures against `fixtures.json` before adding — avoid duplicates.
+
+**Workflow for rental-site discovery:** the rental listing confirms the fixture is actively
+used in the industry. Always go to the manufacturer page for full specs — weight, DMX,
+power, zoom, CRI. The rental site is the discovery trigger; the manufacturer page is the
+data source.
 
 ---
 
@@ -190,8 +236,25 @@ the dashboard.
 
 ## Current status
 
-- **114 fixtures** in the database (the original cheat-sheet import).
-- **8 Martin fixtures** fully researched to the full schema with verified links — these are
-  the worked reference example for what a complete record looks like.
-- **Remaining fixtures** carry imported cheat-sheet data; they need the research pass
-  (links, weight, IP, DMX, power, descriptions) following this guide, brand by brand.
+- **129 fixtures** in the database (114 original + 15 Martin fully researched).
+- **All 23 Martin fixtures** fully researched to the full schema with verified links,
+  weights, IP ratings, power consumption, DMX channels, protocols, and descriptions.
+  Martin is the reference brand — use any Martin record as an example of a complete entry.
+- **48 fixtures queued for addition** — identified from 4Wall, PRG, and Christie Lites
+  inventories. Brands: Acme (5), ADJ (1), Ayrton (4), Chauvet (9), Claypaky (5),
+  Elation (8), ETC (1), GLP (2), High End Systems (3), Martin (5), PRG (2), Robe (5),
+  Vari-Lite (3). New brands: Acme, ADJ, ETC.
+- **Remaining brands** (Robe, Elation, Ayrton, GLP, Vari-Lite, Chauvet, High End, Claypaky,
+  PRG) still need the full research pass for their existing fixtures.
+
+## Trusted rental source URLs (for reference)
+
+| Source | Moving Lights URL |
+|---|---|
+| 4Wall | `4wall.com/rentals/lighting-equipment/moving-lights` |
+| PRG Gear | `prggear.com/product-category/lighting-rental/` |
+| Christie Lites (Profile) | `christielites.com/profile/228w2w10w159w` |
+| Christie Lites (Wash) | `christielites.com/wash/228w2w10w161w` |
+| Christie Lites (Beam) | `christielites.com/beam/228w2w10w167w` |
+| Christie Lites (Hybrid) | `christielites.com/hybrid/228w2w10w160w` |
+| Main Light | `mainlight.com/rentals?category=moving-lights` (browse manually) |
