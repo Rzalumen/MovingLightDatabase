@@ -110,14 +110,14 @@ export default function App() {
   const activeCount=apps.size+cats.size+tiers.size+brands.size+feats.size+lamps.size+(criMin?1:0)+(featAnim?1:0);
 
   return (
-    <div style={{minHeight:"100vh",background:"#09090B",color:"#EDEDEF",fontFamily:"'Outfit',sans-serif"}}>
+    <div style={{minHeight:"100vh",background:"#141417",color:"#EDEDEF",fontFamily:"'Outfit',sans-serif"}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
         *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
         ::-webkit-scrollbar{width:5px;height:5px;}
         ::-webkit-scrollbar-track{background:#111113;}
         ::-webkit-scrollbar-thumb{background:#222228;border-radius:3px;}
-        input::placeholder{color:#3A3A42;}
+        input::placeholder{color:#7E7E8C;}
         .fx-row{transition:background .12s;}
         @media(hover:hover){.fx-row:hover{background:#0F0F12 !important;}}
         .chip{transition:all .11s;user-select:none;cursor:pointer;}
@@ -134,17 +134,17 @@ export default function App() {
       `}</style>
 
       {/* ── HEADER ── */}
-      <div style={{background:"#09090B",borderBottom:"1px solid #18181C",position:"sticky",top:0,zIndex:50}}>
+      <div style={{background:"#141417",borderBottom:"1px solid #18181C",position:"sticky",top:0,zIndex:50}}>
         <div style={{maxWidth:1180,margin:"0 auto",padding:isMobile?"12px 16px":"16px 28px",display:"flex",alignItems:"center",gap:14}}>
           <div style={{flex:1}}>
             <div style={{fontSize:isMobile?20:24,fontWeight:800,letterSpacing:"-.03em",lineHeight:1}}>Moving Light Database</div>
-            <div style={{fontSize:11,color:"#505058",fontFamily:"'IBM Plex Mono',monospace",marginTop:2,letterSpacing:".04em"}}>
+            <div style={{fontSize:13,color:"#A6A6B2",fontFamily:"'IBM Plex Mono',monospace",marginTop:2,letterSpacing:".04em"}}>
               {FIXTURES.length} FIXTURES · {allBrands.length} BRANDS
             </div>
           </div>
           {!isMobile&&compare.length>0&&(
             <button onClick={()=>setShowCompare(true)}
-              style={{display:"flex",alignItems:"center",gap:8,padding:"10px 20px",background:"#E8B339",color:"#09090B",border:"none",borderRadius:9,fontSize:14,fontWeight:700,cursor:"pointer",fontFamily:"'Outfit',sans-serif"}}>
+              style={{display:"flex",alignItems:"center",gap:8,padding:"10px 20px",background:"#E8B339",color:"#141417",border:"none",borderRadius:9,fontSize:14,fontWeight:700,cursor:"pointer",fontFamily:"'Outfit',sans-serif"}}>
               <GitCompare size={15}/> Compare ({compare.length})
             </button>
           )}
@@ -155,11 +155,11 @@ export default function App() {
 
         {/* ── SEARCH ── */}
         <div style={{position:"relative",marginBottom:22}}>
-          <Search size={17} color="#3A3A42" style={{position:"absolute",left:14,top:"50%",transform:"translateY(-50%)"}}/>
+          <Search size={17} color="#7E7E8C" style={{position:"absolute",left:14,top:"50%",transform:"translateY(-50%)"}}/>
           <input value={query} onChange={e=>setQuery(e.target.value)}
             placeholder="Search fixture, brand, or feature..."
             style={{width:"100%",padding:isMobile?"13px 40px":"14px 44px",background:"#0F0F12",border:"1px solid #222228",borderRadius:11,color:"#EDEDEF",fontSize:isMobile?16:15,outline:"none",fontFamily:"'Outfit',sans-serif",fontWeight:400}}/>
-          {query&&<X size={16} onClick={()=>setQuery("")} style={{position:"absolute",right:13,top:"50%",transform:"translateY(-50%)",color:"#3A3A42",cursor:"pointer"}}/>}
+          {query&&<X size={16} onClick={()=>setQuery("")} style={{position:"absolute",right:13,top:"50%",transform:"translateY(-50%)",color:"#7E7E8C",cursor:"pointer"}}/>}
         </div>
 
         {/* ── APPLICATION ── */}
@@ -170,10 +170,10 @@ export default function App() {
               const n=FIXTURES.filter(f=>(f.applications||[]).includes(a)).length;
               return(
                 <div key={a} className="chip" onClick={()=>toggle(apps,setApps,a)}
-                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 18px",background:on?col+"1A":"#0F0F12",border:`1.5px solid ${on?col:"#222228"}`,borderRadius:10,fontSize:isMobile?14:15,fontWeight:600,color:on?col:"#808088"}}>
+                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 18px",background:on?col+"1A":"#0F0F12",border:`1.5px solid ${on?col:"#222228"}`,borderRadius:10,fontSize:isMobile?14:15,fontWeight:600,color:on?col:"#BEBEC8"}}>
                   <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
                   {a}
-                  <span style={{fontSize:10,fontFamily:"'IBM Plex Mono',monospace",color:on?col+"88":"#303038",fontWeight:500}}>{n}</span>
+                  <span style={{fontSize:12,fontFamily:"'IBM Plex Mono',monospace",color:on?col+"88":"#303038",fontWeight:500}}>{n}</span>
                   {on&&<Check size={13}/>}
                 </div>
               );
@@ -189,10 +189,10 @@ export default function App() {
               const n=FIXTURES.filter(f=>f.category===c).length;
               return(
                 <div key={c} className="chip" onClick={()=>toggle(cats,setCats,c)}
-                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 18px",background:on?col+"1A":"#0F0F12",border:`1.5px solid ${on?col:"#222228"}`,borderRadius:10,fontSize:isMobile?14:15,fontWeight:600,color:on?col:"#808088"}}>
+                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 18px",background:on?col+"1A":"#0F0F12",border:`1.5px solid ${on?col:"#222228"}`,borderRadius:10,fontSize:isMobile?14:15,fontWeight:600,color:on?col:"#BEBEC8"}}>
                   <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
                   {c}
-                  <span style={{fontSize:10,fontFamily:"'IBM Plex Mono',monospace",color:on?col+"88":"#303038"}}>{n}</span>
+                  <span style={{fontSize:12,fontFamily:"'IBM Plex Mono',monospace",color:on?col+"88":"#303038"}}>{n}</span>
                   {on&&<Check size={13}/>}
                 </div>
               );
@@ -209,12 +209,12 @@ export default function App() {
               return(
                 <div key={t} className="chip" onClick={()=>toggle(tiers,setTiers,t)}
                   style={{display:"flex",flexDirection:"column",alignItems:"flex-start",padding:isMobile?"9px 14px":"10px 18px",background:on?col+"1A":"#0F0F12",border:`1.5px solid ${on?col:"#222228"}`,borderRadius:10}}>
-                  <div style={{display:"flex",alignItems:"center",gap:8,fontSize:isMobile?14:15,fontWeight:600,color:on?col:"#808088"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8,fontSize:isMobile?14:15,fontWeight:600,color:on?col:"#BEBEC8"}}>
                     <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
                     {t}
                     {on&&<Check size={13}/>}
                   </div>
-                  <div style={{fontSize:10,fontFamily:"'IBM Plex Mono',monospace",color:on?col+"88":"#303038",marginTop:3,marginLeft:16}}>{TIER_DESC[t]} · {n}</div>
+                  <div style={{fontSize:12,fontFamily:"'IBM Plex Mono',monospace",color:on?col+"88":"#303038",marginTop:3,marginLeft:16}}>{TIER_DESC[t]} · {n}</div>
                 </div>
               );
             })}
@@ -229,10 +229,10 @@ export default function App() {
               const n=FIXTURES.filter(field).length;
               return(
                 <div key={key} className="chip" onClick={()=>toggle(feats,setFeats,key)}
-                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 18px",background:on?color+"1A":"#0F0F12",border:`1.5px solid ${on?color:"#222228"}`,borderRadius:10,fontSize:isMobile?14:15,fontWeight:600,color:on?color:"#808088"}}>
+                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 18px",background:on?color+"1A":"#0F0F12",border:`1.5px solid ${on?color:"#222228"}`,borderRadius:10,fontSize:isMobile?14:15,fontWeight:600,color:on?color:"#BEBEC8"}}>
                   {icon}
                   {label}
-                  <span style={{fontSize:10,fontFamily:"'IBM Plex Mono',monospace",color:on?color+"88":"#303038"}}>{n}</span>
+                  <span style={{fontSize:12,fontFamily:"'IBM Plex Mono',monospace",color:on?color+"88":"#303038"}}>{n}</span>
                   {on&&<Check size={13}/>}
                 </div>
               );
@@ -248,9 +248,9 @@ export default function App() {
               const n=FIXTURES.filter(f=>f.brand===b).length;
               return(
                 <div key={b} className="brand-pill" onClick={()=>toggle(brands,setBrands,b)}
-                  style={{display:"flex",alignItems:"center",gap:5,padding:"8px 13px",background:on?"#E8B3391A":"#0F0F12",border:`1.5px solid ${on?"#E8B339":"#222228"}`,borderRadius:8,fontSize:13,fontWeight:600,color:on?"#E8B339":"#808088",flexShrink:0}}>
+                  style={{display:"flex",alignItems:"center",gap:5,padding:"8px 13px",background:on?"#E8B3391A":"#0F0F12",border:`1.5px solid ${on?"#E8B339":"#222228"}`,borderRadius:8,fontSize:15,fontWeight:600,color:on?"#E8B339":"#BEBEC8",flexShrink:0}}>
                   {b}
-                  <span style={{fontSize:9,fontFamily:"'IBM Plex Mono',monospace",color:on?"#E8B33966":"#2A2A32"}}>{n}</span>
+                  <span style={{fontSize:11,fontFamily:"'IBM Plex Mono',monospace",color:on?"#E8B33966":"#6E6E7C"}}>{n}</span>
                   {on&&<Check size={11}/>}
                 </div>
               );
@@ -261,10 +261,10 @@ export default function App() {
         {/* ── MORE FILTERS ── */}
         <div style={{marginBottom:22}}>
           <div onClick={()=>setMoreOpen(o=>!o)}
-            style={{display:"inline-flex",alignItems:"center",gap:7,cursor:"pointer",fontSize:13,color:moreOpen||moreCount>0?"#EDEDEF":"#505058",fontWeight:600,letterSpacing:".01em"}}>
+            style={{display:"inline-flex",alignItems:"center",gap:7,cursor:"pointer",fontSize:15,color:moreOpen||moreCount>0?"#EDEDEF":"#A6A6B2",fontWeight:600,letterSpacing:".01em"}}>
             <SlidersHorizontal size={14}/>
             More filters
-            {moreCount>0&&<span style={{background:"#E8B339",color:"#09090B",borderRadius:8,padding:"1px 7px",fontSize:10,fontWeight:700}}>{moreCount}</span>}
+            {moreCount>0&&<span style={{background:"#E8B339",color:"#141417",borderRadius:8,padding:"1px 7px",fontSize:12,fontWeight:700}}>{moreCount}</span>}
             {moreOpen?<ChevronUp size={13}/>:<ChevronDown size={13}/>}
           </div>
           {moreOpen&&(
@@ -292,19 +292,19 @@ export default function App() {
 
         {/* ── RESULTS ── */}
         {!hasFilter ? <EmptyState/> : filtered.length===0 ? (
-          <div style={{textAlign:"center",padding:"70px 20px",color:"#505058"}}>
+          <div style={{textAlign:"center",padding:"70px 20px",color:"#A6A6B2"}}>
             <div style={{fontSize:17,fontWeight:700,marginBottom:10}}>No fixtures match</div>
-            <button onClick={clearAll} style={{padding:"9px 18px",background:"#0F0F12",border:"1px solid #222228",borderRadius:8,color:"#808088",fontSize:14,cursor:"pointer",fontFamily:"'Outfit',sans-serif",fontWeight:600}}>Clear filters</button>
+            <button onClick={clearAll} style={{padding:"9px 18px",background:"#0F0F12",border:"1px solid #222228",borderRadius:8,color:"#BEBEC8",fontSize:14,cursor:"pointer",fontFamily:"'Outfit',sans-serif",fontWeight:600}}>Clear filters</button>
           </div>
         ) : (
           <>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
-              <div style={{fontSize:14,color:"#505058"}}>
+              <div style={{fontSize:14,color:"#A6A6B2"}}>
                 <span style={{color:"#EDEDEF",fontWeight:700,fontSize:17}}>{filtered.length}</span> results
-                {activeCount>0&&<span onClick={clearAll} style={{marginLeft:10,fontSize:12,color:"#404048",cursor:"pointer",fontFamily:"'IBM Plex Mono',monospace",letterSpacing:".02em"}}>CLEAR ALL</span>}
+                {activeCount>0&&<span onClick={clearAll} style={{marginLeft:10,fontSize:14,color:"#8A8A98",cursor:"pointer",fontFamily:"'IBM Plex Mono',monospace",letterSpacing:".02em"}}>CLEAR ALL</span>}
               </div>
               <select value={sortBy} onChange={e=>setSortBy(e.target.value)}
-                style={{background:"#0F0F12",border:"1px solid #222228",borderRadius:8,color:"#808088",fontSize:12,padding:"8px 10px",outline:"none",fontFamily:"'IBM Plex Mono',monospace",cursor:"pointer"}}>
+                style={{background:"#0F0F12",border:"1px solid #222228",borderRadius:8,color:"#BEBEC8",fontSize:14,padding:"8px 10px",outline:"none",fontFamily:"'IBM Plex Mono',monospace",cursor:"pointer"}}>
                 <option value="output-desc">Output {"\u2193"}</option>
                 <option value="output-asc">Output {"\u2191"}</option>
                 <option value="cri-desc">CRI {"\u2193"}</option>
@@ -316,9 +316,9 @@ export default function App() {
 
             {!isMobile&&(
               <div style={{display:"grid",gridTemplateColumns:"44px 1fr 88px 88px 88px 88px 88px 28px",padding:"7px 16px",marginBottom:2}}>
-                <span/><span style={{fontSize:12,fontWeight:700,color:"#6A6A78",letterSpacing:".06em",fontFamily:"'IBM Plex Mono',monospace"}}>FIXTURE</span>
+                <span/><span style={{fontSize:14,fontWeight:700,color:"#A6A6B2",letterSpacing:".06em",fontFamily:"'IBM Plex Mono',monospace"}}>FIXTURE</span>
                 {["OUTPUT","FRAMING","ZOOM","CRI","WATTS"].map(h=>(
-                  <span key={h} style={{fontSize:10,fontWeight:600,color:"#2A2A32",letterSpacing:".08em",fontFamily:"'IBM Plex Mono',monospace",textAlign:"right"}}>{h}</span>
+                  <span key={h} style={{fontSize:12,fontWeight:600,color:"#6E6E7C",letterSpacing:".08em",fontFamily:"'IBM Plex Mono',monospace",textAlign:"right"}}>{h}</span>
                 ))}
                 <span/>
               </div>
@@ -337,9 +337,9 @@ export default function App() {
 
       {isMobile&&compare.length>0&&(
         <div style={{position:"fixed",bottom:0,left:0,right:0,background:"#0F0F12",borderTop:"1px solid #1C1C22",padding:"12px 16px",zIndex:150,display:"flex",alignItems:"center",gap:10}}>
-          <div style={{fontSize:13,color:"#808088",flex:1}}><span style={{color:"#E8B339",fontWeight:700}}>{compare.length}</span> to compare</div>
-          <button onClick={()=>setCompare([])} style={{padding:"9px 14px",background:"#1A1A20",border:"none",borderRadius:8,color:"#808088",fontSize:13,fontWeight:700,fontFamily:"'Outfit',sans-serif"}}>Clear</button>
-          <button onClick={()=>setShowCompare(true)} style={{padding:"9px 18px",background:"#E8B339",border:"none",borderRadius:8,color:"#09090B",fontSize:13,fontWeight:700,fontFamily:"'Outfit',sans-serif",display:"flex",alignItems:"center",gap:6}}>
+          <div style={{fontSize:15,color:"#BEBEC8",flex:1}}><span style={{color:"#E8B339",fontWeight:700}}>{compare.length}</span> to compare</div>
+          <button onClick={()=>setCompare([])} style={{padding:"9px 14px",background:"#1A1A20",border:"none",borderRadius:8,color:"#BEBEC8",fontSize:15,fontWeight:700,fontFamily:"'Outfit',sans-serif"}}>Clear</button>
+          <button onClick={()=>setShowCompare(true)} style={{padding:"9px 18px",background:"#E8B339",border:"none",borderRadius:8,color:"#141417",fontSize:15,fontWeight:700,fontFamily:"'Outfit',sans-serif",display:"flex",alignItems:"center",gap:6}}>
             <GitCompare size={14}/> Compare
           </button>
         </div>
@@ -354,8 +354,8 @@ function Section({label,active,children}){
   return(
     <div style={{marginBottom:20}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
-        <span style={{fontSize:16,fontWeight:700,color:active>0?"#EDEDEF":"#505058",letterSpacing:"-.01em"}}>{label}</span>
-        {active>0&&<span style={{fontSize:10,fontFamily:"'IBM Plex Mono',monospace",background:"#E8B3391A",color:"#E8B339",padding:"2px 8px",borderRadius:6,fontWeight:600,letterSpacing:".03em"}}>{active} active</span>}
+        <span style={{fontSize:16,fontWeight:700,color:active>0?"#EDEDEF":"#A6A6B2",letterSpacing:"-.01em"}}>{label}</span>
+        {active>0&&<span style={{fontSize:12,fontFamily:"'IBM Plex Mono',monospace",background:"#E8B3391A",color:"#E8B339",padding:"2px 8px",borderRadius:6,fontWeight:600,letterSpacing:".03em"}}>{active} active</span>}
       </div>
       {children}
     </div>
@@ -365,7 +365,7 @@ function Section({label,active,children}){
 function SubGroup({label,children}){
   return(
     <div style={{marginBottom:14}}>
-      <div style={{fontSize:10,fontWeight:600,color:"#404048",letterSpacing:".1em",textTransform:"uppercase",fontFamily:"'IBM Plex Mono',monospace",marginBottom:8}}>{label}</div>
+      <div style={{fontSize:12,fontWeight:600,color:"#8A8A98",letterSpacing:".1em",textTransform:"uppercase",fontFamily:"'IBM Plex Mono',monospace",marginBottom:8}}>{label}</div>
       {children}
     </div>
   );
@@ -374,7 +374,7 @@ function SubGroup({label,children}){
 function MiniPill({active,onClick,children,dot}){
   return(
     <div className="chip" onClick={onClick}
-      style={{display:"inline-flex",alignItems:"center",gap:6,padding:"7px 12px",background:active?"#E8B3391A":"transparent",border:`1px solid ${active?"#E8B339":"#222228"}`,borderRadius:7,fontSize:13,color:active?"#E8B339":"#606068",fontWeight:600,cursor:"pointer"}}>
+      style={{display:"inline-flex",alignItems:"center",gap:6,padding:"7px 12px",background:active?"#E8B3391A":"transparent",border:`1px solid ${active?"#E8B339":"#222228"}`,borderRadius:7,fontSize:15,color:active?"#E8B339":"#AEAEBA",fontWeight:600,cursor:"pointer"}}>
       {dot&&<span style={{width:7,height:7,borderRadius:"50%",background:dot}}/>}
       {children}
       {active&&<Check size={11}/>}
@@ -386,7 +386,7 @@ function EmptyState(){
   return(
     <div style={{textAlign:"center",padding:"80px 20px"}}>
       <div style={{fontSize:30,fontWeight:800,color:"#1C1C22",letterSpacing:"-.03em",marginBottom:10}}>Find a fixture</div>
-      <div style={{fontSize:15,color:"#404048",lineHeight:1.7,maxWidth:400,margin:"0 auto",fontWeight:400}}>
+      <div style={{fontSize:15,color:"#8A8A98",lineHeight:1.7,maxWidth:400,margin:"0 auto",fontWeight:400}}>
         Pick an <span style={{color:APP_COLORS["Theater"],fontWeight:600}}>application</span>, <span style={{color:CAT_COLORS["Spot / Profile"],fontWeight:600}}>type</span>, or <span style={{color:TIER_COLORS["Large"],fontWeight:600}}>output tier</span> — or search by name.
       </div>
     </div>
@@ -415,46 +415,46 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
             <span style={{fontSize:isMobile?16:17,fontWeight:700,letterSpacing:"-.02em",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",color:"#EDEDEF"}}>{clean(f.model)}</span>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:6,marginTop:2}}>
-            <span style={{fontSize:13,fontWeight:600,color:"#9090A0",letterSpacing:".04em",textTransform:"uppercase",fontFamily:"'IBM Plex Mono',monospace"}}>{f.brand}</span>
-            <span style={{fontSize:11,color:catCol,background:catCol+"22",padding:"2px 7px",borderRadius:4,fontWeight:700,textTransform:"uppercase",letterSpacing:".04em",fontFamily:"'IBM Plex Mono',monospace"}}>{f.category==="Spot / Profile"?"SPOT":f.category==="Bar / Batten"?"BAR":f.category.toUpperCase()}</span>
+            <span style={{fontSize:15,fontWeight:600,color:"#C4C4CE",letterSpacing:".04em",textTransform:"uppercase",fontFamily:"'IBM Plex Mono',monospace"}}>{f.brand}</span>
+            <span style={{fontSize:13,color:catCol,background:catCol+"22",padding:"2px 7px",borderRadius:4,fontWeight:700,textTransform:"uppercase",letterSpacing:".04em",fontFamily:"'IBM Plex Mono',monospace"}}>{f.category==="Spot / Profile"?"SPOT":f.category==="Bar / Batten"?"BAR":f.category.toUpperCase()}</span>
           </div>
         </div>
 
         {/* Desktop specs */}
         {!isMobile&&<>
           <div style={{textAlign:"right",paddingRight:8}}>
-            <span style={{fontSize:13,fontWeight:500,fontFamily:"'IBM Plex Mono',monospace",color:"#BCBCC4"}}>{f.outputLumens?fmt(f.outputLumens):"\u2014"}</span>
+            <span style={{fontSize:15,fontWeight:500,fontFamily:"'IBM Plex Mono',monospace",color:"#DCDCE2"}}>{f.outputLumens?fmt(f.outputLumens):"\u2014"}</span>
           </div>
           <div style={{textAlign:"right",paddingRight:8}}>
             {f.framing
-              ?<span style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:12,fontWeight:700,color:"#6EE7A8"}}><Scissors size={11}/> Yes</span>
-              :<span style={{fontSize:12,color:"#2A2A32"}}>{"\u2014"}</span>}
+              ?<span style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:14,fontWeight:700,color:"#6EE7A8"}}><Scissors size={11}/> Yes</span>
+              :<span style={{fontSize:14,color:"#6E6E7C"}}>{"\u2014"}</span>}
           </div>
           <div style={{textAlign:"right",paddingRight:8}}>
-            <span style={{fontSize:12,fontFamily:"'IBM Plex Mono',monospace",color:"#BCBCC4"}}>{zoomStr(f)}</span>
+            <span style={{fontSize:14,fontFamily:"'IBM Plex Mono',monospace",color:"#DCDCE2"}}>{zoomStr(f)}</span>
           </div>
           <div style={{textAlign:"right",paddingRight:8}}>
             {f.cri!=null
-              ?<span style={{fontSize:13,fontWeight:700,fontFamily:"'IBM Plex Mono',monospace",color:f.cri>=90?"#6EE7A8":f.cri>=80?"#E8B339":"#808088"}}>{f.cri}</span>
-              :<span style={{fontSize:12,color:"#2A2A32"}}>{"\u2014"}</span>}
+              ?<span style={{fontSize:15,fontWeight:700,fontFamily:"'IBM Plex Mono',monospace",color:f.cri>=90?"#6EE7A8":f.cri>=80?"#E8B339":"#BEBEC8"}}>{f.cri}</span>
+              :<span style={{fontSize:14,color:"#6E6E7C"}}>{"\u2014"}</span>}
           </div>
           <div style={{textAlign:"right",paddingRight:8}}>
-            <span style={{fontSize:13,fontWeight:500,fontFamily:"'IBM Plex Mono',monospace",color:"#BCBCC4"}}>{f.watts?f.watts+"W":"\u2014"}</span>
+            <span style={{fontSize:15,fontWeight:500,fontFamily:"'IBM Plex Mono',monospace",color:"#DCDCE2"}}>{f.watts?f.watts+"W":"\u2014"}</span>
           </div>
         </>}
 
         {/* Mobile specs */}
         {isMobile&&(
           <div style={{textAlign:"right",paddingRight:6}}>
-            <div style={{fontSize:12,fontFamily:"'IBM Plex Mono',monospace",color:"#808088"}}>{f.outputLumens?fmt(f.outputLumens)+" lm":"\u2014"}</div>
+            <div style={{fontSize:14,fontFamily:"'IBM Plex Mono',monospace",color:"#BEBEC8"}}>{f.outputLumens?fmt(f.outputLumens)+" lm":"\u2014"}</div>
             <div style={{display:"flex",gap:5,justifyContent:"flex-end",marginTop:3}}>
-              {f.framing&&<span style={{fontSize:10,color:"#6EE7A8",fontWeight:700,display:"flex",alignItems:"center",gap:2}}><Scissors size={9}/>Frm</span>}
-              {f.cri!=null&&<span style={{fontSize:10,fontFamily:"'IBM Plex Mono',monospace",color:f.cri>=90?"#6EE7A8":"#505058",fontWeight:600}}>CRI {f.cri}</span>}
+              {f.framing&&<span style={{fontSize:12,color:"#6EE7A8",fontWeight:700,display:"flex",alignItems:"center",gap:2}}><Scissors size={9}/>Frm</span>}
+              {f.cri!=null&&<span style={{fontSize:12,fontFamily:"'IBM Plex Mono',monospace",color:f.cri>=90?"#6EE7A8":"#A6A6B2",fontWeight:600}}>CRI {f.cri}</span>}
             </div>
           </div>
         )}
 
-        <div style={{color:"#2A2A32",display:"flex",justifyContent:"center"}}>
+        <div style={{color:"#6E6E7C",display:"flex",justifyContent:"center"}}>
           {expanded?<ChevronUp size={15}/>:<ChevronDown size={15}/>}
         </div>
       </div>
@@ -462,7 +462,7 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
       {/* Expanded card */}
       {expanded&&(
         <div className="expand-in" style={{padding:isMobile?"0 14px 16px":"0 16px 18px"}}>
-          <div style={{background:"#09090B",border:"1px solid #18181C",borderRadius:12,overflow:"hidden"}}>
+          <div style={{background:"#141417",border:"1px solid #18181C",borderRadius:12,overflow:"hidden"}}>
 
             {/* Hero banner */}
             <div style={{position:"relative",height:hasImg?(isMobile?155:190):72,background:"#0F0F12",overflow:"hidden"}}>
@@ -471,19 +471,19 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
               <div style={{position:"absolute",bottom:0,left:0,right:0,padding:isMobile?"14px 16px":"16px 20px"}}>
                 <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:7}}>
                   {(f.applications||[]).map(a=>(
-                    <span key={a} style={{fontSize:10,fontWeight:700,color:APP_COLORS[a],background:APP_COLORS[a]+"1A",padding:"2px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:"'IBM Plex Mono',monospace"}}>{a}</span>
+                    <span key={a} style={{fontSize:12,fontWeight:700,color:APP_COLORS[a],background:APP_COLORS[a]+"1A",padding:"2px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:"'IBM Plex Mono',monospace"}}>{a}</span>
                   ))}
-                  {f.tier&&<span style={{fontSize:10,fontWeight:700,color:TIER_COLORS[f.tier],background:TIER_COLORS[f.tier]+"1A",padding:"2px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:"'IBM Plex Mono',monospace"}}>{f.tier}</span>}
-                  {f.ipRated&&<span style={{fontSize:10,fontWeight:700,color:"#9D8DF1",background:"#9D8DF11A",padding:"2px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:"'IBM Plex Mono',monospace"}}>{f.ipRating||"IP Rated"}</span>}
+                  {f.tier&&<span style={{fontSize:12,fontWeight:700,color:TIER_COLORS[f.tier],background:TIER_COLORS[f.tier]+"1A",padding:"2px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:"'IBM Plex Mono',monospace"}}>{f.tier}</span>}
+                  {f.ipRated&&<span style={{fontSize:12,fontWeight:700,color:"#9D8DF1",background:"#9D8DF11A",padding:"2px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:"'IBM Plex Mono',monospace"}}>{f.ipRating||"IP Rated"}</span>}
                 </div>
                 <div style={{fontSize:isMobile?22:26,fontWeight:800,letterSpacing:"-.03em",lineHeight:1.1,color:"#EDEDEF"}}>{clean(f.model)}</div>
-                <div style={{fontSize:11,fontWeight:600,color:"#505058",letterSpacing:".06em",textTransform:"uppercase",fontFamily:"'IBM Plex Mono',monospace",marginTop:4}}>{f.brand} · {f.category}</div>
+                <div style={{fontSize:13,fontWeight:600,color:"#A6A6B2",letterSpacing:".06em",textTransform:"uppercase",fontFamily:"'IBM Plex Mono',monospace",marginTop:4}}>{f.brand} · {f.category}</div>
               </div>
             </div>
 
             {/* Description */}
             {f.description&&(
-              <div style={{padding:isMobile?"11px 16px 6px":"12px 20px 6px",fontSize:13.5,color:"#707078",lineHeight:1.6,fontStyle:"italic",borderBottom:"1px solid #131316"}}>
+              <div style={{padding:isMobile?"11px 16px 6px":"12px 20px 6px",fontSize:15,color:"#707078",lineHeight:1.6,fontStyle:"italic",borderBottom:"1px solid #131316"}}>
                 {f.description}
               </div>
             )}
@@ -509,20 +509,20 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
               </div>
               <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
                 <button onClick={e=>{e.stopPropagation();onCompare();}} disabled={!inCompare&&compareFull}
-                  style={{flex:"1 1 140px",padding:"11px",background:inCompare?"#E8B339":"#0F0F12",border:`1px solid ${inCompare?"#E8B339":"#222228"}`,borderRadius:9,color:inCompare?"#09090B":(compareFull?"#2A2A32":"#EDEDEF"),fontSize:13.5,fontWeight:700,cursor:(!inCompare&&compareFull)?"default":"pointer",fontFamily:"'Outfit',sans-serif",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+                  style={{flex:"1 1 140px",padding:"11px",background:inCompare?"#E8B339":"#0F0F12",border:`1px solid ${inCompare?"#E8B339":"#222228"}`,borderRadius:9,color:inCompare?"#141417":(compareFull?"#6E6E7C":"#EDEDEF"),fontSize:15,fontWeight:700,cursor:(!inCompare&&compareFull)?"default":"pointer",fontFamily:"'Outfit',sans-serif",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
                   {inCompare?<><Minus size={13}/> Remove</>:<><Plus size={13}/> Compare</>}
                 </button>
                 {f.link
                   ?<a href={f.link} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()}
-                      style={{flex:"1 1 140px",padding:"11px",background:"#0F0F12",border:"1px solid #222228",borderRadius:9,color:"#EDEDEF",fontSize:13.5,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+                      style={{flex:"1 1 140px",padding:"11px",background:"#0F0F12",border:"1px solid #222228",borderRadius:9,color:"#EDEDEF",fontSize:15,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
                       <ExternalLink size={13}/> Product page
                     </a>
-                  :<div style={{flex:"1 1 140px",padding:"11px",background:"#09090B",borderRadius:9,color:"#2A2A32",fontSize:12,fontWeight:600,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+                  :<div style={{flex:"1 1 140px",padding:"11px",background:"#141417",borderRadius:9,color:"#6E6E7C",fontSize:14,fontWeight:600,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
                       <ExternalLink size={12}/> No link yet
                     </div>
                 }
               </div>
-              {f.lastVerified&&<div style={{fontSize:10,color:"#2A2A32",marginTop:10,fontFamily:"'IBM Plex Mono',monospace",letterSpacing:".04em"}}>VERIFIED {f.lastVerified}</div>}
+              {f.lastVerified&&<div style={{fontSize:12,color:"#6E6E7C",marginTop:10,fontFamily:"'IBM Plex Mono',monospace",letterSpacing:".04em"}}>VERIFIED {f.lastVerified}</div>}
             </div>
           </div>
         </div>
@@ -534,8 +534,8 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
 function SB({label,value,wide,hl}){
   return(
     <div style={{background:hl?"#6EE7A80A":"#0F0F12",border:`1px solid ${hl?"#6EE7A820":"#18181C"}`,borderRadius:8,padding:"9px 11px",gridColumn:wide?"1 / -1":"auto"}}>
-      <div style={{fontSize:9,fontWeight:600,color:"#404048",textTransform:"uppercase",letterSpacing:".1em",fontFamily:"'IBM Plex Mono',monospace",marginBottom:4}}>{label}</div>
-      <div style={{fontSize:13,color:hl?"#6EE7A8":"#C0C0C8",whiteSpace:"pre-line",lineHeight:1.45,fontWeight:hl?600:400}}>{value}</div>
+      <div style={{fontSize:11,fontWeight:600,color:"#8A8A98",textTransform:"uppercase",letterSpacing:".1em",fontFamily:"'IBM Plex Mono',monospace",marginBottom:4}}>{label}</div>
+      <div style={{fontSize:15,color:hl?"#6EE7A8":"#DCDCE2",whiteSpace:"pre-line",lineHeight:1.45,fontWeight:hl?600:400}}>{value}</div>
     </div>
   );
 }
@@ -570,23 +570,23 @@ function CompareModal({items,onClose,onRemove,isMobile}){
         <div style={{padding:isMobile?"16px 18px":"18px 24px",borderBottom:"1px solid #18181C",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
           <div style={{fontSize:isMobile?16:19,fontWeight:800,display:"flex",alignItems:"center",gap:10,letterSpacing:"-.02em"}}>
             <GitCompare size={isMobile?17:20} color="#E8B339"/> Compare
-            <span style={{fontSize:11,color:"#404048",fontFamily:"'IBM Plex Mono',monospace"}}>{items.length}/4</span>
+            <span style={{fontSize:13,color:"#8A8A98",fontFamily:"'IBM Plex Mono',monospace"}}>{items.length}/4</span>
           </div>
-          <X size={22} onClick={onClose} style={{cursor:"pointer",color:"#404048"}}/>
+          <X size={22} onClick={onClose} style={{cursor:"pointer",color:"#8A8A98"}}/>
         </div>
         <div style={{overflow:"auto"}}>
           <table style={{width:"100%",borderCollapse:"collapse",minWidth:(isMobile?120:160)+items.length*(isMobile?145:200)}}>
             <thead>
               <tr style={{background:"#0C0C0E"}}>
-                <th style={{position:"sticky",left:0,background:"#0C0C0E",textAlign:"left",padding:isMobile?"12px":"14px 18px",fontSize:10,color:"#404048",fontWeight:600,textTransform:"uppercase",letterSpacing:".08em",fontFamily:"'IBM Plex Mono',monospace",width:isMobile?120:160,zIndex:2}}>Spec</th>
+                <th style={{position:"sticky",left:0,background:"#0C0C0E",textAlign:"left",padding:isMobile?"12px":"14px 18px",fontSize:12,color:"#8A8A98",fontWeight:600,textTransform:"uppercase",letterSpacing:".08em",fontFamily:"'IBM Plex Mono',monospace",width:isMobile?120:160,zIndex:2}}>Spec</th>
                 {items.map(f=>(
                   <th key={f.id} style={{padding:isMobile?"12px":"14px 18px",textAlign:"left",borderLeft:"1px solid #18181C",minWidth:isMobile?145:195}}>
                     <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:8}}>
                       <div>
-                        <div style={{fontSize:10,fontWeight:700,color:CAT_COLORS[f.category],textTransform:"uppercase",letterSpacing:".06em",fontFamily:"'IBM Plex Mono',monospace"}}>{f.brand}</div>
+                        <div style={{fontSize:12,fontWeight:700,color:CAT_COLORS[f.category],textTransform:"uppercase",letterSpacing:".06em",fontFamily:"'IBM Plex Mono',monospace"}}>{f.brand}</div>
                         <div style={{fontSize:isMobile?13:15,fontWeight:800,marginTop:3,lineHeight:1.2,letterSpacing:"-.01em"}}>{clean(f.model)}</div>
                       </div>
-                      <X size={15} onClick={()=>onRemove(f.id)} style={{cursor:"pointer",color:"#404048",flexShrink:0}}/>
+                      <X size={15} onClick={()=>onRemove(f.id)} style={{cursor:"pointer",color:"#8A8A98",flexShrink:0}}/>
                     </div>
                   </th>
                 ))}
@@ -602,11 +602,11 @@ function CompareModal({items,onClose,onRemove,isMobile}){
                 }
                 return(
                   <tr key={key} style={{background:ri%2?"#0F0F12":"transparent"}}>
-                    <td style={{position:"sticky",left:0,background:ri%2?"#0F0F12":"#0C0C0E",padding:isMobile?"10px 12px":"11px 18px",fontSize:10,color:"#404048",fontWeight:600,textTransform:"uppercase",letterSpacing:".06em",fontFamily:"'IBM Plex Mono',monospace",zIndex:1}}>{label}</td>
+                    <td style={{position:"sticky",left:0,background:ri%2?"#0F0F12":"#0C0C0E",padding:isMobile?"10px 12px":"11px 18px",fontSize:12,color:"#8A8A98",fontWeight:600,textTransform:"uppercase",letterSpacing:".06em",fontFamily:"'IBM Plex Mono',monospace",zIndex:1}}>{label}</td>
                     {items.map(f=>(
-                      <td key={f.id} style={{padding:isMobile?"10px 12px":"11px 18px",fontSize:isMobile?12:13.5,borderLeft:"1px solid #18181C",color:bestId===f.id?"#6EE7A8":"#C0C0C8",fontWeight:bestId===f.id?700:400,whiteSpace:"pre-line",lineHeight:1.45,verticalAlign:"top"}}>
+                      <td key={f.id} style={{padding:isMobile?"10px 12px":"11px 18px",fontSize:isMobile?12:13.5,borderLeft:"1px solid #18181C",color:bestId===f.id?"#6EE7A8":"#DCDCE2",fontWeight:bestId===f.id?700:400,whiteSpace:"pre-line",lineHeight:1.45,verticalAlign:"top"}}>
                         {render(f)}
-                        {bestId===f.id&&<span style={{marginLeft:6,fontSize:9,background:"#6EE7A812",color:"#6EE7A8",padding:"1px 5px",borderRadius:4,fontWeight:700,whiteSpace:"nowrap"}}>BEST</span>}
+                        {bestId===f.id&&<span style={{marginLeft:6,fontSize:11,background:"#6EE7A812",color:"#6EE7A8",padding:"1px 5px",borderRadius:4,fontWeight:700,whiteSpace:"nowrap"}}>BEST</span>}
                       </td>
                     ))}
                   </tr>
