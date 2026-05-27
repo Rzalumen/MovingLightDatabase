@@ -1,0 +1,13 @@
+{
+  "name": "Moving Light Database",
+  "short_name": "Moving Lights",
+  "description": "Searchable database of moving light fixtures by brand, type, specs and application.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d0f12",
+  "theme_color": "#0d0f12",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
