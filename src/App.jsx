@@ -5,10 +5,10 @@ import FIXTURES from "./fixtures.json";
 
 const CAT_COLORS = { "Spot / Profile":"#F5A623", "Wash":"#4ECDC4", "Bar / Batten":"#C77DFF" };
 const LAMP_COLORS = { "LED":"#6EE7A8", "Discharge":"#F5A623", "Laser":"#FF6B6B", "Other":"#9AA5B1" };
-const APP_COLORS = { "Theater":"#E8B339", "Concert":"#F4845F", "TV-Film":"#FF6B9D", "Install":"#4ECDC4", "Corporate":"#9D8DF1" };
+const APP_COLORS = { "Theater":"#E8B339", "Concert":"#F4845F", "TV-Film":"#FF6B9D", "Corporate":"#9D8DF1" };
 const TIER_COLORS = { "Small":"#6EE7A8", "Medium":"#E8B339", "Large":"#F4845F" };
 const TIER_DESC = { "Small":"< 10k lm", "Medium":"10\u201330k lm", "Large":"\u2265 30k lm" };
-const APP_ORDER = ["Theater","Concert","TV-Film","Install","Corporate"];
+const APP_ORDER = ["Theater","Concert","TV-Film","Corporate"];
 
 const FEAT_FILTERS = [
   { key:"framing",   label:"Framing Shutters", icon:<Scissors size={14}/>,  color:"#6EE7A8", field:f=>f.framing },
