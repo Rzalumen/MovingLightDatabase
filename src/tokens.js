@@ -46,6 +46,12 @@ export const COLORS = {
   actionAmberBg:      "rgba(232, 179, 57, 0.1)",
   actionAmberMuted:   "rgba(232, 179, 57, 0.55)",
 
+  // ── BRAND IDENTITY (periwinkle — RESERVED) ──────────────
+  // Periwinkle is reserved for brand names everywhere they appear:
+  // collapsed row, expanded card, compare modal. Distinct from
+  // amber (action) and cyan (standout).
+  brandPeriwinkle: "#A8B8D8",
+
   // ── STANDOUT / BRAND-SELECTED (cyan — RESERVED) ─────────
   // Cyan is reserved for:
   // - Standout indicator dot on fixture rows

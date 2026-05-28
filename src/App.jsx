@@ -469,7 +469,7 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
             <span style={{fontFamily:FONTS.display,fontSize:isMobile?17:18,fontWeight:600,letterSpacing:"-.02em",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",color:COLORS.textPrimary}}>{clean(f.model)}</span>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:6,marginTop:3}}>
-            <span style={{fontSize:12,fontWeight:600,color:"#C4C4CE",letterSpacing:".04em",textTransform:"uppercase",fontFamily:FONTS.mono}}>{f.brand}</span>
+            <span style={{fontSize:14,fontWeight:600,color:COLORS.brandPeriwinkle,letterSpacing:".04em",textTransform:"uppercase",fontFamily:FONTS.mono}}>{f.brand}</span>
             <span style={{fontSize:10.5,color:catCol,background:catCol+"22",padding:"2px 6px",borderRadius:3,fontWeight:700,textTransform:"uppercase",letterSpacing:".04em",fontFamily:FONTS.mono}}>{catLabel(f.category)}</span>
           </div>
           {f.standout&&(
@@ -583,18 +583,24 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
                   :<div style={{width:48,height:48,borderRadius:8,background:catCol+"22",border:`2px solid ${catCol}44`}}/>}
               </div>
               {/* Text panel */}
-              <div style={{flex:1,padding:isMobile?"14px 16px":"18px 20px",display:"flex",flexDirection:"column",justifyContent:"center"}}>
-                <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:8}}>
+              <div style={{flex:1,padding:isMobile?"16px 18px":"22px 26px",display:"flex",flexDirection:"column",justifyContent:"center"}}>
+                <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:12}}>
                   {(f.applications||[]).map(a=>(
-                    <span key={a} style={{fontSize:14,fontWeight:700,color:APP_COLORS[a],background:APP_COLORS[a]+"1A",padding:"2px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:FONTS.mono}}>{a}</span>
+                    <span key={a} style={{fontSize:11,fontWeight:700,color:APP_COLORS[a],background:APP_COLORS[a]+"1A",padding:"3px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:FONTS.mono}}>{a}</span>
                   ))}
-                  {f.tier&&<span style={{fontSize:14,fontWeight:700,color:TIER_COLORS[f.tier],background:TIER_COLORS[f.tier]+"1A",padding:"2px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:FONTS.mono}}>{f.tier}</span>}
-                  {f.ipRated&&<span style={{fontSize:14,fontWeight:700,color:"#9D8DF1",background:"#9D8DF11A",padding:"2px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:FONTS.mono}}>{f.ipRating||"IP Rated"}</span>}
+                  {f.tier&&<span style={{fontSize:11,fontWeight:700,color:TIER_COLORS[f.tier],background:TIER_COLORS[f.tier]+"1A",padding:"3px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:FONTS.mono}}>{f.tier}</span>}
+                  {f.ipRated&&<span style={{fontSize:11,fontWeight:700,color:"#9D8DF1",background:"#9D8DF11A",padding:"3px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:FONTS.mono}}>{f.ipRating||"IP Rated"}</span>}
                 </div>
-                <div style={{fontSize:isMobile?24:28,fontWeight:800,letterSpacing:"-.03em",lineHeight:1.1,color:COLORS.textPrimary}}>{clean(f.model)}</div>
-                <div style={{fontSize:15,fontWeight:600,color:COLORS.textSecondary,letterSpacing:".06em",textTransform:"uppercase",fontFamily:FONTS.mono,marginTop:5}}>{f.brand} · {f.category}</div>
+                <div style={{fontFamily:FONTS.display,fontSize:isMobile?28:38,fontWeight:700,letterSpacing:"-.035em",lineHeight:1.05,color:COLORS.textPrimary}}>{clean(f.model)}</div>
+                <div style={{fontSize:14,fontWeight:600,color:COLORS.brandPeriwinkle,letterSpacing:".05em",textTransform:"uppercase",fontFamily:FONTS.mono,marginTop:8}}>{f.brand} · {f.category}</div>
+                {f.standout&&(
+                  <div style={{display:"inline-flex",alignItems:"center",gap:7,marginTop:14,padding:"7px 11px",background:COLORS.standoutCyanBg,border:`1px solid ${COLORS.standoutCyanBorder}`,borderRadius:6,fontFamily:FONTS.ui,fontSize:13,fontWeight:500,color:COLORS.standoutCyanText,alignSelf:"flex-start"}}>
+                    <span style={{width:5,height:5,borderRadius:"50%",background:COLORS.standoutCyan,flexShrink:0}}/>
+                    {clean(f.standout)}
+                  </div>
+                )}
                 {f.description&&(
-                  <div style={{fontSize:16,color:"#707078",lineHeight:1.55,fontStyle:"italic",marginTop:10}}>{f.description}</div>
+                  <div style={{fontFamily:FONTS.ui,fontSize:14,color:COLORS.textMuted,lineHeight:1.55,marginTop:f.standout?12:14}}>{clean(f.description)}</div>
                 )}
               </div>
             </div>
@@ -614,26 +620,26 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
                 <SB label="IP Rating" value={clean(f.ipRating)||"\u2014"}/>
                 <SB label="Power Draw" value={f.powerConsumption?f.powerConsumption+" W":"\u2014"}/>
                 <SB label="DMX Channels" value={clean(f.dmxChannels)||"\u2014"}/>
-                <SB label="Protocols" value={clean(f.protocols)||"\u2014"} wide/>
-                <SB label="Effects" value={clean(f.effectsRaw)||"\u2014"} wide/>
                 <SB label="Gobo" value={clean(f.gobo)||"\u2014"} wide/>
+                <SB label="Effects" value={clean(f.effectsRaw)||"\u2014"} wide/>
+                <SB label="Protocols" value={clean(f.protocols)||"\u2014"} wide/>
               </div>
               <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
                 <button onClick={e=>{e.stopPropagation();onCompare();}} disabled={!inCompare&&compareFull}
-                  style={{flex:"1 1 140px",padding:"11px",background:inCompare?COLORS.actionAmber:COLORS.bgElevated,border:`1px solid ${inCompare?COLORS.actionAmber:COLORS.borderDefault}`,borderRadius:9,color:inCompare?COLORS.bgBase:(compareFull?"#6E6E7C":COLORS.textPrimary),fontSize:17,fontWeight:700,cursor:(!inCompare&&compareFull)?"default":"pointer",fontFamily:FONTS.ui,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+                  style={{flex:"1 1 140px",padding:"11px",background:inCompare?COLORS.actionAmber:COLORS.bgElevated,border:`1px solid ${inCompare?COLORS.actionAmber:COLORS.borderDefault}`,borderRadius:9,color:inCompare?COLORS.bgBase:(compareFull?"#6E6E7C":COLORS.textPrimary),fontSize:14,fontWeight:700,cursor:(!inCompare&&compareFull)?"default":"pointer",fontFamily:FONTS.ui,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
                   {inCompare?<><Minus size={13}/> Remove</>:<><Plus size={13}/> Compare</>}
                 </button>
                 {f.link
                   ?<a href={f.link} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()}
-                      style={{flex:"1 1 140px",padding:"11px",background:COLORS.bgElevated,border:"1px solid #222228",borderRadius:9,color:COLORS.textPrimary,fontSize:17,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+                      style={{flex:"1 1 140px",padding:"11px",background:COLORS.bgElevated,border:"1px solid #222228",borderRadius:9,color:COLORS.textPrimary,fontSize:14,fontWeight:700,fontFamily:FONTS.ui,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
                       <ExternalLink size={13}/> Product page
                     </a>
-                  :<div style={{flex:"1 1 140px",padding:"11px",background:COLORS.bgBase,borderRadius:9,color:"#6E6E7C",fontSize:16,fontWeight:600,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+                  :<div style={{flex:"1 1 140px",padding:"11px",background:COLORS.bgBase,borderRadius:9,color:"#6E6E7C",fontSize:14,fontWeight:600,fontFamily:FONTS.ui,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
                       <ExternalLink size={12}/> No link yet
                     </div>
                 }
               </div>
-              {f.lastVerified&&<div style={{fontSize:14,color:"#6E6E7C",marginTop:10,fontFamily:FONTS.mono,letterSpacing:".04em"}}>VERIFIED {f.lastVerified}</div>}
+              {f.lastVerified&&<div style={{fontFamily:FONTS.mono,fontSize:11,color:COLORS.textDim,marginTop:12,letterSpacing:".05em"}}>VERIFIED {f.lastVerified}</div>}
             </div>
           </div>
         </div>
@@ -644,9 +650,9 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
 
 function SB({label,value,wide,hl}){
   return(
-    <div style={{background:hl?"#6EE7A80A":COLORS.bgElevated,border:`1px solid ${hl?"#6EE7A820":COLORS.borderSubtle}`,borderRadius:8,padding:"9px 11px",gridColumn:wide?"1 / -1":"auto"}}>
-      <div style={{fontSize:13,fontWeight:600,color:"#8A8A98",textTransform:"uppercase",letterSpacing:".1em",fontFamily:FONTS.mono,marginBottom:4}}>{label}</div>
-      <div style={{fontSize:17,color:hl?"#6EE7A8":"#DCDCE2",whiteSpace:"pre-line",lineHeight:1.45,fontWeight:hl?600:400}}>{value}</div>
+    <div style={{background:COLORS.bgElevated,border:`1px solid ${COLORS.borderSubtle}`,borderRadius:RADIUS.md,padding:"11px 13px",gridColumn:wide?"1 / -1":"auto"}}>
+      <div style={{fontFamily:FONTS.mono,fontSize:11,fontWeight:600,color:COLORS.specLabelAmber,textTransform:"uppercase",letterSpacing:".1em",marginBottom:6}}>{label}</div>
+      <div style={{fontFamily:FONTS.mono,fontSize:14,color:COLORS.textSecondary,whiteSpace:"pre-line",lineHeight:1.4}}>{value}</div>
     </div>
   );
 }
@@ -689,15 +695,24 @@ function CompareModal({items,onClose,onRemove,isMobile}){
           <table style={{width:"100%",borderCollapse:"collapse",minWidth:(isMobile?120:160)+items.length*(isMobile?145:200)}}>
             <thead>
               <tr style={{background:"#0C0C0E"}}>
-                <th style={{position:"sticky",left:0,background:"#0C0C0E",textAlign:"left",padding:isMobile?"12px":"14px 18px",fontSize:14,color:"#8A8A98",fontWeight:600,textTransform:"uppercase",letterSpacing:".08em",fontFamily:FONTS.mono,width:isMobile?120:160,zIndex:2}}>Spec</th>
+                <th style={{position:"sticky",left:0,background:"#0C0C0E",textAlign:"left",padding:isMobile?"12px":"14px 18px",fontSize:14,color:COLORS.specLabelAmber,fontWeight:600,textTransform:"uppercase",letterSpacing:".08em",fontFamily:FONTS.mono,width:isMobile?120:160,zIndex:2}}>Spec</th>
                 {items.map(f=>(
-                  <th key={f.id} style={{padding:isMobile?"12px":"14px 18px",textAlign:"left",borderLeft:"1px solid #18181C",minWidth:isMobile?145:195}}>
+                  <th key={f.id} style={{padding:isMobile?"12px":"14px 18px",textAlign:"left",borderLeft:"1px solid #18181C",minWidth:isMobile?145:195,verticalAlign:"top"}}>
                     <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:8}}>
-                      <div>
-                        <div style={{fontSize:14,fontWeight:700,color:CAT_COLORS[f.category],textTransform:"uppercase",letterSpacing:".06em",fontFamily:FONTS.mono}}>{f.brand}</div>
-                        <div style={{fontSize:isMobile?15:17,fontWeight:800,marginTop:3,lineHeight:1.2,letterSpacing:"-.01em"}}>{clean(f.model)}</div>
+                      <div style={{minWidth:0}}>
+                        {/* Thumbnail */}
+                        <div style={{width:isMobile?44:56,height:isMobile?44:56,borderRadius:8,overflow:"hidden",background:COLORS.bgElevated,border:`1px solid ${COLORS.borderSubtle}`,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:8}}>
+                          {f.imageUrl
+                            ? <img src={f.imageUrl} alt={f.model} style={{width:"100%",height:"100%",objectFit:"contain",padding:6}} onError={e=>{e.target.style.display="none";e.target.nextSibling&&(e.target.nextSibling.style.display="flex");}}/>
+                            : null}
+                          <div style={{display:f.imageUrl?"none":"flex",alignItems:"center",justifyContent:"center",width:"100%",height:"100%"}}>
+                            <div style={{width:18,height:18,borderRadius:4,background:(CAT_COLORS[f.category]||"#888")+"33"}}/>
+                          </div>
+                        </div>
+                        <div style={{fontFamily:FONTS.mono,fontSize:isMobile?15:17,fontWeight:700,color:COLORS.brandPeriwinkle,textTransform:"uppercase",letterSpacing:".05em"}}>{f.brand}</div>
+                        <div style={{fontFamily:FONTS.display,fontSize:isMobile?15:17,fontWeight:700,marginTop:3,lineHeight:1.2,letterSpacing:"-.01em",color:COLORS.textPrimary}}>{clean(f.model)}</div>
                       </div>
-                      <X size={15} onClick={()=>onRemove(f.id)} style={{cursor:"pointer",color:"#8A8A98",flexShrink:0}}/>
+                      <X size={15} onClick={()=>onRemove(f.id)} style={{cursor:"pointer",color:COLORS.textMuted,flexShrink:0}}/>
                     </div>
                   </th>
                 ))}
@@ -713,7 +728,7 @@ function CompareModal({items,onClose,onRemove,isMobile}){
                 }
                 return(
                   <tr key={key} style={{background:ri%2?COLORS.bgElevated:"transparent"}}>
-                    <td style={{position:"sticky",left:0,background:ri%2?COLORS.bgElevated:"#0C0C0E",padding:isMobile?"10px 12px":"11px 18px",fontSize:14,color:"#8A8A98",fontWeight:600,textTransform:"uppercase",letterSpacing:".06em",fontFamily:FONTS.mono,zIndex:1}}>{label}</td>
+                    <td style={{position:"sticky",left:0,background:ri%2?COLORS.bgElevated:"#0C0C0E",padding:isMobile?"10px 12px":"11px 18px",fontSize:14,color:COLORS.specLabelAmber,fontWeight:600,textTransform:"uppercase",letterSpacing:".06em",fontFamily:FONTS.mono,zIndex:1}}>{label}</td>
                     {items.map(f=>(
                       <td key={f.id} style={{padding:isMobile?"10px 12px":"11px 18px",fontSize:isMobile?14:15.5,borderLeft:"1px solid #18181C",color:bestId===f.id?"#6EE7A8":"#DCDCE2",fontWeight:bestId===f.id?700:400,whiteSpace:"pre-line",lineHeight:1.45,verticalAlign:"top"}}>
                         {render(f)}
