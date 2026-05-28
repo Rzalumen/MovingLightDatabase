@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { Search, X, GitCompare, ChevronDown, ChevronUp, Check, Plus, Minus, ExternalLink, Scissors, SlidersHorizontal, Droplets, Wifi, Zap } from "lucide-react";
+import { Search, X, GitCompare, ChevronDown, ChevronUp, Check, Plus, Minus, ExternalLink, Scissors, SlidersHorizontal, Droplets, Wifi, Zap, Star } from "lucide-react";
 
 import FIXTURES from "./fixtures.json";
 import { FONTS, COLORS, getTypeColor, getTierColor, RADIUS, SPACING } from "./tokens";
@@ -24,6 +24,16 @@ const FEAT_FILTERS = [
 function clean(s){ return (s||"").replace(/\s+/g," ").trim(); }
 function fmt(n){ return n==null?"\u2014":n.toLocaleString(); }
 function zoomStr(f){ return f.zoomMin!=null?(f.zoomMin===f.zoomMax?f.zoomMin+"\u00b0":f.zoomMin+"\u00b0\u2013"+f.zoomMax+"\u00b0"):"\u2014"; }
+function catLabel(cat){
+  switch(cat){
+    case "Spot / Profile": return "SPOT";     // old taxonomy fallback
+    case "Performance":    return "PERF";
+    case "Spot":           return "SPOT";
+    case "Wash":           return "WASH";
+    case "Bar / Batten":   return "BAR";
+    default:               return (cat||"").toUpperCase();
+  }
+}
 
 export default function App() {
   const [query,setQuery]       = useState("");
@@ -41,11 +51,27 @@ export default function App() {
   const [compare,setCompare]   = useState([]);
   const [showCompare,setShowCompare] = useState(false);
   const [isMobile,setIsMobile] = useState(false);
+  const [watchlist,setWatchlist] = useState(()=>{
+    try {
+      const saved = localStorage.getItem("mld-watchlist");
+      return saved ? new Set(JSON.parse(saved)) : new Set();
+    } catch {
+      return new Set();
+    }
+  });
 
   useEffect(()=>{
     const c=()=>setIsMobile(window.innerWidth<760);
     c(); window.addEventListener("resize",c); return()=>window.removeEventListener("resize",c);
   },[]);
+
+  useEffect(()=>{
+    try {
+      localStorage.setItem("mld-watchlist", JSON.stringify([...watchlist]));
+    } catch {
+      // localStorage unavailable (private mode, etc.) — fail silently
+    }
+  },[watchlist]);
 
   const allBrands = useMemo(()=>[...new Set(FIXTURES.map(f=>f.brand))].sort(),[]);
   const allCats   = ["Spot / Profile","Wash","Bar / Batten"];
@@ -105,6 +131,14 @@ export default function App() {
     });
   }
   const inCompare=id=>compare.some(x=>x.id===id);
+  function toggleWatch(id){
+    setWatchlist(prev=>{
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  }
+  const isWatched=id=>watchlist.has(id);
   function clearAll(){
     setQuery(""); setApps(new Set()); setCats(new Set()); setTiers(new Set());
     setBrands(new Set()); setFeats(new Set()); setLamps(new Set());
@@ -116,7 +150,7 @@ export default function App() {
   return (
     <div style={{minHeight:"100vh",background:COLORS.bgBase,color:COLORS.textPrimary,fontFamily:FONTS.ui}}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
         *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
         ::-webkit-scrollbar{width:5px;height:5px;}
         ::-webkit-scrollbar-track{background:#111113;}
@@ -142,15 +176,30 @@ export default function App() {
         <div style={{maxWidth:1180,margin:"0 auto",padding:isMobile?"12px 16px":"16px 28px",display:"flex",alignItems:"center",gap:14}}>
           <div style={{flex:1}}>
             <div style={{fontSize:isMobile?22:26,fontWeight:800,letterSpacing:"-.03em",lineHeight:1}}>Moving Light Database</div>
-            <div style={{fontSize:15,color:COLORS.textSecondary,fontFamily:"'IBM Plex Mono',monospace",marginTop:2,letterSpacing:".04em"}}>
+            <div style={{fontSize:15,color:COLORS.textSecondary,fontFamily:FONTS.mono,marginTop:2,letterSpacing:".04em"}}>
               {FIXTURES.length} FIXTURES · {allBrands.length} BRANDS
             </div>
           </div>
-          {!isMobile&&compare.length>0&&(
-            <button onClick={()=>setShowCompare(true)}
-              style={{display:"flex",alignItems:"center",gap:8,padding:"10px 20px",background:COLORS.actionAmber,color:COLORS.bgBase,border:"none",borderRadius:9,fontSize:16,fontWeight:700,cursor:"pointer",fontFamily:FONTS.ui}}>
-              <GitCompare size={15}/> Compare ({compare.length})
-            </button>
+          {!isMobile&&(
+            <div style={{display:"flex",gap:8}}>
+              <button onClick={()=>{/* Phase 4 will wire watchlist view */}}
+                style={{display:"flex",alignItems:"center",gap:6,padding:"9px 16px",
+                  background:watchlist.size?COLORS.actionAmberBg:"transparent",
+                  color:watchlist.size?COLORS.actionAmber:COLORS.textSecondary,
+                  border:`1px solid ${watchlist.size?COLORS.actionAmber:COLORS.borderDefault}`,
+                  borderRadius:RADIUS.md,fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:FONTS.ui}}>
+                <Star size={14} fill={watchlist.size?COLORS.actionAmber:"none"}/> Watching ({watchlist.size})
+              </button>
+              <button onClick={()=>compare.length&&setShowCompare(true)}
+                style={{display:"flex",alignItems:"center",gap:6,padding:"9px 16px",
+                  background:compare.length?COLORS.actionAmber:"transparent",
+                  color:compare.length?COLORS.bgBase:COLORS.textSecondary,
+                  border:`1px solid ${compare.length?COLORS.actionAmber:COLORS.borderDefault}`,
+                  borderRadius:RADIUS.md,fontSize:14,fontWeight:600,
+                  cursor:compare.length?"pointer":"default",opacity:compare.length?1:0.6,fontFamily:FONTS.ui}}>
+                <GitCompare size={14}/> Compare ({compare.length}/4)
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -177,7 +226,7 @@ export default function App() {
                   style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 18px",background:on?col+"1A":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:10,fontSize:isMobile?16:17,fontWeight:600,color:on?col:COLORS.textSecondary}}>
                   <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
                   {a}
-                  <span style={{fontSize:14,fontFamily:"'IBM Plex Mono',monospace",color:on?col+"88":"#303038",fontWeight:500}}>{n}</span>
+                  <span style={{fontSize:14,fontFamily:FONTS.mono,color:on?col+"88":"#303038",fontWeight:500}}>{n}</span>
                   {on&&<Check size={13}/>}
                 </div>
               );
@@ -196,7 +245,7 @@ export default function App() {
                   style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 18px",background:on?col+"1A":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:10,fontSize:isMobile?16:17,fontWeight:600,color:on?col:COLORS.textSecondary}}>
                   <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
                   {c}
-                  <span style={{fontSize:14,fontFamily:"'IBM Plex Mono',monospace",color:on?col+"88":"#303038"}}>{n}</span>
+                  <span style={{fontSize:14,fontFamily:FONTS.mono,color:on?col+"88":"#303038"}}>{n}</span>
                   {on&&<Check size={13}/>}
                 </div>
               );
@@ -218,7 +267,7 @@ export default function App() {
                     {t}
                     {on&&<Check size={13}/>}
                   </div>
-                  <div style={{fontSize:12,fontFamily:"'IBM Plex Mono',monospace",color:on?col+"88":"#303038",marginTop:3,marginLeft:16}}>{TIER_DESC[t]} · {n}</div>
+                  <div style={{fontSize:12,fontFamily:FONTS.mono,color:on?col+"88":"#303038",marginTop:3,marginLeft:16}}>{TIER_DESC[t]} · {n}</div>
                 </div>
               );
             })}
@@ -236,7 +285,7 @@ export default function App() {
                   style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 18px",background:on?color+"1A":COLORS.bgElevated,border:`1.5px solid ${on?color:COLORS.borderDefault}`,borderRadius:10,fontSize:isMobile?16:17,fontWeight:600,color:on?color:COLORS.textSecondary}}>
                   {icon}
                   {label}
-                  <span style={{fontSize:14,fontFamily:"'IBM Plex Mono',monospace",color:on?color+"88":"#303038"}}>{n}</span>
+                  <span style={{fontSize:14,fontFamily:FONTS.mono,color:on?color+"88":"#303038"}}>{n}</span>
                   {on&&<Check size={13}/>}
                 </div>
               );
@@ -254,7 +303,7 @@ export default function App() {
                 <div key={b} className="brand-pill" onClick={()=>toggle(brands,setBrands,b)}
                   style={{display:"flex",alignItems:"center",gap:5,padding:"8px 13px",background:on?"#E8B3391A":COLORS.bgElevated,border:`1.5px solid ${on?COLORS.actionAmber:COLORS.borderDefault}`,borderRadius:8,fontSize:17,fontWeight:600,color:on?COLORS.actionAmber:COLORS.textSecondary,flexShrink:0}}>
                   {b}
-                  <span style={{fontSize:13,fontFamily:"'IBM Plex Mono',monospace",color:on?"#E8B33966":"#6E6E7C"}}>{n}</span>
+                  <span style={{fontSize:13,fontFamily:FONTS.mono,color:on?"#E8B33966":"#6E6E7C"}}>{n}</span>
                   {on&&<Check size={11}/>}
                 </div>
               );
@@ -305,10 +354,10 @@ export default function App() {
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
               <div style={{fontSize:16,color:COLORS.textSecondary}}>
                 <span style={{color:COLORS.textPrimary,fontWeight:700,fontSize:17}}>{filtered.length}</span> results
-                {activeCount>0&&<span onClick={clearAll} style={{marginLeft:10,fontSize:16,color:"#8A8A98",cursor:"pointer",fontFamily:"'IBM Plex Mono',monospace",letterSpacing:".02em"}}>CLEAR ALL</span>}
+                {activeCount>0&&<span onClick={clearAll} style={{marginLeft:10,fontSize:16,color:"#8A8A98",cursor:"pointer",fontFamily:FONTS.mono,letterSpacing:".02em"}}>CLEAR ALL</span>}
               </div>
               <select value={sortBy} onChange={e=>setSortBy(e.target.value)}
-                style={{background:COLORS.bgElevated,border:"1px solid #222228",borderRadius:8,color:COLORS.textSecondary,fontSize:16,padding:"8px 10px",outline:"none",fontFamily:"'IBM Plex Mono',monospace",cursor:"pointer"}}>
+                style={{background:COLORS.bgElevated,border:"1px solid #222228",borderRadius:8,color:COLORS.textSecondary,fontSize:16,padding:"8px 10px",outline:"none",fontFamily:FONTS.mono,cursor:"pointer"}}>
                 <option value="output-desc">Output {"\u2193"}</option>
                 <option value="output-asc">Output {"\u2191"}</option>
                 <option value="cri-desc">CRI {"\u2193"}</option>
@@ -320,9 +369,9 @@ export default function App() {
 
             {!isMobile&&(
               <div style={{display:"grid",gridTemplateColumns:"56px 1fr 88px 88px 88px 88px 88px 28px",padding:"7px 16px",marginBottom:2}}>
-                <span/><span style={{fontSize:16,fontWeight:700,color:COLORS.textSecondary,letterSpacing:".06em",fontFamily:"'IBM Plex Mono',monospace"}}>FIXTURE</span>
+                <span/><span style={{fontSize:16,fontWeight:700,color:COLORS.textSecondary,letterSpacing:".06em",fontFamily:FONTS.mono}}>FIXTURE</span>
                 {["OUTPUT","FRAMING","ZOOM","CRI","WATTS"].map(h=>(
-                  <span key={h} style={{fontSize:14,fontWeight:600,color:"#6E6E7C",letterSpacing:".08em",fontFamily:"'IBM Plex Mono',monospace",textAlign:"right"}}>{h}</span>
+                  <span key={h} style={{fontSize:14,fontWeight:600,color:"#6E6E7C",letterSpacing:".08em",fontFamily:FONTS.mono,textAlign:"right"}}>{h}</span>
                 ))}
                 <span/>
               </div>
@@ -332,7 +381,8 @@ export default function App() {
               {filtered.map((f,i)=>(
                 <ResultRow key={f.id} f={f} isMobile={isMobile} last={i===filtered.length-1}
                   expanded={expanded.has(f.id)} onToggle={()=>toggleExpand(f.id)}
-                  inCompare={inCompare(f.id)} compareFull={compare.length>=4} onCompare={()=>toggleCompare(f)}/>
+                  inCompare={inCompare(f.id)} compareFull={compare.length>=4} onCompare={()=>toggleCompare(f)}
+                  isWatched={isWatched(f.id)} onWatch={()=>toggleWatch(f.id)}/>
               ))}
             </div>
           </>
@@ -359,7 +409,7 @@ function Section({label,active,children}){
     <div style={{marginBottom:20}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
         <span style={{fontSize:16,fontWeight:700,color:active>0?COLORS.textPrimary:COLORS.textSecondary,letterSpacing:"-.01em"}}>{label}</span>
-        {active>0&&<span style={{fontSize:14,fontFamily:"'IBM Plex Mono',monospace",background:"#E8B3391A",color:COLORS.actionAmber,padding:"2px 8px",borderRadius:6,fontWeight:600,letterSpacing:".03em"}}>{active} active</span>}
+        {active>0&&<span style={{fontSize:14,fontFamily:FONTS.mono,background:"#E8B3391A",color:COLORS.actionAmber,padding:"2px 8px",borderRadius:6,fontWeight:600,letterSpacing:".03em"}}>{active} active</span>}
       </div>
       {children}
     </div>
@@ -369,7 +419,7 @@ function Section({label,active,children}){
 function SubGroup({label,children}){
   return(
     <div style={{marginBottom:14}}>
-      <div style={{fontSize:14,fontWeight:600,color:"#8A8A98",letterSpacing:".1em",textTransform:"uppercase",fontFamily:"'IBM Plex Mono',monospace",marginBottom:8}}>{label}</div>
+      <div style={{fontSize:14,fontWeight:600,color:"#8A8A98",letterSpacing:".1em",textTransform:"uppercase",fontFamily:FONTS.mono,marginBottom:8}}>{label}</div>
       {children}
     </div>
   );
@@ -397,13 +447,13 @@ function EmptyState(){
   );
 }
 
-function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isMobile}){
+function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isMobile,isWatched,onWatch}){
   const catCol=CAT_COLORS[f.category]||"#888";
   const hasImg=!!f.imageUrl;
   return(
     <div style={{borderBottom:last&&!expanded?"none":"1px solid #131316",background:expanded?COLORS.bgElevated:"transparent"}}>
       <div className="fx-row" onClick={onToggle}
-        style={{display:"grid",gridTemplateColumns:isMobile?"56px 1fr auto 24px":"56px 1fr 88px 88px 88px 88px 88px 28px",padding:isMobile?"11px 14px":"12px 16px",cursor:"pointer",alignItems:"center",gap:0}}>
+        style={{display:"grid",gridTemplateColumns:isMobile?"56px 1fr auto 28px 28px":"56px 1fr 80px 70px 80px 60px 70px 28px 28px 28px",padding:isMobile?"11px 14px":"12px 16px",cursor:"pointer",alignItems:"center",gap:0}}>
 
         {/* Thumbnail */}
         <div style={{width:48,height:48,borderRadius:7,overflow:"hidden",background:"#131316",border:"1px solid #1C1C22",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
@@ -416,51 +466,102 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
         {/* Name */}
         <div style={{paddingLeft:12,minWidth:0}}>
           <div style={{display:"flex",alignItems:"center",gap:6}}>
-            <span style={{fontSize:isMobile?18:19,fontWeight:700,letterSpacing:"-.02em",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",color:COLORS.textPrimary}}>{clean(f.model)}</span>
+            <span style={{fontFamily:FONTS.display,fontSize:isMobile?17:18,fontWeight:600,letterSpacing:"-.02em",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",color:COLORS.textPrimary}}>{clean(f.model)}</span>
           </div>
-          <div style={{display:"flex",alignItems:"center",gap:6,marginTop:2}}>
-            <span style={{fontSize:17,fontWeight:600,color:"#C4C4CE",letterSpacing:".04em",textTransform:"uppercase",fontFamily:"'IBM Plex Mono',monospace"}}>{f.brand}</span>
-            <span style={{fontSize:15,color:catCol,background:catCol+"22",padding:"2px 7px",borderRadius:4,fontWeight:700,textTransform:"uppercase",letterSpacing:".04em",fontFamily:"'IBM Plex Mono',monospace"}}>{f.category==="Spot / Profile"?"SPOT":f.category==="Bar / Batten"?"BAR":f.category.toUpperCase()}</span>
+          <div style={{display:"flex",alignItems:"center",gap:6,marginTop:3}}>
+            <span style={{fontSize:12,fontWeight:600,color:"#C4C4CE",letterSpacing:".04em",textTransform:"uppercase",fontFamily:FONTS.mono}}>{f.brand}</span>
+            <span style={{fontSize:10.5,color:catCol,background:catCol+"22",padding:"2px 6px",borderRadius:3,fontWeight:700,textTransform:"uppercase",letterSpacing:".04em",fontFamily:FONTS.mono}}>{catLabel(f.category)}</span>
           </div>
+          {f.standout&&(
+            <div style={{display:"inline-flex",alignItems:"center",gap:6,marginTop:5,fontFamily:FONTS.ui,fontSize:11.5,fontWeight:500,color:COLORS.standoutCyanMuted,letterSpacing:".01em"}}>
+              <span style={{width:4,height:4,borderRadius:"50%",background:COLORS.standoutCyan,flexShrink:0}}/>
+              {clean(f.standout)}
+            </div>
+          )}
         </div>
 
         {/* Desktop specs */}
         {!isMobile&&<>
           <div style={{textAlign:"right",paddingRight:8}}>
-            <span style={{fontSize:17,fontWeight:500,fontFamily:"'IBM Plex Mono',monospace",color:"#DCDCE2"}}>{f.outputLumens?fmt(f.outputLumens):"\u2014"}</span>
+            {f.outputLumens
+              ? <span style={{fontSize:14,fontWeight:500,fontFamily:FONTS.mono,color:"#DCDCE2"}}>{fmt(f.outputLumens)}<span style={{fontSize:11,color:COLORS.textGhost,marginLeft:2}}>lm</span></span>
+              : <span style={{fontSize:14,color:COLORS.textGhost}}>{"\u2014"}</span>}
           </div>
           <div style={{textAlign:"right",paddingRight:8}}>
             {f.framing
-              ?<span style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:16,fontWeight:700,color:"#6EE7A8"}}><Scissors size={11}/> Yes</span>
-              :<span style={{fontSize:16,color:"#6E6E7C"}}>{"\u2014"}</span>}
+              ?<span style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:13,fontWeight:600,color:COLORS.successGreen,fontFamily:FONTS.mono}}><Scissors size={10}/> Yes</span>
+              :<span style={{fontSize:13,color:COLORS.textGhost,fontFamily:FONTS.mono}}>{"\u2014"}</span>}
           </div>
           <div style={{textAlign:"right",paddingRight:8}}>
-            <span style={{fontSize:16,fontFamily:"'IBM Plex Mono',monospace",color:"#DCDCE2"}}>{zoomStr(f)}</span>
+            <span style={{fontSize:13,fontFamily:FONTS.mono,color:"#DCDCE2"}}>{zoomStr(f)}</span>
           </div>
           <div style={{textAlign:"right",paddingRight:8}}>
             {f.cri!=null
-              ?<span style={{fontSize:17,fontWeight:700,fontFamily:"'IBM Plex Mono',monospace",color:f.cri>=90?"#6EE7A8":f.cri>=80?COLORS.actionAmber:COLORS.textSecondary}}>{f.cri}</span>
-              :<span style={{fontSize:16,color:"#6E6E7C"}}>{"\u2014"}</span>}
+              ?<span style={{fontSize:14,fontWeight:600,fontFamily:FONTS.mono,color:f.cri>=90?COLORS.successGreen:f.cri>=80?COLORS.actionAmber:COLORS.textSecondary}}>{f.cri}</span>
+              :<span style={{fontSize:14,color:COLORS.textGhost,fontFamily:FONTS.mono}}>{"\u2014"}</span>}
           </div>
           <div style={{textAlign:"right",paddingRight:8}}>
-            <span style={{fontSize:17,fontWeight:500,fontFamily:"'IBM Plex Mono',monospace",color:"#DCDCE2"}}>{f.watts?f.watts+"W":"\u2014"}</span>
+            <span style={{fontSize:14,fontWeight:500,fontFamily:FONTS.mono,color:"#DCDCE2"}}>{f.watts?f.watts+"W":"\u2014"}</span>
           </div>
         </>}
 
         {/* Mobile specs */}
         {isMobile&&(
           <div style={{textAlign:"right",paddingRight:6}}>
-            <div style={{fontSize:16,fontFamily:"'IBM Plex Mono',monospace",color:COLORS.textSecondary}}>{f.outputLumens?fmt(f.outputLumens)+" lm":"\u2014"}</div>
+            <div style={{fontSize:13,fontFamily:FONTS.mono,color:"#DCDCE2"}}>{f.outputLumens?fmt(f.outputLumens):"\u2014"}<span style={{fontSize:10,color:COLORS.textGhost,marginLeft:1}}>lm</span></div>
             <div style={{display:"flex",gap:5,justifyContent:"flex-end",marginTop:3}}>
-              {f.framing&&<span style={{fontSize:14,color:"#6EE7A8",fontWeight:700,display:"flex",alignItems:"center",gap:2}}><Scissors size={9}/>Frm</span>}
-              {f.cri!=null&&<span style={{fontSize:14,fontFamily:"'IBM Plex Mono',monospace",color:f.cri>=90?"#6EE7A8":COLORS.textSecondary,fontWeight:600}}>CRI {f.cri}</span>}
+              {f.cri!=null&&<span style={{fontSize:11,fontFamily:FONTS.mono,color:f.cri>=90?COLORS.successGreen:COLORS.textSecondary,fontWeight:600}}>CRI {f.cri}</span>}
             </div>
           </div>
         )}
 
-        <div style={{color:"#6E6E7C",display:"flex",justifyContent:"center"}}>
-          {expanded?<ChevronUp size={15}/>:<ChevronDown size={15}/>}
-        </div>
+        {/* Mobile Watch button */}
+        {isMobile&&(
+          <div style={{display:"flex",justifyContent:"center"}} onClick={e=>{e.stopPropagation();onWatch();}}>
+            <Star size={16} fill={isWatched?COLORS.actionAmber:"none"} color={isWatched?COLORS.actionAmber:COLORS.textGhost}/>
+          </div>
+        )}
+
+        {/* Mobile Compare button */}
+        {isMobile&&(
+          <div style={{display:"flex",justifyContent:"center"}} onClick={e=>{e.stopPropagation();(!compareFull||inCompare)&&onCompare();}}>
+            <div style={{width:26,height:26,borderRadius:RADIUS.sm,
+              border:`1px solid ${inCompare?COLORS.actionAmber:COLORS.borderDefault}`,
+              background:inCompare?COLORS.actionAmber:"transparent",
+              display:"flex",alignItems:"center",justifyContent:"center",
+              color:inCompare?COLORS.bgBase:COLORS.textGhost}}>
+              {inCompare?<Check size={13}/>:<Plus size={13}/>}
+            </div>
+          </div>
+        )}
+
+        {/* Desktop Watch button */}
+        {!isMobile&&(
+          <div style={{display:"flex",justifyContent:"center"}} onClick={e=>{e.stopPropagation();onWatch();}}>
+            <Star size={16} fill={isWatched?COLORS.actionAmber:"none"} color={isWatched?COLORS.actionAmber:COLORS.textGhost} style={{cursor:"pointer"}}/>
+          </div>
+        )}
+
+        {/* Desktop Compare button */}
+        {!isMobile&&(
+          <div style={{display:"flex",justifyContent:"center"}} onClick={e=>{e.stopPropagation();(!compareFull||inCompare)&&onCompare();}}>
+            <div style={{width:24,height:24,borderRadius:RADIUS.sm,
+              border:`1px solid ${inCompare?COLORS.actionAmber:COLORS.borderDefault}`,
+              background:inCompare?COLORS.actionAmber:"transparent",
+              display:"flex",alignItems:"center",justifyContent:"center",
+              color:inCompare?COLORS.bgBase:(compareFull?COLORS.borderDefault:COLORS.textGhost),
+              cursor:(!inCompare&&compareFull)?"default":"pointer"}}>
+              {inCompare?<Check size={13}/>:<Plus size={13}/>}
+            </div>
+          </div>
+        )}
+
+        {/* Chevron — desktop only */}
+        {!isMobile&&(
+          <div style={{color:COLORS.textGhost,display:"flex",justifyContent:"center"}}>
+            {expanded?<ChevronUp size={15}/>:<ChevronDown size={15}/>}
+          </div>
+        )}
       </div>
 
       {/* Expanded card */}
@@ -485,13 +586,13 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
               <div style={{flex:1,padding:isMobile?"14px 16px":"18px 20px",display:"flex",flexDirection:"column",justifyContent:"center"}}>
                 <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:8}}>
                   {(f.applications||[]).map(a=>(
-                    <span key={a} style={{fontSize:14,fontWeight:700,color:APP_COLORS[a],background:APP_COLORS[a]+"1A",padding:"2px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:"'IBM Plex Mono',monospace"}}>{a}</span>
+                    <span key={a} style={{fontSize:14,fontWeight:700,color:APP_COLORS[a],background:APP_COLORS[a]+"1A",padding:"2px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:FONTS.mono}}>{a}</span>
                   ))}
-                  {f.tier&&<span style={{fontSize:14,fontWeight:700,color:TIER_COLORS[f.tier],background:TIER_COLORS[f.tier]+"1A",padding:"2px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:"'IBM Plex Mono',monospace"}}>{f.tier}</span>}
-                  {f.ipRated&&<span style={{fontSize:14,fontWeight:700,color:"#9D8DF1",background:"#9D8DF11A",padding:"2px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:"'IBM Plex Mono',monospace"}}>{f.ipRating||"IP Rated"}</span>}
+                  {f.tier&&<span style={{fontSize:14,fontWeight:700,color:TIER_COLORS[f.tier],background:TIER_COLORS[f.tier]+"1A",padding:"2px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:FONTS.mono}}>{f.tier}</span>}
+                  {f.ipRated&&<span style={{fontSize:14,fontWeight:700,color:"#9D8DF1",background:"#9D8DF11A",padding:"2px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:FONTS.mono}}>{f.ipRating||"IP Rated"}</span>}
                 </div>
                 <div style={{fontSize:isMobile?24:28,fontWeight:800,letterSpacing:"-.03em",lineHeight:1.1,color:COLORS.textPrimary}}>{clean(f.model)}</div>
-                <div style={{fontSize:15,fontWeight:600,color:COLORS.textSecondary,letterSpacing:".06em",textTransform:"uppercase",fontFamily:"'IBM Plex Mono',monospace",marginTop:5}}>{f.brand} · {f.category}</div>
+                <div style={{fontSize:15,fontWeight:600,color:COLORS.textSecondary,letterSpacing:".06em",textTransform:"uppercase",fontFamily:FONTS.mono,marginTop:5}}>{f.brand} · {f.category}</div>
                 {f.description&&(
                   <div style={{fontSize:16,color:"#707078",lineHeight:1.55,fontStyle:"italic",marginTop:10}}>{f.description}</div>
                 )}
@@ -532,7 +633,7 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
                     </div>
                 }
               </div>
-              {f.lastVerified&&<div style={{fontSize:14,color:"#6E6E7C",marginTop:10,fontFamily:"'IBM Plex Mono',monospace",letterSpacing:".04em"}}>VERIFIED {f.lastVerified}</div>}
+              {f.lastVerified&&<div style={{fontSize:14,color:"#6E6E7C",marginTop:10,fontFamily:FONTS.mono,letterSpacing:".04em"}}>VERIFIED {f.lastVerified}</div>}
             </div>
           </div>
         </div>
@@ -544,7 +645,7 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
 function SB({label,value,wide,hl}){
   return(
     <div style={{background:hl?"#6EE7A80A":COLORS.bgElevated,border:`1px solid ${hl?"#6EE7A820":COLORS.borderSubtle}`,borderRadius:8,padding:"9px 11px",gridColumn:wide?"1 / -1":"auto"}}>
-      <div style={{fontSize:13,fontWeight:600,color:"#8A8A98",textTransform:"uppercase",letterSpacing:".1em",fontFamily:"'IBM Plex Mono',monospace",marginBottom:4}}>{label}</div>
+      <div style={{fontSize:13,fontWeight:600,color:"#8A8A98",textTransform:"uppercase",letterSpacing:".1em",fontFamily:FONTS.mono,marginBottom:4}}>{label}</div>
       <div style={{fontSize:17,color:hl?"#6EE7A8":"#DCDCE2",whiteSpace:"pre-line",lineHeight:1.45,fontWeight:hl?600:400}}>{value}</div>
     </div>
   );
@@ -580,7 +681,7 @@ function CompareModal({items,onClose,onRemove,isMobile}){
         <div style={{padding:isMobile?"16px 18px":"18px 24px",borderBottom:"1px solid #18181C",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
           <div style={{fontSize:isMobile?18:21,fontWeight:800,display:"flex",alignItems:"center",gap:10,letterSpacing:"-.02em"}}>
             <GitCompare size={isMobile?17:20} color={COLORS.actionAmber}/> Compare
-            <span style={{fontSize:15,color:"#8A8A98",fontFamily:"'IBM Plex Mono',monospace"}}>{items.length}/4</span>
+            <span style={{fontSize:15,color:"#8A8A98",fontFamily:FONTS.mono}}>{items.length}/4</span>
           </div>
           <X size={22} onClick={onClose} style={{cursor:"pointer",color:"#8A8A98"}}/>
         </div>
@@ -588,12 +689,12 @@ function CompareModal({items,onClose,onRemove,isMobile}){
           <table style={{width:"100%",borderCollapse:"collapse",minWidth:(isMobile?120:160)+items.length*(isMobile?145:200)}}>
             <thead>
               <tr style={{background:"#0C0C0E"}}>
-                <th style={{position:"sticky",left:0,background:"#0C0C0E",textAlign:"left",padding:isMobile?"12px":"14px 18px",fontSize:14,color:"#8A8A98",fontWeight:600,textTransform:"uppercase",letterSpacing:".08em",fontFamily:"'IBM Plex Mono',monospace",width:isMobile?120:160,zIndex:2}}>Spec</th>
+                <th style={{position:"sticky",left:0,background:"#0C0C0E",textAlign:"left",padding:isMobile?"12px":"14px 18px",fontSize:14,color:"#8A8A98",fontWeight:600,textTransform:"uppercase",letterSpacing:".08em",fontFamily:FONTS.mono,width:isMobile?120:160,zIndex:2}}>Spec</th>
                 {items.map(f=>(
                   <th key={f.id} style={{padding:isMobile?"12px":"14px 18px",textAlign:"left",borderLeft:"1px solid #18181C",minWidth:isMobile?145:195}}>
                     <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:8}}>
                       <div>
-                        <div style={{fontSize:14,fontWeight:700,color:CAT_COLORS[f.category],textTransform:"uppercase",letterSpacing:".06em",fontFamily:"'IBM Plex Mono',monospace"}}>{f.brand}</div>
+                        <div style={{fontSize:14,fontWeight:700,color:CAT_COLORS[f.category],textTransform:"uppercase",letterSpacing:".06em",fontFamily:FONTS.mono}}>{f.brand}</div>
                         <div style={{fontSize:isMobile?15:17,fontWeight:800,marginTop:3,lineHeight:1.2,letterSpacing:"-.01em"}}>{clean(f.model)}</div>
                       </div>
                       <X size={15} onClick={()=>onRemove(f.id)} style={{cursor:"pointer",color:"#8A8A98",flexShrink:0}}/>
@@ -612,7 +713,7 @@ function CompareModal({items,onClose,onRemove,isMobile}){
                 }
                 return(
                   <tr key={key} style={{background:ri%2?COLORS.bgElevated:"transparent"}}>
-                    <td style={{position:"sticky",left:0,background:ri%2?COLORS.bgElevated:"#0C0C0E",padding:isMobile?"10px 12px":"11px 18px",fontSize:14,color:"#8A8A98",fontWeight:600,textTransform:"uppercase",letterSpacing:".06em",fontFamily:"'IBM Plex Mono',monospace",zIndex:1}}>{label}</td>
+                    <td style={{position:"sticky",left:0,background:ri%2?COLORS.bgElevated:"#0C0C0E",padding:isMobile?"10px 12px":"11px 18px",fontSize:14,color:"#8A8A98",fontWeight:600,textTransform:"uppercase",letterSpacing:".06em",fontFamily:FONTS.mono,zIndex:1}}>{label}</td>
                     {items.map(f=>(
                       <td key={f.id} style={{padding:isMobile?"10px 12px":"11px 18px",fontSize:isMobile?14:15.5,borderLeft:"1px solid #18181C",color:bestId===f.id?"#6EE7A8":"#DCDCE2",fontWeight:bestId===f.id?700:400,whiteSpace:"pre-line",lineHeight:1.45,verticalAlign:"top"}}>
                         {render(f)}
