@@ -3,7 +3,7 @@
     "id": 1,
     "brand": "Martin",
     "model": "MAC ERA 800 PERFORMANCE",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Performance",
     "applications": [
       "Theater",
@@ -51,7 +51,7 @@
     "id": 2,
     "brand": "Martin",
     "model": "MAC ERA 800 PROFILE",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "Profile",
     "applications": [
       "Concert"
@@ -98,7 +98,7 @@
     "id": 3,
     "brand": "Martin",
     "model": "MAC Viper AirFX",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Theater",
@@ -146,7 +146,7 @@
     "id": 4,
     "brand": "Martin",
     "model": "MAC Viper XIP",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Install",
@@ -196,7 +196,7 @@
     "id": 5,
     "brand": "Martin",
     "model": "MAC Viper Performance",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Performance",
     "applications": [
       "Theater",
@@ -244,7 +244,7 @@
     "id": 6,
     "brand": "Martin",
     "model": "MAC ERA 700 PERFORMANCE",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Performance",
     "applications": [
       "Install",
@@ -294,7 +294,7 @@
     "id": 7,
     "brand": "Martin",
     "model": "VIPER PROFILE",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "Profile",
     "applications": [
       "Theater",
@@ -342,7 +342,7 @@
     "id": 8,
     "brand": "Martin",
     "model": "MAC ERA 600 PERFORMANCE",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Performance",
     "applications": [
       "Corporate",
@@ -390,7 +390,7 @@
     "id": 9,
     "brand": "Martin",
     "model": "MAC Quantum Profile",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "Profile",
     "applications": [
       "Corporate"
@@ -437,7 +437,7 @@
     "id": 10,
     "brand": "Martin",
     "model": "MAC Encore Performance CLD",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Performance",
     "applications": [
       "Corporate",
@@ -485,7 +485,7 @@
     "id": 11,
     "brand": "Martin",
     "model": "ERA 400 CLD Performance",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Performance",
     "applications": [
       "Corporate",
@@ -533,7 +533,7 @@
     "id": 12,
     "brand": "Martin",
     "model": "ERA 300 Profile",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "Profile",
     "applications": [
       "Corporate"
@@ -580,7 +580,7 @@
     "id": 13,
     "brand": "Martin",
     "model": "MAC Encore Performance WRM",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Performance",
     "applications": [
       "Corporate",
@@ -629,7 +629,7 @@
     "id": 14,
     "brand": "Martin",
     "model": "ERA 400 WRM Performance",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Performance",
     "applications": [
       "TV-Film",
@@ -677,7 +677,7 @@
     "id": 15,
     "brand": "Elation",
     "model": "FUZE MAX PROFILE",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Corporate",
@@ -727,7 +727,7 @@
     "id": 16,
     "brand": "Elation",
     "model": "FUZE PROFILE",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Corporate",
@@ -776,7 +776,7 @@
     "id": 17,
     "brand": "Elation",
     "model": "FUZE TEATRO",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Corporate",
@@ -825,7 +825,7 @@
     "id": 18,
     "brand": "Elation",
     "model": "PROTEUS ODEON",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Install",
@@ -874,7 +874,7 @@
     "id": 19,
     "brand": "Elation",
     "model": "PROTEUS MAXIMUS",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Install",
@@ -923,7 +923,7 @@
     "id": 20,
     "brand": "Elation",
     "model": "PROTEUS LUCIUS",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Install",
@@ -972,7 +972,7 @@
     "id": 21,
     "brand": "Elation",
     "model": "Artiste Monet",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Theater",
@@ -1020,7 +1020,7 @@
     "id": 22,
     "brand": "Elation",
     "model": "Artiste Mondrian",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Profile",
     "applications": [
       "Theater",
@@ -1068,7 +1068,7 @@
     "id": 23,
     "brand": "Elation",
     "model": "PROTEUS BRUTUS",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Install",
@@ -1117,7 +1117,7 @@
     "id": 24,
     "brand": "Elation",
     "model": "Artiste Picasso",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Profile",
     "applications": [
       "Corporate",
@@ -1166,7 +1166,7 @@
     "id": 25,
     "brand": "Elation",
     "model": "FUZE MAX SPOT",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Corporate",
@@ -1216,7 +1216,7 @@
     "id": 26,
     "brand": "Elation",
     "model": "FUZE SPOT",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Corporate",
@@ -1265,7 +1265,7 @@
     "id": 27,
     "brand": "Elation",
     "model": "FUZE SFX",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Corporate"
@@ -1312,7 +1312,7 @@
     "id": 28,
     "brand": "Vari-Lite",
     "model": "VL3600 PROFILE",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Profile",
     "applications": [
       "Theater",
@@ -1360,7 +1360,7 @@
     "id": 29,
     "brand": "Vari-Lite",
     "model": "VL2600 SE PROFILE",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Profile",
     "applications": [
       "Corporate",
@@ -1409,7 +1409,7 @@
     "id": 30,
     "brand": "Vari-Lite",
     "model": "VL4000 Spot",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert"
@@ -1456,7 +1456,7 @@
     "id": 31,
     "brand": "Vari-Lite",
     "model": "VL800 EVENTPROFILE",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Profile",
     "applications": [
       "Corporate",
@@ -1504,7 +1504,7 @@
     "id": 32,
     "brand": "Robe",
     "model": "ESPRITE®",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Theater",
@@ -1552,7 +1552,7 @@
     "id": 33,
     "brand": "Robe",
     "model": "FORTE®",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "TV-Film",
@@ -1601,7 +1601,7 @@
     "id": 34,
     "brand": "Robe",
     "model": "FORTE® Fresnel",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Theater",
@@ -1649,7 +1649,7 @@
     "id": 35,
     "brand": "Robe",
     "model": "iBOLT™",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Install",
@@ -1697,7 +1697,7 @@
     "id": 36,
     "brand": "Robe",
     "model": "iFORTE® LTX WB",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Theater",
@@ -1745,7 +1745,7 @@
     "id": 37,
     "brand": "Robe",
     "model": "PAINTE®",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Corporate",
@@ -1793,7 +1793,7 @@
     "id": 38,
     "brand": "Robe",
     "model": "PAINTE® Spot",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Corporate"
@@ -1840,7 +1840,7 @@
     "id": 39,
     "brand": "Robe",
     "model": "CUETE®",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Theater"
@@ -1887,7 +1887,7 @@
     "id": 40,
     "brand": "Robe",
     "model": "T1 Profile™",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Profile",
     "applications": [
       "Corporate",
@@ -1936,7 +1936,7 @@
     "id": 41,
     "brand": "Robe",
     "model": "T.5 Profile™",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Profile",
     "applications": [
       "TV-Film",
@@ -1984,7 +1984,7 @@
     "id": 42,
     "brand": "Robe",
     "model": "TX1 PosiProfile™",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Profile",
     "applications": [
       "Corporate",
@@ -2033,7 +2033,7 @@
     "id": 43,
     "brand": "Robe",
     "model": "T2 Profile™",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Profile",
     "applications": [
       "Corporate",
@@ -2083,7 +2083,7 @@
     "id": 44,
     "brand": "Robe",
     "model": "miniPointe®",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert"
@@ -2130,7 +2130,7 @@
     "id": 45,
     "brand": "Robe",
     "model": "Pointe®",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Corporate",
@@ -2178,7 +2178,7 @@
     "id": 46,
     "brand": "Robe",
     "model": "MegaPointe®",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Corporate",
@@ -2226,7 +2226,7 @@
     "id": 47,
     "brand": "Ayrton",
     "model": "Karif LT",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Corporate",
@@ -2274,7 +2274,7 @@
     "id": 48,
     "brand": "Ayrton",
     "model": "Mistral",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Corporate",
@@ -2323,7 +2323,7 @@
     "id": 49,
     "brand": "Ayrton",
     "model": "Perseo Beam",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Corporate",
@@ -2372,7 +2372,7 @@
     "id": 50,
     "brand": "Ayrton",
     "model": "Diablo Profile",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Profile",
     "applications": [
       "Corporate",
@@ -2421,7 +2421,7 @@
     "id": 51,
     "brand": "Ayrton",
     "model": "Levante",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Corporate",
@@ -2470,7 +2470,7 @@
     "id": 52,
     "brand": "Ayrton",
     "model": "Ghibli",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Profile",
     "applications": [
       "Corporate",
@@ -2519,7 +2519,7 @@
     "id": 53,
     "brand": "Ayrton",
     "model": "Eurus Profile",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Profile",
     "applications": [
       "Theater",
@@ -2567,7 +2567,7 @@
     "id": 54,
     "brand": "Ayrton",
     "model": "Khamsin",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Profile",
     "applications": [
       "Theater",
@@ -2663,7 +2663,7 @@
     "id": 56,
     "brand": "Ayrton",
     "model": "Perseo Profile",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Profile",
     "applications": [
       "Theater",
@@ -2711,7 +2711,7 @@
     "id": 57,
     "brand": "Claypaky",
     "model": "Veloce Profile",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "Profile",
     "applications": [
       "Install",
@@ -2760,7 +2760,7 @@
     "id": 58,
     "brand": "Ayrton",
     "model": "Huracán LT",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Profile",
     "applications": [
       "Concert"
@@ -2807,7 +2807,7 @@
     "id": 59,
     "brand": "Chauvet",
     "model": "Maverick Force 3 Profile",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Profile",
     "applications": [
       "Theater",
@@ -2855,7 +2855,7 @@
     "id": 60,
     "brand": "Chauvet",
     "model": "Maverick Force S Profile",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Profile",
     "applications": [
       "Corporate",
@@ -2903,7 +2903,7 @@
     "id": 61,
     "brand": "Chauvet",
     "model": "Rogue R2X Spot",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Corporate"
@@ -2950,7 +2950,7 @@
     "id": 62,
     "brand": "PRG",
     "model": "BEST BOY LED",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Theater",
@@ -2998,7 +2998,7 @@
     "id": 63,
     "brand": "High End Systems",
     "model": "SolaFrame 3000",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Theater",
@@ -3046,7 +3046,7 @@
     "id": 64,
     "brand": "High End Systems",
     "model": "SolaFrame 1000",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Corporate",
@@ -3095,7 +3095,7 @@
     "id": 65,
     "brand": "High End Systems",
     "model": "LONESTAR",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Corporate",
@@ -5456,7 +5456,7 @@
     "id": 115,
     "brand": "Acme",
     "model": "Pulsar S2",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert",
@@ -5501,7 +5501,7 @@
     "id": 116,
     "brand": "Acme",
     "model": "Tornado",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert",
@@ -5546,7 +5546,7 @@
     "id": 117,
     "brand": "Acme",
     "model": "Gemini",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert",
@@ -5591,7 +5591,7 @@
     "id": 118,
     "brand": "Acme",
     "model": "Lyra",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Concert",
@@ -5681,7 +5681,7 @@
     "id": 120,
     "brand": "ADJ",
     "model": "Vizi Beam 12RX",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Corporate",
@@ -5771,7 +5771,7 @@
     "id": 122,
     "brand": "Ayrton",
     "model": "EagleStrike",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Concert"
@@ -5815,7 +5815,7 @@
     "id": 123,
     "brand": "Ayrton",
     "model": "Domino LT",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Concert"
@@ -5949,7 +5949,7 @@
     "id": 126,
     "brand": "Chauvet",
     "model": "Maverick Force S Spot",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert",
@@ -5994,7 +5994,7 @@
     "id": 127,
     "brand": "Chauvet",
     "model": "Maverick MK2 Spot",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert",
@@ -6039,7 +6039,7 @@
     "id": 128,
     "brand": "Chauvet",
     "model": "Maverick MK3 Profile",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Concert",
@@ -6130,7 +6130,7 @@
     "id": 130,
     "brand": "Chauvet",
     "model": "Rogue Outcast 1L Beam",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert",
@@ -6310,7 +6310,7 @@
     "id": 134,
     "brand": "Claypaky",
     "model": "Scenius Profile",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Concert",
@@ -6355,7 +6355,7 @@
     "id": 135,
     "brand": "Claypaky",
     "model": "Mythos 2",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert",
@@ -6400,7 +6400,7 @@
     "id": 136,
     "brand": "Claypaky",
     "model": "Ultimo Sharpy",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert",
@@ -6445,7 +6445,7 @@
     "id": 137,
     "brand": "Claypaky",
     "model": "Sharpy",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert",
@@ -6490,7 +6490,7 @@
     "id": 138,
     "brand": "Claypaky",
     "model": "Xtylos",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert",
@@ -6535,7 +6535,7 @@
     "id": 139,
     "brand": "Elation",
     "model": "Proteus Rayzor Blade L",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert"
@@ -6579,7 +6579,7 @@
     "id": 140,
     "brand": "Elation",
     "model": "Dartz 360",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert",
@@ -6624,7 +6624,7 @@
     "id": 141,
     "brand": "Elation",
     "model": "Proteus Excalibur",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert"
@@ -6668,7 +6668,7 @@
     "id": 142,
     "brand": "Elation",
     "model": "SMARTY MAX",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert",
@@ -6713,7 +6713,7 @@
     "id": 143,
     "brand": "Elation",
     "model": "Paragon M",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Concert",
@@ -6759,7 +6759,7 @@
     "id": 144,
     "brand": "Elation",
     "model": "Paragon S",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Concert",
@@ -6850,7 +6850,7 @@
     "id": 146,
     "brand": "Elation",
     "model": "Platinum Beam 5R",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Corporate",
@@ -6895,7 +6895,7 @@
     "id": 147,
     "brand": "ETC",
     "model": "GigaPix",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert",
@@ -7029,7 +7029,7 @@
     "id": 150,
     "brand": "High End Systems",
     "model": "SolaHyBeam 3000",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Concert",
@@ -7164,7 +7164,7 @@
     "id": 153,
     "brand": "Martin",
     "model": "MAC Ultra Performance",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Performance",
     "applications": [
       "Concert",
@@ -7343,7 +7343,7 @@
     "id": 157,
     "brand": "Martin",
     "model": "MAC Axiom Hybrid",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert",
@@ -7388,7 +7388,7 @@
     "id": 158,
     "brand": "PRG",
     "model": "Best Boy Spot HP",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Concert",
@@ -7433,7 +7433,7 @@
     "id": 159,
     "brand": "PRG",
     "model": "Icon Edge",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert"
@@ -7477,7 +7477,7 @@
     "id": 160,
     "brand": "Robe",
     "model": "BMFL Blade",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Concert",
@@ -7522,7 +7522,7 @@
     "id": 161,
     "brand": "Robe",
     "model": "BMFL Spot",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert",
@@ -7567,7 +7567,7 @@
     "id": 162,
     "brand": "Robe",
     "model": "BMFL FollowSpot",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert",
@@ -7612,7 +7612,7 @@
     "id": 163,
     "brand": "Robe",
     "model": "BMFL FollowSpot LT",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Concert"
@@ -7701,7 +7701,7 @@
     "id": 165,
     "brand": "Vari-Lite",
     "model": "VL3600 Profile IP",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Concert"
@@ -7745,7 +7745,7 @@
     "id": 166,
     "brand": "Vari-Lite",
     "model": "VL3600 LT Profile IP",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Concert"
@@ -7834,7 +7834,7 @@
     "id": 168,
     "brand": "Ayrton",
     "model": "Rivale Profile",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Profile",
     "applications": [
       "Touring",
@@ -8065,7 +8065,7 @@
     "id": 173,
     "brand": "Claypaky",
     "model": "Alpha Beam 1500",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Touring",
@@ -8110,7 +8110,7 @@
     "id": 174,
     "brand": "ETC",
     "model": "Halcyon Titanium",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "",
     "applications": [
       "Touring",
@@ -8157,7 +8157,7 @@
     "id": 175,
     "brand": "High End Systems",
     "model": "Zeo",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Touring",
@@ -8249,7 +8249,7 @@
     "id": 177,
     "brand": "Robe",
     "model": "iFORTE LTX FollowSpot",
-    "category": "Spot / Profile",
+    "category": "Performance",
     "variant": "Performance",
     "applications": [
       "Touring",
@@ -8295,7 +8295,7 @@
     "id": 178,
     "brand": "Ayrton",
     "model": "Zonda 9 FX",
-    "category": "Spot / Profile",
+    "category": "Spot",
     "variant": "",
     "applications": [
       "Touring",
