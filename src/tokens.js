@@ -17,10 +17,11 @@ export const FONTS = {
 // ── CORE SURFACE & TEXT ───────────────────────────────────
 export const COLORS = {
   // Backgrounds (darkest → lightest)
-  bgBase:     "#0E0E11",  // Main page background
-  bgElevated: "#0F0F12",  // Cards, inputs, filter chip backgrounds
-  bgRow:      "#0C0C0E",  // Result table background
-  bgHover:    "#131316",  // Row hover state
+  bgBase:        "#0E0E11",  // Main page background
+  bgElevated:    "#0F0F12",  // Cards, inputs, filter chip backgrounds
+  bgRow:         "#0C0C0E",  // Result table background
+  bgHover:       "#131316",  // Row hover state
+  bgCardSurface: "#1F1F28",  // Expanded card outer surface — lifted above page bg
 
   // Borders
   borderSubtle:   "#18181C",  // Default border on cards, tables

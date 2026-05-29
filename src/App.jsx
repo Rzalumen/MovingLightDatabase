@@ -636,7 +636,7 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
       {/* Expanded card */}
       {expanded&&(
         <div className="expand-in" style={{padding:isMobile?"0 14px 16px":"0 16px 18px"}}>
-          <div style={{background:COLORS.bgBase,border:"1px solid #18181C",borderRadius:12,overflow:"hidden"}}>
+          <div style={{background:COLORS.bgCardSurface,border:"1px solid #18181C",borderRadius:12,overflow:"hidden"}}>
 
             {/* Card header: image left, text right */}
             <div style={{display:"flex",flexDirection:isMobile?"column":"row",borderBottom:"1px solid #131316"}}>
