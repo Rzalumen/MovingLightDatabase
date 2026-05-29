@@ -449,7 +449,6 @@ function Section({label,active,children}){
     <div style={{marginBottom:18}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:9}}>
         <span style={{fontFamily:FONTS.ui,fontSize:12,fontWeight:700,color:COLORS.textMuted,letterSpacing:".08em",textTransform:"uppercase"}}>{label}</span>
-        {active>0&&<span style={{fontFamily:FONTS.mono,fontSize:11,background:COLORS.actionAmberBg,color:COLORS.actionAmber,padding:"1px 6px",borderRadius:4,fontWeight:600,letterSpacing:".03em"}}>{active}</span>}
       </div>
       {children}
     </div>
