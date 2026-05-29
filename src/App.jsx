@@ -7,7 +7,7 @@ import { FONTS, COLORS, getTypeColor, getTierColor, RADIUS, SPACING } from "./to
 // Phase 2 will use these — import added now to verify installation works
 // import { Drama, Mic2, Video, Building2 } from "@tabler/icons-react";
 
-const CAT_COLORS = { "Spot / Profile":"#F5A623", "Wash":"#4ECDC4", "Bar / Batten":"#C77DFF" };
+const CAT_COLORS = { "Performance":COLORS.typePerformance, "Spot":COLORS.typeSpot, "Wash":COLORS.typeWash, "Bar / Batten":COLORS.typeBar };
 const LAMP_COLORS = { "LED":"#6EE7A8", "Discharge":"#F5A623", "Laser":"#FF6B6B", "Other":"#9AA5B1" };
 const APP_COLORS = { "Theater":COLORS.actionAmber, "Concert":"#F4845F", "TV-Film":"#FF6B9D", "Corporate":"#9D8DF1" };
 const TIER_COLORS = { "Small":"#6EE7A8", "Medium":COLORS.actionAmber, "Large":"#F4845F" };
@@ -26,7 +26,6 @@ function fmt(n){ return n==null?"\u2014":n.toLocaleString(); }
 function zoomStr(f){ return f.zoomMin!=null?(f.zoomMin===f.zoomMax?f.zoomMin+"\u00b0":f.zoomMin+"\u00b0\u2013"+f.zoomMax+"\u00b0"):"\u2014"; }
 function catLabel(cat){
   switch(cat){
-    case "Spot / Profile": return "SPOT";     // old taxonomy fallback
     case "Performance":    return "PERF";
     case "Spot":           return "SPOT";
     case "Wash":           return "WASH";
@@ -74,7 +73,7 @@ export default function App() {
   },[watchlist]);
 
   const allBrands = useMemo(()=>[...new Set(FIXTURES.map(f=>f.brand))].sort(),[]);
-  const allCats   = ["Spot / Profile","Wash","Bar / Batten"];
+  const allCats   = ["Performance","Spot","Wash","Bar / Batten"];
   const allTiers  = ["Small","Medium","Large"];
   const allLamps  = ["LED","Discharge","Laser","Other"];
 
@@ -441,7 +440,7 @@ function EmptyState(){
     <div style={{textAlign:"center",padding:"80px 20px"}}>
       <div style={{fontSize:30,fontWeight:800,color:"#1C1C22",letterSpacing:"-.03em",marginBottom:10}}>Find a fixture</div>
       <div style={{fontSize:17,color:"#8A8A98",lineHeight:1.7,maxWidth:400,margin:"0 auto",fontWeight:400}}>
-        Pick an <span style={{color:APP_COLORS["Theater"],fontWeight:600}}>application</span>, <span style={{color:CAT_COLORS["Spot / Profile"],fontWeight:600}}>type</span>, or <span style={{color:TIER_COLORS["Large"],fontWeight:600}}>output tier</span> — or search by name.
+        Pick an <span style={{color:APP_COLORS["Theater"],fontWeight:600}}>application</span>, <span style={{color:CAT_COLORS["Performance"],fontWeight:600}}>type</span>, or <span style={{color:TIER_COLORS["Large"],fontWeight:600}}>output tier</span> — or search by name.
       </div>
     </div>
   );
