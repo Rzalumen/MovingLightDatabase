@@ -244,7 +244,7 @@ export default function App() {
               const Icon=APP_ICONS[a];
               return(
                 <div key={a} className="chip" onClick={()=>toggle(apps,setApps,a)}
-                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 16px",background:on?col+"1A":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?15:14,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 16px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?15:14,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
                   {Icon&&<Icon size={15} strokeWidth={2}/>}
                   {a}
                   {on&&<Check size={13}/>}
@@ -262,7 +262,7 @@ export default function App() {
               const col=CAT_COLORS[c];
               return(
                 <div key={c} className="chip" onClick={()=>toggle(cats,setCats,c)}
-                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 16px",background:on?col+"1A":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?15:14,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 16px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?15:14,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
                   <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
                   {c}
                   {on&&<Check size={13}/>}
@@ -280,7 +280,7 @@ export default function App() {
               const col=TIER_COLORS[t];
               return(
                 <div key={t} className="chip" onClick={()=>toggle(tiers,setTiers,t)}
-                  style={{display:"flex",flexDirection:"column",alignItems:"flex-start",padding:isMobile?"7px 12px":"8px 14px",background:on?col+"1A":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                  style={{display:"flex",flexDirection:"column",alignItems:"flex-start",padding:isMobile?"7px 12px":"8px 14px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontFamily:FONTS.ui,cursor:"pointer"}}>
                   <div style={{display:"flex",alignItems:"center",gap:8,fontSize:isMobile?15:14,fontWeight:600,color:on?col:COLORS.textSecondary}}>
                     <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
                     {t}
@@ -300,7 +300,7 @@ export default function App() {
               const on=feats.has(key);
               return(
                 <div key={key} className="chip" onClick={()=>toggle(feats,setFeats,key)}
-                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 16px",background:on?color+"1A":COLORS.bgElevated,border:`1.5px solid ${on?color:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?15:14,fontWeight:600,color:on?color:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 16px",background:on?color+"33":COLORS.bgElevated,border:`1.5px solid ${on?color:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?15:14,fontWeight:600,color:on?color:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
                   {icon}
                   {label}
                   {on&&<Check size={13}/>}
