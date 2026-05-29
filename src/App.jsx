@@ -1,11 +1,9 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Search, X, GitCompare, ChevronDown, ChevronUp, Check, Plus, Minus, ExternalLink, Scissors, SlidersHorizontal, Droplets, Wifi, Zap, Star } from "lucide-react";
+import { IconMasksTheater as Drama, IconMicrophone2 as Mic2, IconVideo as Video, IconBuilding as Building2 } from "@tabler/icons-react";
 
 import FIXTURES from "./fixtures.json";
 import { FONTS, COLORS, getTypeColor, getTierColor, RADIUS, SPACING } from "./tokens";
-
-// Phase 2 will use these — import added now to verify installation works
-// import { Drama, Mic2, Video, Building2 } from "@tabler/icons-react";
 
 const CAT_COLORS = { "Performance":COLORS.typePerformance, "Spot":COLORS.typeSpot, "Wash":COLORS.typeWash, "Bar / Batten":COLORS.typeBar };
 const LAMP_COLORS = { "LED":"#6EE7A8", "Discharge":"#F5A623", "Laser":"#FF6B6B", "Other":"#9AA5B1" };
@@ -13,6 +11,12 @@ const APP_COLORS = { "Theater":COLORS.actionAmber, "Concert":"#F4845F", "TV-Film
 const TIER_COLORS = { "Small":"#6EE7A8", "Medium":COLORS.actionAmber, "Large":"#F4845F" };
 const TIER_DESC = { "Small":"< 10k lm", "Medium":"10\u201330k lm", "Large":"\u2265 30k lm" };
 const APP_ORDER = ["Theater","Concert","TV-Film","Corporate"];
+const APP_ICONS = {
+  "Theater":   Drama,
+  "Concert":   Mic2,
+  "TV-Film":   Video,
+  "Corporate": Building2,
+};
 
 const FEAT_FILTERS = [
   { key:"framing",   label:"Framing Shutters", icon:<Scissors size={14}/>,  color:"#6EE7A8", field:f=>f.framing },
@@ -50,6 +54,7 @@ export default function App() {
   const [compare,setCompare]   = useState([]);
   const [showCompare,setShowCompare] = useState(false);
   const [isMobile,setIsMobile] = useState(false);
+  const [watchingFilterActive,setWatchingFilterActive] = useState(false);
   const [watchlist,setWatchlist] = useState(()=>{
     try {
       const saved = localStorage.getItem("mld-watchlist");
@@ -81,12 +86,13 @@ export default function App() {
     const n=new Set(set); n.has(val)?n.delete(val):n.add(val); setter(n);
   }
 
-  const hasFilter = query||apps.size||cats.size||tiers.size||brands.size||feats.size||lamps.size||criMin||featAnim;
+  const hasFilter = query||apps.size||cats.size||tiers.size||brands.size||feats.size||lamps.size||criMin||featAnim||watchingFilterActive;
   const moreCount = lamps.size+(criMin?1:0)+(featAnim?1:0);
 
   const filtered = useMemo(()=>{
     if(!hasFilter) return [];
     let r = FIXTURES.filter(f=>{
+      if(watchingFilterActive && !watchlist.has(f.id)) return false;
       if(query){
         const q=query.toLowerCase();
         const hay=(f.model+" "+f.brand+" "+f.category+" "+(f.standout||"")+" "+(f.description||"")+" "+(f.colorMixing||"")+" "+(f.lamp||"")+" "+(f.applications||[]).join(" ")).toLowerCase();
@@ -117,7 +123,7 @@ export default function App() {
       if(av>bv) return dir==="asc"?1:-1;
       return 0;
     });
-  },[query,apps,cats,tiers,brands,feats,lamps,criMin,featAnim,sortBy,hasFilter]);
+  },[query,apps,cats,tiers,brands,feats,lamps,criMin,featAnim,sortBy,hasFilter,watchingFilterActive,watchlist]);
 
   function toggleExpand(id){
     setExpanded(p=>{const n=new Set(p);n.has(id)?n.delete(id):n.add(id);return n;});
@@ -142,9 +148,24 @@ export default function App() {
     setQuery(""); setApps(new Set()); setCats(new Set()); setTiers(new Set());
     setBrands(new Set()); setFeats(new Set()); setLamps(new Set());
     setCriMin(0); setFeatAnim(false);
+    setWatchingFilterActive(false);
   }
 
   const activeCount=apps.size+cats.size+tiers.size+brands.size+feats.size+lamps.size+(criMin?1:0)+(featAnim?1:0);
+
+  const activeChips = useMemo(()=>{
+    const chips = [];
+    if(query) chips.push({key:"query", label:`"${query}"`, onRemove:()=>setQuery("")});
+    apps.forEach(a => chips.push({key:`app-${a}`, label:a, onRemove:()=>{const n=new Set(apps); n.delete(a); setApps(n);}}));
+    cats.forEach(c => chips.push({key:`cat-${c}`, label:c, onRemove:()=>{const n=new Set(cats); n.delete(c); setCats(n);}}));
+    tiers.forEach(t => chips.push({key:`tier-${t}`, label:t, onRemove:()=>{const n=new Set(tiers); n.delete(t); setTiers(n);}}));
+    brands.forEach(b => chips.push({key:`brand-${b}`, label:b, onRemove:()=>{const n=new Set(brands); n.delete(b); setBrands(n);}}));
+    feats.forEach(f => chips.push({key:`feat-${f}`, label:f, onRemove:()=>{const n=new Set(feats); n.delete(f); setFeats(n);}}));
+    lamps.forEach(l => chips.push({key:`lamp-${l}`, label:l, onRemove:()=>{const n=new Set(lamps); n.delete(l); setLamps(n);}}));
+    if(criMin>0) chips.push({key:"cri", label:`CRI ${criMin}+`, onRemove:()=>setCriMin(0)});
+    if(featAnim) chips.push({key:"anim", label:"Animation wheel", onRemove:()=>setFeatAnim(false)});
+    return chips;
+  },[query, apps, cats, tiers, brands, feats, lamps, criMin, featAnim]);
 
   return (
     <div style={{minHeight:"100vh",background:COLORS.bgBase,color:COLORS.textPrimary,fontFamily:FONTS.ui}}>
@@ -181,13 +202,13 @@ export default function App() {
           </div>
           {!isMobile&&(
             <div style={{display:"flex",gap:8}}>
-              <button onClick={()=>{/* Phase 4 will wire watchlist view */}}
+              <button onClick={()=>setWatchingFilterActive(v=>!v)}
                 style={{display:"flex",alignItems:"center",gap:6,padding:"9px 16px",
-                  background:watchlist.size?COLORS.actionAmberBg:"transparent",
-                  color:watchlist.size?COLORS.actionAmber:COLORS.textSecondary,
-                  border:`1px solid ${watchlist.size?COLORS.actionAmber:COLORS.borderDefault}`,
+                  background:watchingFilterActive?COLORS.actionAmber:(watchlist.size?COLORS.actionAmberBg:"transparent"),
+                  color:watchingFilterActive?COLORS.bgBase:(watchlist.size?COLORS.actionAmber:COLORS.textSecondary),
+                  border:`1px solid ${watchingFilterActive||watchlist.size?COLORS.actionAmber:COLORS.borderDefault}`,
                   borderRadius:RADIUS.md,fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:FONTS.ui}}>
-                <Star size={14} fill={watchlist.size?COLORS.actionAmber:"none"}/> Watching ({watchlist.size})
+                <Star size={14} fill={watchingFilterActive?COLORS.bgBase:(watchlist.size?COLORS.actionAmber:"none")}/> Watching ({watchlist.size})
               </button>
               <button onClick={()=>compare.length&&setShowCompare(true)}
                 style={{display:"flex",alignItems:"center",gap:6,padding:"9px 16px",
@@ -218,14 +239,14 @@ export default function App() {
         <Section label="Application" active={apps.size}>
           <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
             {APP_ORDER.map(a=>{
-              const on=apps.has(a); const col=APP_COLORS[a];
-              const n=FIXTURES.filter(f=>(f.applications||[]).includes(a)).length;
+              const on=apps.has(a);
+              const col=APP_COLORS[a];
+              const Icon=APP_ICONS[a];
               return(
                 <div key={a} className="chip" onClick={()=>toggle(apps,setApps,a)}
-                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 18px",background:on?col+"1A":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:10,fontSize:isMobile?16:17,fontWeight:600,color:on?col:COLORS.textSecondary}}>
-                  <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
+                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 16px",background:on?col+"1A":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?15:14,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                  {Icon&&<Icon size={15} strokeWidth={2}/>}
                   {a}
-                  <span style={{fontSize:14,fontFamily:FONTS.mono,color:on?col+"88":"#303038",fontWeight:500}}>{n}</span>
                   {on&&<Check size={13}/>}
                 </div>
               );
@@ -237,14 +258,13 @@ export default function App() {
         <Section label="Type" active={cats.size}>
           <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
             {allCats.map(c=>{
-              const on=cats.has(c); const col=CAT_COLORS[c];
-              const n=FIXTURES.filter(f=>f.category===c).length;
+              const on=cats.has(c);
+              const col=CAT_COLORS[c];
               return(
                 <div key={c} className="chip" onClick={()=>toggle(cats,setCats,c)}
-                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 18px",background:on?col+"1A":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:10,fontSize:isMobile?16:17,fontWeight:600,color:on?col:COLORS.textSecondary}}>
+                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 16px",background:on?col+"1A":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?15:14,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
                   <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
                   {c}
-                  <span style={{fontSize:14,fontFamily:FONTS.mono,color:on?col+"88":"#303038"}}>{n}</span>
                   {on&&<Check size={13}/>}
                 </div>
               );
@@ -256,17 +276,17 @@ export default function App() {
         <Section label="Output Tier" active={tiers.size}>
           <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
             {allTiers.map(t=>{
-              const on=tiers.has(t); const col=TIER_COLORS[t];
-              const n=FIXTURES.filter(f=>f.tier===t).length;
+              const on=tiers.has(t);
+              const col=TIER_COLORS[t];
               return(
                 <div key={t} className="chip" onClick={()=>toggle(tiers,setTiers,t)}
-                  style={{display:"flex",flexDirection:"column",alignItems:"flex-start",padding:isMobile?"7px 12px":"8px 14px",background:on?col+"1A":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:10}}>
-                  <div style={{display:"flex",alignItems:"center",gap:8,fontSize:isMobile?16:17,fontWeight:600,color:on?col:COLORS.textSecondary}}>
+                  style={{display:"flex",flexDirection:"column",alignItems:"flex-start",padding:isMobile?"7px 12px":"8px 14px",background:on?col+"1A":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8,fontSize:isMobile?15:14,fontWeight:600,color:on?col:COLORS.textSecondary}}>
                     <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
                     {t}
                     {on&&<Check size={13}/>}
                   </div>
-                  <div style={{fontSize:12,fontFamily:FONTS.mono,color:on?col+"88":"#303038",marginTop:3,marginLeft:16}}>{TIER_DESC[t]} · {n}</div>
+                  <div style={{fontSize:12,fontFamily:FONTS.mono,color:on?col+"CC":COLORS.textMuted,marginTop:3,marginLeft:16}}>{TIER_DESC[t]}</div>
                 </div>
               );
             })}
@@ -278,13 +298,11 @@ export default function App() {
           <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
             {FEAT_FILTERS.map(({key,label,icon,color,field})=>{
               const on=feats.has(key);
-              const n=FIXTURES.filter(field).length;
               return(
                 <div key={key} className="chip" onClick={()=>toggle(feats,setFeats,key)}
-                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 18px",background:on?color+"1A":COLORS.bgElevated,border:`1.5px solid ${on?color:COLORS.borderDefault}`,borderRadius:10,fontSize:isMobile?16:17,fontWeight:600,color:on?color:COLORS.textSecondary}}>
+                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 16px",background:on?color+"1A":COLORS.bgElevated,border:`1.5px solid ${on?color:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?15:14,fontWeight:600,color:on?color:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
                   {icon}
                   {label}
-                  <span style={{fontSize:14,fontFamily:FONTS.mono,color:on?color+"88":"#303038"}}>{n}</span>
                   {on&&<Check size={13}/>}
                 </div>
               );
@@ -294,33 +312,36 @@ export default function App() {
 
         {/* ── BRAND ── */}
         <Section label="Brand" active={brands.size}>
-          <div className="no-scrollbar" style={{display:"flex",gap:7,overflowX:"auto",paddingBottom:2}}>
-            {allBrands.map(b=>{
-              const on=brands.has(b);
-              const n=FIXTURES.filter(f=>f.brand===b).length;
-              return(
-                <div key={b} className="brand-pill" onClick={()=>toggle(brands,setBrands,b)}
-                  style={{display:"flex",alignItems:"center",gap:5,padding:"8px 13px",background:on?"#E8B3391A":COLORS.bgElevated,border:`1.5px solid ${on?COLORS.actionAmber:COLORS.borderDefault}`,borderRadius:8,fontSize:17,fontWeight:600,color:on?COLORS.actionAmber:COLORS.textSecondary,flexShrink:0}}>
-                  {b}
-                  <span style={{fontSize:13,fontFamily:FONTS.mono,color:on?"#E8B33966":"#6E6E7C"}}>{n}</span>
-                  {on&&<Check size={11}/>}
-                </div>
-              );
-            })}
+          <div style={{position:"relative"}}>
+            <div className="no-scrollbar" style={{display:"flex",gap:7,overflowX:"auto",paddingBottom:2,WebkitMaskImage:"linear-gradient(to right, transparent 0, black 16px, black calc(100% - 16px), transparent 100%)",maskImage:"linear-gradient(to right, transparent 0, black 16px, black calc(100% - 16px), transparent 100%)"}}>
+              {allBrands.map(b=>{
+                const on=brands.has(b);
+                const n=FIXTURES.filter(f=>f.brand===b).length;
+                return(
+                  <div key={b} className="brand-pill" onClick={()=>toggle(brands,setBrands,b)}
+                    style={{display:"flex",alignItems:"center",gap:6,padding:"7px 11px",background:on?COLORS.standoutCyanBg:COLORS.bgElevated,border:`1.5px solid ${on?COLORS.standoutCyan:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:14,fontWeight:600,color:on?COLORS.standoutCyan:COLORS.brandPeriwinkle,flexShrink:0,fontFamily:FONTS.mono,letterSpacing:".03em",textTransform:"uppercase",cursor:"pointer"}}>
+                    <div style={{width:14,height:14,borderRadius:3,background:COLORS.brandLogoBg,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,fontWeight:700,color:COLORS.textMuted}}>{b[0]}</div>
+                    {b}
+                    <span style={{fontSize:11,fontFamily:FONTS.mono,color:on?COLORS.standoutCyan+"AA":COLORS.textDim,fontWeight:500}}>{n}</span>
+                    {on&&<Check size={11}/>}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </Section>
 
         {/* ── MORE FILTERS ── */}
         <div style={{marginBottom:22}}>
           <div onClick={()=>setMoreOpen(o=>!o)}
-            style={{display:"inline-flex",alignItems:"center",gap:7,cursor:"pointer",fontSize:17,color:moreOpen||moreCount>0?COLORS.textPrimary:COLORS.textSecondary,fontWeight:600,letterSpacing:".01em"}}>
+            style={{display:"inline-flex",alignItems:"center",gap:7,cursor:"pointer",fontSize:14,color:moreOpen||moreCount>0?COLORS.textPrimary:COLORS.textSecondary,fontWeight:600,letterSpacing:".01em",fontFamily:FONTS.ui}}>
             <SlidersHorizontal size={14}/>
             More filters
-            {moreCount>0&&<span style={{background:COLORS.actionAmber,color:COLORS.bgBase,borderRadius:8,padding:"1px 7px",fontSize:14,fontWeight:700}}>{moreCount}</span>}
+            {moreCount>0&&<span style={{background:COLORS.actionAmber,color:COLORS.bgBase,borderRadius:RADIUS.sm,padding:"1px 7px",fontSize:12,fontWeight:700,fontFamily:FONTS.ui}}>{moreCount}</span>}
             {moreOpen?<ChevronUp size={13}/>:<ChevronDown size={13}/>}
           </div>
           {moreOpen&&(
-            <div className="expand-in" style={{marginTop:12,padding:"16px 18px",background:COLORS.bgElevated,border:"1px solid #1C1C22",borderRadius:12}}>
+            <div className="expand-in" style={{marginTop:12,padding:"16px 18px",background:COLORS.bgElevated,border:`1px solid ${COLORS.borderSubtle}`,borderRadius:RADIUS.xl}}>
               <SubGroup label="CRI">
                 <div style={{display:"flex",gap:7}}>
                   {[{l:"90+",m:90},{l:"80+",m:80},{l:"70+",m:70}].map(b=>(
@@ -344,12 +365,32 @@ export default function App() {
 
         {/* ── RESULTS ── */}
         {!hasFilter ? <EmptyState/> : filtered.length===0 ? (
-          <div style={{textAlign:"center",padding:"70px 20px",color:COLORS.textSecondary}}>
-            <div style={{fontSize:17,fontWeight:700,marginBottom:10}}>No fixtures match</div>
-            <button onClick={clearAll} style={{padding:"9px 18px",background:COLORS.bgElevated,border:"1px solid #222228",borderRadius:8,color:COLORS.textSecondary,fontSize:16,cursor:"pointer",fontFamily:FONTS.ui,fontWeight:600}}>Clear filters</button>
-          </div>
+          <>
+            {(watchingFilterActive || activeChips.length > 0) && (
+              <ActiveFilterBar
+                chips={activeChips}
+                resultCount={filtered.length}
+                onClear={clearAll}
+                watchingActive={watchingFilterActive}
+                onExitWatching={()=>setWatchingFilterActive(false)}
+              />
+            )}
+            <div style={{textAlign:"center",padding:"70px 20px",color:COLORS.textSecondary}}>
+              <div style={{fontSize:17,fontWeight:700,marginBottom:10}}>No fixtures match</div>
+              <button onClick={clearAll} style={{padding:"9px 18px",background:COLORS.bgElevated,border:`1px solid ${COLORS.borderDefault}`,borderRadius:RADIUS.md,color:COLORS.textSecondary,fontSize:16,cursor:"pointer",fontFamily:FONTS.ui,fontWeight:600}}>Clear filters</button>
+            </div>
+          </>
         ) : (
           <>
+            {(watchingFilterActive || activeChips.length > 0) && (
+              <ActiveFilterBar
+                chips={activeChips}
+                resultCount={filtered.length}
+                onClear={clearAll}
+                watchingActive={watchingFilterActive}
+                onExitWatching={()=>setWatchingFilterActive(false)}
+              />
+            )}
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
               <div style={{fontSize:16,color:COLORS.textSecondary}}>
                 <span style={{color:COLORS.textPrimary,fontWeight:700,fontSize:17}}>{filtered.length}</span> results
@@ -405,10 +446,10 @@ export default function App() {
 
 function Section({label,active,children}){
   return(
-    <div style={{marginBottom:20}}>
-      <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
-        <span style={{fontSize:16,fontWeight:700,color:active>0?COLORS.textPrimary:COLORS.textSecondary,letterSpacing:"-.01em"}}>{label}</span>
-        {active>0&&<span style={{fontSize:14,fontFamily:FONTS.mono,background:"#E8B3391A",color:COLORS.actionAmber,padding:"2px 8px",borderRadius:6,fontWeight:600,letterSpacing:".03em"}}>{active} active</span>}
+    <div style={{marginBottom:18}}>
+      <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:9}}>
+        <span style={{fontFamily:FONTS.ui,fontSize:12,fontWeight:700,color:COLORS.textMuted,letterSpacing:".08em",textTransform:"uppercase"}}>{label}</span>
+        {active>0&&<span style={{fontFamily:FONTS.mono,fontSize:11,background:COLORS.actionAmberBg,color:COLORS.actionAmber,padding:"1px 6px",borderRadius:4,fontWeight:600,letterSpacing:".03em"}}>{active}</span>}
       </div>
       {children}
     </div>
@@ -418,7 +459,7 @@ function Section({label,active,children}){
 function SubGroup({label,children}){
   return(
     <div style={{marginBottom:14}}>
-      <div style={{fontSize:14,fontWeight:600,color:"#8A8A98",letterSpacing:".1em",textTransform:"uppercase",fontFamily:FONTS.mono,marginBottom:8}}>{label}</div>
+      <div style={{fontSize:11,fontWeight:600,color:COLORS.textMuted,letterSpacing:".1em",textTransform:"uppercase",fontFamily:FONTS.mono,marginBottom:8}}>{label}</div>
       {children}
     </div>
   );
@@ -427,7 +468,7 @@ function SubGroup({label,children}){
 function MiniPill({active,onClick,children,dot}){
   return(
     <div className="chip" onClick={onClick}
-      style={{display:"inline-flex",alignItems:"center",gap:6,padding:"7px 12px",background:active?"#E8B3391A":"transparent",border:`1px solid ${active?COLORS.actionAmber:COLORS.borderDefault}`,borderRadius:7,fontSize:17,color:active?COLORS.actionAmber:"#AEAEBA",fontWeight:600,cursor:"pointer"}}>
+      style={{display:"inline-flex",alignItems:"center",gap:6,padding:"7px 12px",background:active?COLORS.actionAmberBg:"transparent",border:`1px solid ${active?COLORS.actionAmber:COLORS.borderDefault}`,borderRadius:RADIUS.sm,fontSize:13,color:active?COLORS.actionAmber:COLORS.textSecondary,fontWeight:600,cursor:"pointer",fontFamily:FONTS.ui}}>
       {dot&&<span style={{width:7,height:7,borderRadius:"50%",background:dot}}/>}
       {children}
       {active&&<Check size={11}/>}
@@ -435,11 +476,41 @@ function MiniPill({active,onClick,children,dot}){
   );
 }
 
+function ActiveFilterBar({chips, resultCount, onClear, watchingActive, onExitWatching}){
+  return(
+    <div style={{position:"sticky",top:0,zIndex:10,background:COLORS.activeBarBg,border:`1px solid ${COLORS.activeBarBorder}`,borderRadius:RADIUS.lg,padding:"10px 14px",marginBottom:14,display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
+      <span style={{fontFamily:FONTS.mono,fontSize:11,color:COLORS.textMuted,fontWeight:600,letterSpacing:".08em",textTransform:"uppercase"}}>Filtering</span>
+
+      {watchingActive && (
+        <div style={{display:"inline-flex",alignItems:"center",gap:6,padding:"4px 10px",background:COLORS.actionAmber,color:COLORS.bgBase,borderRadius:RADIUS.sm,fontFamily:FONTS.ui,fontSize:13,fontWeight:600}}>
+          <Star size={12} fill={COLORS.bgBase}/>
+          Watching
+          <X size={12} onClick={onExitWatching} style={{cursor:"pointer",marginLeft:2}}/>
+        </div>
+      )}
+
+      {chips.map(c=>(
+        <div key={c.key} style={{display:"inline-flex",alignItems:"center",gap:6,padding:"4px 10px",background:COLORS.bgElevated,border:`1px solid ${COLORS.borderDefault}`,borderRadius:RADIUS.sm,fontFamily:FONTS.ui,fontSize:13,color:COLORS.textPrimary}}>
+          <span>{c.label}</span>
+          <X size={12} onClick={c.onRemove} style={{cursor:"pointer",color:COLORS.textMuted}}/>
+        </div>
+      ))}
+
+      <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:14}}>
+        <span style={{fontFamily:FONTS.mono,fontSize:13,color:COLORS.textSecondary}}>
+          <span style={{color:COLORS.textPrimary,fontWeight:700}}>{resultCount}</span> results
+        </span>
+        <span onClick={onClear} style={{cursor:"pointer",fontFamily:FONTS.ui,fontSize:12,fontWeight:600,color:COLORS.textMuted,letterSpacing:".06em",textTransform:"uppercase"}}>Clear all</span>
+      </div>
+    </div>
+  );
+}
+
 function EmptyState(){
   return(
     <div style={{textAlign:"center",padding:"80px 20px"}}>
-      <div style={{fontSize:30,fontWeight:800,color:"#1C1C22",letterSpacing:"-.03em",marginBottom:10}}>Find a fixture</div>
-      <div style={{fontSize:17,color:"#8A8A98",lineHeight:1.7,maxWidth:400,margin:"0 auto",fontWeight:400}}>
+      <div style={{fontFamily:FONTS.display,fontSize:30,fontWeight:800,color:COLORS.borderSubtle,letterSpacing:"-.03em",marginBottom:10}}>Find a fixture</div>
+      <div style={{fontFamily:FONTS.ui,fontSize:15,color:COLORS.textMuted,lineHeight:1.7,maxWidth:400,margin:"0 auto",fontWeight:400}}>
         Pick an <span style={{color:APP_COLORS["Theater"],fontWeight:600}}>application</span>, <span style={{color:CAT_COLORS["Performance"],fontWeight:600}}>type</span>, or <span style={{color:TIER_COLORS["Large"],fontWeight:600}}>output tier</span> — or search by name.
       </div>
     </div>

@@ -87,6 +87,14 @@ export const COLORS = {
   // ── SPEC LABEL COLOR ────────────────────────────────────
   // Used in expanded card for "MAX OUTPUT", "FRAMING SHUTTERS", etc. labels
   specLabelAmber: "#C0A674",
+
+  // ── BRAND LOGO SLOT BACKGROUND ─────────────────────────
+  // Subtle dark surface for brand logo squares in the brand pill row
+  brandLogoBg: "#1C1C22",
+
+  // ── ACTIVE FILTER BAR (sticky) ─────────────────────────
+  activeBarBg:     "#0E0E11",
+  activeBarBorder: "#1F1F25",
 };
 
 // ── PALETTE GETTERS (for chip active states) ──────────────
