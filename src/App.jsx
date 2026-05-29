@@ -37,6 +37,12 @@ function catLabel(cat){
     default:               return (cat||"").toUpperCase();
   }
 }
+function catDisplayName(cat){
+  switch(cat){
+    case "Bar / Batten": return "Bar";
+    default:             return cat;
+  }
+}
 
 export default function App() {
   const [query,setQuery]       = useState("");
@@ -157,7 +163,7 @@ export default function App() {
     const chips = [];
     if(query) chips.push({key:"query", label:`"${query}"`, onRemove:()=>setQuery("")});
     apps.forEach(a => chips.push({key:`app-${a}`, label:a, onRemove:()=>{const n=new Set(apps); n.delete(a); setApps(n);}}));
-    cats.forEach(c => chips.push({key:`cat-${c}`, label:c, onRemove:()=>{const n=new Set(cats); n.delete(c); setCats(n);}}));
+    cats.forEach(c => chips.push({key:`cat-${c}`, label:catDisplayName(c), onRemove:()=>{const n=new Set(cats); n.delete(c); setCats(n);}}));
     tiers.forEach(t => chips.push({key:`tier-${t}`, label:t, onRemove:()=>{const n=new Set(tiers); n.delete(t); setTiers(n);}}));
     brands.forEach(b => chips.push({key:`brand-${b}`, label:b, onRemove:()=>{const n=new Set(brands); n.delete(b); setBrands(n);}}));
     feats.forEach(f => chips.push({key:`feat-${f}`, label:f, onRemove:()=>{const n=new Set(feats); n.delete(f); setFeats(n);}}));
@@ -194,10 +200,17 @@ export default function App() {
       {/* ── HEADER ── */}
       <div style={{background:COLORS.bgBase,borderBottom:"1px solid #18181C",position:"sticky",top:0,zIndex:50}}>
         <div style={{maxWidth:1180,margin:"0 auto",padding:isMobile?"12px 16px":"16px 28px",display:"flex",alignItems:"center",gap:14}}>
-          <div style={{flex:1}}>
-            <div style={{fontSize:isMobile?22:26,fontWeight:800,letterSpacing:"-.03em",lineHeight:1}}>Moving Light Database</div>
-            <div style={{fontSize:15,color:COLORS.textSecondary,fontFamily:FONTS.mono,marginTop:2,letterSpacing:".04em"}}>
-              {FIXTURES.length} FIXTURES · {allBrands.length} BRANDS
+          <div style={{flex:1,display:"flex",alignItems:"center",gap:12}}>
+            {/* Logo mark */}
+            <div style={{width:36,height:36,borderRadius:RADIUS.md,background:COLORS.bgElevated,border:`1px solid ${COLORS.borderDefault}`,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONTS.display,fontSize:15,fontWeight:800,color:COLORS.actionAmber,letterSpacing:"-.02em",flexShrink:0}}>
+              ML
+            </div>
+            {/* Wordmark + metadata */}
+            <div>
+              <div style={{fontSize:isMobile?22:26,fontWeight:800,letterSpacing:"-.03em",lineHeight:1}}>Moving Light Database</div>
+              <div style={{fontSize:15,color:COLORS.textSecondary,fontFamily:FONTS.mono,marginTop:2,letterSpacing:".04em"}}>
+                {FIXTURES.length} FIXTURES · {allBrands.length} BRANDS
+              </div>
             </div>
           </div>
           {!isMobile&&(
@@ -244,7 +257,7 @@ export default function App() {
               const Icon=APP_ICONS[a];
               return(
                 <div key={a} className="chip" onClick={()=>toggle(apps,setApps,a)}
-                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 16px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?15:14,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                  style={{display:"flex",alignItems:"center",gap:6,padding:isMobile?"8px 11px":"7px 12px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?14:13,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
                   {Icon&&<Icon size={15} strokeWidth={2}/>}
                   {a}
                   {on&&<Check size={13}/>}
@@ -262,9 +275,9 @@ export default function App() {
               const col=CAT_COLORS[c];
               return(
                 <div key={c} className="chip" onClick={()=>toggle(cats,setCats,c)}
-                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 16px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?15:14,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                  style={{display:"flex",alignItems:"center",gap:6,padding:isMobile?"8px 11px":"7px 12px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?14:13,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
                   <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
-                  {c}
+                  {catDisplayName(c)}
                   {on&&<Check size={13}/>}
                 </div>
               );
@@ -661,7 +674,7 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
                   {f.ipRated&&<span style={{fontSize:11,fontWeight:700,color:"#9D8DF1",background:"#9D8DF11A",padding:"3px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:FONTS.mono}}>{f.ipRating||"IP Rated"}</span>}
                 </div>
                 <div style={{fontFamily:FONTS.display,fontSize:isMobile?28:38,fontWeight:700,letterSpacing:"-.035em",lineHeight:1.05,color:COLORS.textPrimary}}>{clean(f.model)}</div>
-                <div style={{fontSize:14,fontWeight:600,color:COLORS.brandPeriwinkle,letterSpacing:".05em",textTransform:"uppercase",fontFamily:FONTS.mono,marginTop:8}}>{f.brand} · {f.category}</div>
+                <div style={{fontSize:14,fontWeight:600,color:COLORS.brandPeriwinkle,letterSpacing:".05em",textTransform:"uppercase",fontFamily:FONTS.mono,marginTop:8}}>{f.brand} · {catDisplayName(f.category)}</div>
                 {f.standout&&(
                   <div style={{display:"inline-flex",alignItems:"center",gap:7,marginTop:14,padding:"7px 11px",background:COLORS.standoutCyanBg,border:`1px solid ${COLORS.standoutCyanBorder}`,borderRadius:6,fontFamily:FONTS.ui,fontSize:13,fontWeight:500,color:COLORS.standoutCyanText,alignSelf:"flex-start"}}>
                     <span style={{width:5,height:5,borderRadius:"50%",background:COLORS.standoutCyan,flexShrink:0}}/>
@@ -729,7 +742,7 @@ function SB({label,value,wide,hl}){
 function CompareModal({items,onClose,onRemove,isMobile}){
   if(!items.length) return null;
   const fields=[
-    ["type","Type",f=>f.category],
+    ["type","Type",f=>catDisplayName(f.category)],
     ["apps","Applications",f=>(f.applications||[]).join(", ")||"\u2014"],
     ["framing","Framing",f=>f.framing?"Yes":"No"],
     ["output","Max Output",f=>f.outputLumens?fmt(f.outputLumens)+" lm":"\u2014",f=>f.outputLumens||0],
