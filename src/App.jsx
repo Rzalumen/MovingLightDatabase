@@ -497,7 +497,7 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
           </div>
           <div style={{textAlign:"right",paddingRight:8}}>
             {f.cri!=null
-              ?<span style={{fontSize:14,fontWeight:600,fontFamily:FONTS.mono,color:f.cri>=90?COLORS.successGreen:f.cri>=80?COLORS.actionAmber:COLORS.textSecondary}}>{f.cri}</span>
+              ?<span style={{fontSize:14,fontWeight:600,fontFamily:FONTS.mono,color:COLORS.textSecondary}}>{f.cri}</span>
               :<span style={{fontSize:14,color:COLORS.textGhost,fontFamily:FONTS.mono}}>{"\u2014"}</span>}
           </div>
           <div style={{textAlign:"right",paddingRight:8}}>
@@ -510,7 +510,7 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
           <div style={{textAlign:"right",paddingRight:6}}>
             <div style={{fontSize:13,fontFamily:FONTS.mono,color:"#DCDCE2"}}>{f.outputLumens?fmt(f.outputLumens):"\u2014"}<span style={{fontSize:10,color:COLORS.textGhost,marginLeft:1}}>lm</span></div>
             <div style={{display:"flex",gap:5,justifyContent:"flex-end",marginTop:3}}>
-              {f.cri!=null&&<span style={{fontSize:11,fontFamily:FONTS.mono,color:f.cri>=90?COLORS.successGreen:COLORS.textSecondary,fontWeight:600}}>CRI {f.cri}</span>}
+              {f.cri!=null&&<span style={{fontSize:11,fontFamily:FONTS.mono,color:COLORS.textSecondary,fontWeight:600}}>CRI {f.cri}</span>}
             </div>
           </div>
         )}
