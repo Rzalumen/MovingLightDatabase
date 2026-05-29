@@ -267,24 +267,6 @@ export default function App() {
           </div>
         </Section>
 
-        {/* ── TYPE ── */}
-        <Section label="Type" active={cats.size}>
-          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-            {allCats.map(c=>{
-              const on=cats.has(c);
-              const col=CAT_COLORS[c];
-              return(
-                <div key={c} className="chip" onClick={()=>toggle(cats,setCats,c)}
-                  style={{display:"flex",alignItems:"center",gap:6,padding:isMobile?"8px 11px":"7px 12px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?14:13,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
-                  <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
-                  {catDisplayName(c)}
-                  {on&&<Check size={13}/>}
-                </div>
-              );
-            })}
-          </div>
-        </Section>
-
         {/* ── OUTPUT TIER ── */}
         <Section label="Output Tier" active={tiers.size}>
           <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
@@ -300,6 +282,24 @@ export default function App() {
                     {on&&<Check size={13}/>}
                   </div>
                   <div style={{fontSize:12,fontFamily:FONTS.mono,color:on?col+"CC":COLORS.textMuted,marginTop:3,marginLeft:16}}>{TIER_DESC[t]}</div>
+                </div>
+              );
+            })}
+          </div>
+        </Section>
+
+        {/* ── TYPE ── */}
+        <Section label="Type" active={cats.size}>
+          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+            {allCats.map(c=>{
+              const on=cats.has(c);
+              const col=CAT_COLORS[c];
+              return(
+                <div key={c} className="chip" onClick={()=>toggle(cats,setCats,c)}
+                  style={{display:"flex",alignItems:"center",gap:6,padding:isMobile?"8px 11px":"7px 12px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?14:13,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                  <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
+                  {catDisplayName(c)}
+                  {on&&<Check size={13}/>}
                 </div>
               );
             })}
