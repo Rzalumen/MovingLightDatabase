@@ -489,7 +489,7 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
           </div>
           <div style={{textAlign:"right",paddingRight:8}}>
             {f.framing
-              ?<span style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:13,fontWeight:600,color:COLORS.successGreen,fontFamily:FONTS.mono}}><Scissors size={10}/> Yes</span>
+              ?<span style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:13,fontFamily:FONTS.mono,color:"#DCDCE2"}}><Scissors size={10}/> Yes</span>
               :<span style={{fontSize:13,color:COLORS.textGhost,fontFamily:FONTS.mono}}>{"\u2014"}</span>}
           </div>
           <div style={{textAlign:"right",paddingRight:8}}>
@@ -719,20 +719,13 @@ function CompareModal({items,onClose,onRemove,isMobile}){
               </tr>
             </thead>
             <tbody>
-              {fields.map(([key,label,render,scoreFn],ri)=>{
-                let bestId=null;
-                if(scoreFn&&items.length>1){
-                  let bv=-Infinity;
-                  items.forEach(f=>{const s=scoreFn(f);if(s>bv){bv=s;bestId=f.id;}});
-                  if(bv<=0&&key!=="zoomMin"&&key!=="weight") bestId=null;
-                }
+              {fields.map(([key,label,render],ri)=>{
                 return(
                   <tr key={key} style={{background:ri%2?COLORS.bgElevated:"transparent"}}>
-                    <td style={{position:"sticky",left:0,background:ri%2?COLORS.bgElevated:"#0C0C0E",padding:isMobile?"10px 12px":"11px 18px",fontSize:14,color:COLORS.specLabelAmber,fontWeight:600,textTransform:"uppercase",letterSpacing:".06em",fontFamily:FONTS.mono,zIndex:1}}>{label}</td>
+                    <td style={{position:"sticky",left:0,background:ri%2?COLORS.bgElevated:COLORS.bgRow,padding:isMobile?"10px 12px":"11px 18px",fontFamily:FONTS.mono,fontSize:12,color:COLORS.specLabelAmber,fontWeight:600,textTransform:"uppercase",letterSpacing:".06em",zIndex:1}}>{label}</td>
                     {items.map(f=>(
-                      <td key={f.id} style={{padding:isMobile?"10px 12px":"11px 18px",fontSize:isMobile?14:15.5,borderLeft:"1px solid #18181C",color:bestId===f.id?"#6EE7A8":"#DCDCE2",fontWeight:bestId===f.id?700:400,whiteSpace:"pre-line",lineHeight:1.45,verticalAlign:"top"}}>
+                      <td key={f.id} style={{padding:isMobile?"10px 12px":"11px 18px",fontFamily:FONTS.mono,fontSize:isMobile?14:15,borderLeft:`1px solid ${COLORS.borderSubtle}`,color:COLORS.textSecondary,whiteSpace:"pre-line",lineHeight:1.45,verticalAlign:"top"}}>
                         {render(f)}
-                        {bestId===f.id&&<span style={{marginLeft:6,fontSize:13,background:"#6EE7A812",color:"#6EE7A8",padding:"1px 5px",borderRadius:4,fontWeight:700,whiteSpace:"nowrap"}}>BEST</span>}
                       </td>
                     ))}
                   </tr>
