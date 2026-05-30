@@ -55,7 +55,6 @@ export default function App() {
   const [lamps,setLamps]       = useState(new Set());
   const [criMin,setCriMin]     = useState(0);
   const [featAnim,setFeatAnim] = useState(false);
-  const [moreOpen,setMoreOpen] = useState(false);
   const [sortBy,setSortBy]     = useState("output-desc");
   const [expanded,setExpanded] = useState(new Set());
   const [compare,setCompare]   = useState([]);
@@ -64,7 +63,7 @@ export default function App() {
   const [watchingFilterActive,setWatchingFilterActive] = useState(false);
   const [showBrandPicker,setShowBrandPicker] = useState(false);
   const [showMobileMenu,setShowMobileMenu] = useState(false);
-  const [showFilterSheet,setShowFilterSheet] = useState(false);
+  const [moreFiltersExpanded,setMoreFiltersExpanded] = useState(false);
   const [watchlist,setWatchlist] = useState(()=>{
     try {
       const saved = localStorage.getItem("mld-watchlist");
@@ -89,11 +88,11 @@ export default function App() {
 
   // Lock background scroll when any mobile sheet is open
   useEffect(()=>{
-    const anyOpen = showBrandPicker || showMobileMenu || showFilterSheet;
+    const anyOpen = showBrandPicker || showMobileMenu;
     const prev = document.body.style.overflow;
     document.body.style.overflow = anyOpen ? "hidden" : prev || "";
     return()=>{ document.body.style.overflow = prev || ""; };
-  },[showBrandPicker,showMobileMenu,showFilterSheet]);
+  },[showBrandPicker,showMobileMenu]);
 
   const allBrands = useMemo(()=>[...new Set(FIXTURES.map(f=>f.brand))].sort(),[]);
   const allCats   = ["Performance","Spot","Wash","Bar / Batten"];
@@ -248,9 +247,9 @@ export default function App() {
           )}
           {isMobile&&(
             <button onClick={()=>setShowMobileMenu(true)}
-              style={{marginLeft:"auto",display:"flex",alignItems:"center",justifyContent:"center",width:40,height:40,background:"transparent",border:`1px solid ${COLORS.borderDefault}`,borderRadius:RADIUS.md,position:"relative",cursor:"pointer",flexShrink:0,padding:0}}>
-              <Menu size={20} color={COLORS.textSecondary}/>
-              {(watchingFilterActive || compare.length > 0 || activeChips.length > 0) && (
+              style={{marginLeft:"auto",display:"flex",alignItems:"center",justifyContent:"center",width:38,height:38,background:COLORS.bgElevated,border:`1px solid ${COLORS.borderDefault}`,borderRadius:RADIUS.md,position:"relative",cursor:"pointer",flexShrink:0,padding:0,color:COLORS.textSecondary}}>
+              <Menu size={20}/>
+              {(watchingFilterActive || compare.length > 0 || watchlist.size > 0) && (
                 <span style={{position:"absolute",top:-3,right:-3,width:10,height:10,borderRadius:"50%",background:COLORS.actionAmber,border:`2px solid ${COLORS.bgBase}`}}/>
               )}
             </button>
@@ -260,216 +259,181 @@ export default function App() {
 
       <div style={{maxWidth:1180,margin:"0 auto",padding:isMobile?"16px 16px 100px":"22px 28px 48px"}}>
 
-        {/* ── FILTER CONTENT (shared by desktop inline + mobile sheet) ── */}
-        {(() => {
-          const filterContent = (
-            <>
-              {/* Search */}
-              <div style={{position:"relative",marginBottom:22}}>
-                <Search size={17} color="#7E7E8C" style={{position:"absolute",left:14,top:"50%",transform:"translateY(-50%)"}}/>
-                <input value={query} onChange={e=>setQuery(e.target.value)}
-                  placeholder="Search fixture, brand, or feature..."
-                  style={{width:"100%",padding:isMobile?"13px 40px":"14px 44px",background:COLORS.bgElevated,border:"1px solid #222228",borderRadius:11,color:COLORS.textPrimary,fontSize:isMobile?18:17,outline:"none",fontFamily:FONTS.ui,fontWeight:400}}/>
-                {query&&<X size={16} onClick={()=>setQuery("")} style={{position:"absolute",right:13,top:"50%",transform:"translateY(-50%)",color:"#7E7E8C",cursor:"pointer"}}/>}
-              </div>
+        {/* ── ALWAYS-VISIBLE FILTERS ── */}
 
-              {/* Application */}
-              <Section label="Application" active={apps.size}>
-                <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-                  {APP_ORDER.map(a=>{
-                    const on=apps.has(a);
-                    const col=APP_COLORS[a];
-                    const Icon=APP_ICONS[a];
-                    return(
-                      <div key={a} className="chip" onClick={()=>toggle(apps,setApps,a)}
-                        style={{display:"flex",alignItems:"center",gap:6,padding:isMobile?"8px 11px":"7px 12px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?14:13,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
-                        {Icon&&<Icon size={15} strokeWidth={2}/>}
-                        {a}
-                        {on&&<Check size={13}/>}
-                      </div>
-                    );
-                  })}
+        {/* Search */}
+        <div style={{position:"relative",marginBottom:22}}>
+          <Search size={17} color="#7E7E8C" style={{position:"absolute",left:14,top:"50%",transform:"translateY(-50%)"}}/>
+          <input value={query} onChange={e=>setQuery(e.target.value)}
+            placeholder="Search fixture, brand, or feature..."
+            style={{width:"100%",padding:isMobile?"13px 40px":"14px 44px",background:COLORS.bgElevated,border:"1px solid #222228",borderRadius:11,color:COLORS.textPrimary,fontSize:isMobile?18:17,outline:"none",fontFamily:FONTS.ui,fontWeight:400}}/>
+          {query&&<X size={16} onClick={()=>setQuery("")} style={{position:"absolute",right:13,top:"50%",transform:"translateY(-50%)",color:"#7E7E8C",cursor:"pointer"}}/>}
+        </div>
+
+        {/* Application */}
+        <Section label="Application" active={apps.size}>
+          <div style={{display:"flex",gap:isMobile?6:8,flexWrap:"wrap"}}>
+            {APP_ORDER.map(a=>{
+              const on=apps.has(a);
+              const col=APP_COLORS[a];
+              const Icon=APP_ICONS[a];
+              return(
+                <div key={a} className="chip" onClick={()=>toggle(apps,setApps,a)}
+                  style={{display:"flex",alignItems:"center",gap:5,padding:isMobile?"7px 10px":"7px 12px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?13:13,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                  {Icon&&<Icon size={14} strokeWidth={2}/>}
+                  {a}
+                  {on&&<Check size={12}/>}
                 </div>
-              </Section>
+              );
+            })}
+          </div>
+        </Section>
 
-              {/* Output Tier */}
-              <Section label="Output Tier" active={tiers.size}>
-                <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-                  {allTiers.map(t=>{
-                    const on=tiers.has(t);
-                    const col=TIER_COLORS[t];
-                    return(
-                      <div key={t} className="chip" onClick={()=>toggle(tiers,setTiers,t)}
-                        style={{display:"flex",flexDirection:"column",alignItems:"flex-start",padding:isMobile?"7px 12px":"8px 14px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontFamily:FONTS.ui,cursor:"pointer"}}>
-                        <div style={{display:"flex",alignItems:"center",gap:8,fontSize:isMobile?15:14,fontWeight:600,color:on?col:COLORS.textSecondary}}>
-                          <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
-                          {t}
-                          {on&&<Check size={13}/>}
-                        </div>
-                        <div style={{fontSize:12,fontFamily:FONTS.mono,color:on?col+"CC":COLORS.textMuted,marginTop:3,marginLeft:16}}>{TIER_DESC[t]}</div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </Section>
-
-              {/* Type */}
-              <Section label="Type" active={cats.size}>
-                <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-                  {allCats.map(c=>{
-                    const on=cats.has(c);
-                    const col=CAT_COLORS[c];
-                    return(
-                      <div key={c} className="chip" onClick={()=>toggle(cats,setCats,c)}
-                        style={{display:"flex",alignItems:"center",gap:6,padding:isMobile?"8px 11px":"7px 12px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?14:13,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
-                        <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
-                        {catDisplayName(c)}
-                        {on&&<Check size={13}/>}
-                      </div>
-                    );
-                  })}
-                </div>
-              </Section>
-
-              {/* Features */}
-              <Section label="Features" active={feats.size}>
-                <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-                  {FEAT_FILTERS.map(({key,label,icon,color,field})=>{
-                    const on=feats.has(key);
-                    return(
-                      <div key={key} className="chip" onClick={()=>toggle(feats,setFeats,key)}
-                        style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 16px",background:on?color+"33":COLORS.bgElevated,border:`1.5px solid ${on?color:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?15:14,fontWeight:600,color:on?color:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
-                        {icon}
-                        {label}
-                        {on&&<Check size={13}/>}
-                      </div>
-                    );
-                  })}
-                </div>
-              </Section>
-
-              {/* Brand — main brands + "+N more" */}
-              <Section label="Brand" active={brands.size}>
-                <div style={{display:"flex",flexWrap:"wrap",gap:7}}>
-                  {MAIN_BRANDS.map(b=>{
-                    const on=brands.has(b);
-                    const n=FIXTURES.filter(f=>f.brand===b).length;
-                    if(n===0) return null;
-                    return(
-                      <div key={b} className="brand-pill" onClick={()=>toggle(brands,setBrands,b)}
-                        style={{display:"flex",alignItems:"center",gap:6,padding:"7px 11px",background:on?COLORS.standoutCyanBg:COLORS.bgElevated,border:`1.5px solid ${on?COLORS.standoutCyan:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:14,fontWeight:600,color:on?COLORS.standoutCyan:COLORS.brandPeriwinkle,flexShrink:0,fontFamily:FONTS.mono,letterSpacing:".03em",textTransform:"uppercase",cursor:"pointer"}}>
-                        <div style={{width:14,height:14,borderRadius:3,background:COLORS.brandLogoBg,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,fontWeight:700,color:COLORS.textMuted}}>{b[0]}</div>
-                        {b}
-                        <span style={{fontSize:11,fontFamily:FONTS.mono,color:on?COLORS.standoutCyan+"AA":COLORS.textDim,fontWeight:500}}>{n}</span>
-                        {on&&<Check size={11}/>}
-                      </div>
-                    );
-                  })}
-
-                  {(() => {
-                    const otherCount = allBrands.filter(b => !MAIN_BRANDS.includes(b)).length;
-                    if(otherCount === 0) return null;
-                    const hiddenSelected = [...brands].some(b => !MAIN_BRANDS.includes(b));
-                    return (
-                      <div className="brand-pill" onClick={()=>setShowBrandPicker(true)}
-                        style={{display:"flex",alignItems:"center",gap:6,padding:"7px 11px",background:hiddenSelected?COLORS.standoutCyanBg:COLORS.bgElevated,border:`1.5px solid ${hiddenSelected?COLORS.standoutCyan:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:14,fontWeight:600,color:hiddenSelected?COLORS.standoutCyan:COLORS.textSecondary,flexShrink:0,fontFamily:FONTS.ui,cursor:"pointer"}}>
-                        <Plus size={13}/>
-                        {otherCount} more
-                      </div>
-                    );
-                  })()}
-                </div>
-              </Section>
-
-              {/* More filters */}
-              <div style={{marginBottom:22}}>
-                <div onClick={()=>setMoreOpen(o=>!o)}
-                  style={{display:"inline-flex",alignItems:"center",gap:7,cursor:"pointer",fontSize:14,color:moreOpen||moreCount>0?COLORS.textPrimary:COLORS.textSecondary,fontWeight:600,letterSpacing:".01em",fontFamily:FONTS.ui}}>
-                  <SlidersHorizontal size={14}/>
-                  More filters
-                  {moreCount>0&&<span style={{background:COLORS.actionAmber,color:COLORS.bgBase,borderRadius:RADIUS.sm,padding:"1px 7px",fontSize:12,fontWeight:700,fontFamily:FONTS.ui}}>{moreCount}</span>}
-                  {moreOpen?<ChevronUp size={13}/>:<ChevronDown size={13}/>}
-                </div>
-                {moreOpen&&(
-                  <div className="expand-in" style={{marginTop:12,padding:"16px 18px",background:COLORS.bgElevated,border:`1px solid ${COLORS.borderSubtle}`,borderRadius:RADIUS.xl}}>
-                    <SubGroup label="CRI">
-                      <div style={{display:"flex",gap:7}}>
-                        {[{l:"90+",m:90},{l:"80+",m:80},{l:"70+",m:70}].map(b=>(
-                          <MiniPill key={b.l} active={criMin===b.m} onClick={()=>setCriMin(criMin===b.m?0:b.m)}>CRI {b.l}</MiniPill>
-                        ))}
-                      </div>
-                    </SubGroup>
-                    <SubGroup label="Light Source">
-                      <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
-                        {allLamps.map(l=>(
-                          <MiniPill key={l} active={lamps.has(l)} onClick={()=>toggle(lamps,setLamps,l)} dot={LAMP_COLORS[l]}>{l}</MiniPill>
-                        ))}
-                      </div>
-                    </SubGroup>
-                    <SubGroup label="Other">
-                      <MiniPill active={featAnim} onClick={()=>setFeatAnim(v=>!v)}>Animation wheel</MiniPill>
-                    </SubGroup>
+        {/* Output Tier */}
+        <Section label="Output Tier" active={tiers.size}>
+          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+            {allTiers.map(t=>{
+              const on=tiers.has(t);
+              const col=TIER_COLORS[t];
+              return(
+                <div key={t} className="chip" onClick={()=>toggle(tiers,setTiers,t)}
+                  style={{display:"flex",flexDirection:"column",alignItems:"flex-start",padding:isMobile?"7px 12px":"8px 14px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8,fontSize:isMobile?15:14,fontWeight:600,color:on?col:COLORS.textSecondary}}>
+                    <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
+                    {t}
+                    {on&&<Check size={13}/>}
                   </div>
-                )}
-              </div>
-            </>
-          );
-
-          if(!isMobile){
-            // Desktop: render filter content inline as before
-            return <div className="filter-area">{filterContent}</div>;
-          }
-
-          // Mobile: a "Filters" pill that opens a bottom sheet
-          return (
-            <>
-              <div onClick={()=>setShowFilterSheet(true)}
-                style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"11px 16px",background:COLORS.bgElevated,border:`1px solid ${activeChips.length>0?COLORS.actionAmber:COLORS.borderDefault}`,borderRadius:RADIUS.lg,marginBottom:14,fontFamily:FONTS.ui,fontSize:15,fontWeight:600,color:COLORS.textPrimary,cursor:"pointer"}}>
-                <SlidersHorizontal size={15} color={activeChips.length>0?COLORS.actionAmber:COLORS.textSecondary}/>
-                <span>Filters</span>
-                {activeChips.length>0 && (
-                  <span style={{fontFamily:FONTS.mono,fontSize:12,background:COLORS.actionAmber,color:COLORS.bgBase,padding:"1px 7px",borderRadius:4,fontWeight:700}}>{activeChips.length}</span>
-                )}
-              </div>
-
-              {showFilterSheet && (
-                <div onClick={()=>setShowFilterSheet(false)}
-                  style={{position:"fixed",inset:0,background:COLORS.sheetOverlay,zIndex:100,display:"flex",alignItems:"flex-end"}}>
-                  <div onClick={e=>e.stopPropagation()} className="slide-up"
-                    style={{background:COLORS.sheetSurface,width:"100%",height:"92dvh",maxHeight:"92dvh",borderTopLeftRadius:RADIUS.xl,borderTopRightRadius:RADIUS.xl,display:"flex",flexDirection:"column",border:`1px solid ${COLORS.borderSubtle}`}}>
-
-                    {/* Sheet header */}
-                    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px 20px",borderBottom:`1px solid ${COLORS.borderSubtle}`,flexShrink:0}}>
-                      <div style={{fontFamily:FONTS.display,fontSize:19,fontWeight:700,color:COLORS.textPrimary,letterSpacing:"-.01em"}}>Filters</div>
-                      <div style={{display:"flex",alignItems:"center",gap:14}}>
-                        {activeChips.length>0 && (
-                          <span onClick={clearAll} style={{cursor:"pointer",fontFamily:FONTS.ui,fontSize:12,fontWeight:600,color:COLORS.textMuted,letterSpacing:".06em",textTransform:"uppercase"}}>Clear all</span>
-                        )}
-                        <X size={22} onClick={()=>setShowFilterSheet(false)} style={{cursor:"pointer",color:COLORS.textMuted}}/>
-                      </div>
-                    </div>
-
-                    {/* Scrollable filter content */}
-                    <div style={{overflowY:"auto",padding:"16px 20px",flex:1,WebkitOverflowScrolling:"touch"}}>
-                      {filterContent}
-                    </div>
-
-                    {/* Sticky footer */}
-                    <div style={{padding:"14px 20px",borderTop:`1px solid ${COLORS.borderSubtle}`,background:COLORS.bgElevated,flexShrink:0}}>
-                      <button onClick={()=>setShowFilterSheet(false)}
-                        style={{width:"100%",padding:"14px",background:COLORS.actionAmber,color:COLORS.bgBase,border:"none",borderRadius:RADIUS.lg,fontFamily:FONTS.ui,fontSize:16,fontWeight:700,cursor:"pointer"}}>
-                        Show {filtered.length} fixture{filtered.length===1?"":"s"}
-                      </button>
-                    </div>
-                  </div>
+                  <div style={{fontSize:12,fontFamily:FONTS.mono,color:on?col+"CC":COLORS.textMuted,marginTop:3,marginLeft:16}}>{TIER_DESC[t]}</div>
                 </div>
-              )}
-            </>
-          );
-        })()}
+              );
+            })}
+          </div>
+        </Section>
+
+        {/* Mobile-only "+ More filters" inline expand toggle */}
+        {isMobile && (
+          <button onClick={()=>setMoreFiltersExpanded(v=>!v)}
+            style={{display:"flex",alignItems:"center",justifyContent:"center",gap:7,padding:"10px 12px",background:"transparent",border:`1px dashed ${COLORS.borderDefault}`,borderRadius:RADIUS.md,fontFamily:FONTS.ui,fontSize:13,fontWeight:600,color:COLORS.textMuted,width:"100%",marginTop:6,marginBottom:14,cursor:"pointer"}}>
+            <SlidersHorizontal size={14}/>
+            More filters
+            {(cats.size+feats.size+brands.size+moreCount)>0 && (
+              <span style={{background:COLORS.actionAmber,color:COLORS.bgBase,borderRadius:RADIUS.sm,padding:"1px 7px",fontSize:12,fontWeight:700,fontFamily:FONTS.ui}}>{cats.size+feats.size+brands.size+moreCount}</span>
+            )}
+            {moreFiltersExpanded ? <ChevronUp size={13}/> : <ChevronDown size={13}/>}
+          </button>
+        )}
+
+        {/* Gated block — Type, Features, Brand, Advanced.
+            Desktop: always rendered. Mobile: only when moreFiltersExpanded. */}
+        {(!isMobile || moreFiltersExpanded) && (
+          <div className={isMobile ? "expand-in" : undefined}>
+
+            {/* Type */}
+            <Section label="Type" active={cats.size}>
+              <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+                {allCats.map(c=>{
+                  const on=cats.has(c);
+                  const col=CAT_COLORS[c];
+                  return(
+                    <div key={c} className="chip" onClick={()=>toggle(cats,setCats,c)}
+                      style={{display:"flex",alignItems:"center",gap:6,padding:isMobile?"8px 11px":"7px 12px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?14:13,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                      <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
+                      {catDisplayName(c)}
+                      {on&&<Check size={13}/>}
+                    </div>
+                  );
+                })}
+              </div>
+            </Section>
+
+            {/* Features */}
+            <Section label="Features" active={feats.size}>
+              <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+                {FEAT_FILTERS.map(({key,label,icon,color,field})=>{
+                  const on=feats.has(key);
+                  return(
+                    <div key={key} className="chip" onClick={()=>toggle(feats,setFeats,key)}
+                      style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 16px",background:on?color+"33":COLORS.bgElevated,border:`1.5px solid ${on?color:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?15:14,fontWeight:600,color:on?color:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                      {icon}
+                      {label}
+                      {on&&<Check size={13}/>}
+                    </div>
+                  );
+                })}
+              </div>
+            </Section>
+
+            {/* Brand — main + "+N more" (both viewports) */}
+            <Section label="Brand" active={brands.size}>
+              <div style={{display:"flex",flexWrap:"wrap",gap:7}}>
+                {MAIN_BRANDS.map(b=>{
+                  const on=brands.has(b);
+                  const n=FIXTURES.filter(f=>f.brand===b).length;
+                  if(n===0) return null;
+                  return(
+                    <div key={b} className="brand-pill" onClick={()=>toggle(brands,setBrands,b)}
+                      style={{display:"flex",alignItems:"center",gap:6,padding:"7px 11px",background:on?COLORS.standoutCyanBg:COLORS.bgElevated,border:`1.5px solid ${on?COLORS.standoutCyan:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:14,fontWeight:600,color:on?COLORS.standoutCyan:COLORS.brandPeriwinkle,flexShrink:0,fontFamily:FONTS.mono,letterSpacing:".03em",textTransform:"uppercase",cursor:"pointer"}}>
+                      <div style={{width:14,height:14,borderRadius:3,background:COLORS.brandLogoBg,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,fontWeight:700,color:COLORS.textMuted}}>{b[0]}</div>
+                      {b}
+                      <span style={{fontSize:11,fontFamily:FONTS.mono,color:on?COLORS.standoutCyan+"AA":COLORS.textDim,fontWeight:500}}>{n}</span>
+                      {on&&<Check size={11}/>}
+                    </div>
+                  );
+                })}
+
+                {(() => {
+                  const others = allBrands.filter(b => !MAIN_BRANDS.includes(b));
+                  if(others.length === 0) return null;
+                  const otherCount = others.length;
+                  const hiddenSelectedCount = [...brands].filter(b => !MAIN_BRANDS.includes(b)).length;
+                  const hasHiddenSelection = hiddenSelectedCount > 0;
+                  return (
+                    <div className="brand-pill" onClick={()=>setShowBrandPicker(true)}
+                      style={{display:"flex",alignItems:"center",gap:6,padding:"7px 11px",background:hasHiddenSelection?COLORS.standoutCyanBg:COLORS.bgElevated,border:`1.5px solid ${hasHiddenSelection?COLORS.standoutCyan:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:14,fontWeight:600,color:hasHiddenSelection?COLORS.standoutCyan:COLORS.textSecondary,flexShrink:0,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                      <Plus size={13}/>
+                      {hasHiddenSelection ? `${hiddenSelectedCount} of ${otherCount} more` : `${otherCount} more`}
+                    </div>
+                  );
+                })()}
+              </div>
+            </Section>
+
+            {/* Advanced — CRI, Light Source, Animation (unified inline, no nested expand) */}
+            <Section label="Advanced" active={moreCount}>
+              <SubGroup label="CRI">
+                <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+                  {[{l:"90+",m:90},{l:"80+",m:80},{l:"70+",m:70}].map(b=>(
+                    <MiniPill key={b.l} active={criMin===b.m} onClick={()=>setCriMin(criMin===b.m?0:b.m)}>CRI {b.l}</MiniPill>
+                  ))}
+                </div>
+              </SubGroup>
+              <SubGroup label="Light Source">
+                <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+                  {allLamps.map(l=>(
+                    <MiniPill key={l} active={lamps.has(l)} onClick={()=>toggle(lamps,setLamps,l)} dot={LAMP_COLORS[l]}>{l}</MiniPill>
+                  ))}
+                </div>
+              </SubGroup>
+              <SubGroup label="Other">
+                <MiniPill active={featAnim} onClick={()=>setFeatAnim(v=>!v)}>Animation wheel</MiniPill>
+              </SubGroup>
+            </Section>
+
+          </div>
+        )}
+
+        {/* Mobile helper text when no filter/search/watching active */}
+        {isMobile && !hasFilter && (
+          <div style={{textAlign:"center",padding:"24px 20px 12px"}}>
+            <div style={{fontFamily:FONTS.display,fontSize:22,fontWeight:800,color:COLORS.borderSubtle,letterSpacing:"-.03em",marginBottom:8}}>Find a fixture</div>
+            <div style={{fontFamily:FONTS.ui,fontSize:13,color:COLORS.textMuted,lineHeight:1.55,maxWidth:340,margin:"0 auto"}}>
+              Pick an <strong style={{color:APP_COLORS["Theater"],fontWeight:600}}>application</strong> or <strong style={{color:TIER_COLORS["Large"],fontWeight:600}}>output tier</strong> — or search by name.
+            </div>
+          </div>
+        )}
 
         {/* ── RESULTS ── */}
-        {!hasFilter ? <EmptyState/> : filtered.length===0 ? (
+        {!hasFilter ? (isMobile ? null : <EmptyState/>) : filtered.length===0 ? (
           <>
             {(watchingFilterActive || activeChips.length > 0) && (
               <ActiveFilterBar
@@ -901,27 +865,33 @@ function MobileMenu({open, onClose, watchingFilterActive, onToggleWatching, watc
 
         {/* Close button */}
         <div style={{display:"flex",justifyContent:"flex-end",marginBottom:20}}>
-          <X size={24} onClick={onClose} style={{cursor:"pointer",color:COLORS.textMuted}}/>
+          <X size={22} onClick={onClose} style={{cursor:"pointer",color:COLORS.textMuted}}/>
         </div>
+
+        {/* Workflows section header */}
+        <div style={{fontFamily:FONTS.mono,fontSize:10,color:COLORS.textMuted,letterSpacing:".1em",textTransform:"uppercase",marginBottom:10,fontWeight:700}}>Workflows</div>
 
         {/* Watching */}
         <div onClick={()=>{onToggleWatching();onClose();}}
           style={{display:"flex",alignItems:"center",gap:12,padding:"14px 12px",borderRadius:RADIUS.md,background:watchingFilterActive?COLORS.actionAmber:"transparent",border:`1px solid ${watchingFilterActive?COLORS.actionAmber:COLORS.borderDefault}`,cursor:"pointer",marginBottom:8}}>
-          <Star size={17} fill={watchingFilterActive?COLORS.bgBase:(watchlistSize?COLORS.actionAmber:"none")} color={watchingFilterActive?COLORS.bgBase:COLORS.actionAmber}/>
-          <span style={{fontFamily:FONTS.ui,fontSize:16,fontWeight:600,color:watchingFilterActive?COLORS.bgBase:COLORS.textPrimary,flex:1}}>Watching</span>
-          <span style={{fontFamily:FONTS.mono,fontSize:14,color:watchingFilterActive?COLORS.bgBase+"DD":COLORS.textMuted,fontWeight:600}}>{watchlistSize}</span>
+          <Star size={16} fill={watchingFilterActive?COLORS.bgBase:(watchlistSize?COLORS.actionAmber:"none")} color={watchingFilterActive?COLORS.bgBase:COLORS.actionAmber}/>
+          <span style={{fontFamily:FONTS.ui,fontSize:15,fontWeight:600,color:watchingFilterActive?COLORS.bgBase:COLORS.textPrimary,flex:1}}>Watching</span>
+          <span style={{fontFamily:FONTS.mono,fontSize:13,color:watchingFilterActive?COLORS.bgBase+"DD":COLORS.textMuted,fontWeight:600}}>{watchlistSize}</span>
         </div>
 
         {/* Compare */}
         <div onClick={()=>{if(compareCount){onOpenCompare();onClose();}}}
           style={{display:"flex",alignItems:"center",gap:12,padding:"14px 12px",borderRadius:RADIUS.md,background:"transparent",border:`1px solid ${compareCount?COLORS.actionAmber:COLORS.borderDefault}`,opacity:compareCount?1:0.5,cursor:compareCount?"pointer":"default",marginBottom:24}}>
-          <GitCompare size={17} color={compareCount?COLORS.actionAmber:COLORS.textMuted}/>
-          <span style={{fontFamily:FONTS.ui,fontSize:16,fontWeight:600,color:COLORS.textPrimary,flex:1}}>Compare</span>
-          <span style={{fontFamily:FONTS.mono,fontSize:14,color:COLORS.textMuted,fontWeight:600}}>{compareCount}/4</span>
+          <GitCompare size={16} color={compareCount?COLORS.actionAmber:COLORS.textMuted}/>
+          <span style={{fontFamily:FONTS.ui,fontSize:15,fontWeight:600,color:COLORS.textPrimary,flex:1}}>Compare</span>
+          <span style={{fontFamily:FONTS.mono,fontSize:13,color:COLORS.textMuted,fontWeight:600}}>{compareCount}/4</span>
         </div>
 
+        {/* Placeholder for future items */}
+        <div style={{fontFamily:FONTS.mono,fontSize:10,color:COLORS.textDim,letterSpacing:".1em",textTransform:"uppercase",fontWeight:700,marginTop:8}}>More coming soon</div>
+
         {/* Footer */}
-        <div style={{marginTop:"auto",fontFamily:FONTS.mono,fontSize:11,color:COLORS.textDim,letterSpacing:".05em",textTransform:"uppercase"}}>Moving Light Database</div>
+        <div style={{marginTop:"auto",fontFamily:FONTS.mono,fontSize:10,color:COLORS.textDim,letterSpacing:".05em",textTransform:"uppercase"}}>Moving Light Database</div>
       </div>
     </div>
   );
