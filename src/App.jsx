@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { Search, X, GitCompare, ChevronDown, ChevronUp, Check, Plus, Minus, ExternalLink, Scissors, SlidersHorizontal, Droplets, Wifi, Zap, Star, Menu, Sparkles } from "lucide-react";
+import { Search, X, GitCompare, ChevronDown, ChevronUp, Check, Plus, Minus, ExternalLink, Scissors, SlidersHorizontal, Wifi, Zap, Star, Menu, Sparkles } from "lucide-react";
 import { IconMasksTheater as Drama, IconMicrophone2 as Mic2, IconVideo as Video, IconBuilding as Building2 } from "@tabler/icons-react";
 
 import FIXTURES from "./fixtures.json";
@@ -20,11 +20,10 @@ const APP_ICONS = {
 };
 
 const FEAT_FILTERS = [
-  { key:"framing",   label:"Framing Shutters", mobileLabel:"Framing",   icon:<Scissors size={13}/>,  color:"#6EE7A8", field:f=>f.framing },
-  { key:"led",       label:"LED Source",        mobileLabel:"LED",       icon:<Zap size={13}/>,       color:"#6EE7A8", field:f=>f.lampType==="LED" },
-  { key:"dualFrost", label:"Dual Frost",        mobileLabel:"Frost",     icon:<Droplets size={13}/>,  color:"#4ECDC4", field:f=>f.dualFrost },
-  { key:"ipRated",   label:"IP Rated",          mobileLabel:"IP",        icon:<Wifi size={13}/>,      color:"#9D8DF1", field:f=>f.ipRated },
-  { key:"animation", label:"Animation Wheel",   mobileLabel:"Animation", icon:<Sparkles size={13}/>,  color:"#F2D466", field:f=>f.animationWheel },
+  { key:"framing",   label:"Framing Shutters", IconComp:Scissors, color:"#6EE7A8", field:f=>f.framing },
+  { key:"led",       label:"LED Source",        IconComp:Zap,      color:"#6EE7A8", field:f=>f.lampType==="LED" },
+  { key:"ipRated",   label:"IP Rated",          IconComp:Wifi,     color:"#9D8DF1", field:f=>f.ipRated },
+  { key:"animation", label:"Animation Wheel",   IconComp:Sparkles, color:"#F2D466", field:f=>f.animationWheel },
 ];
 
 function clean(s){ return (s||"").replace(/\s+/g," ").trim(); }
@@ -266,16 +265,17 @@ export default function App() {
 
         {/* Application */}
         <Section label="Application" active={apps.size}>
-          <div style={{display:"flex",gap:isMobile?6:8,flexWrap:"wrap"}}>
+          <div style={{display:"flex",gap:isMobile?4:6,flexWrap:isMobile?"nowrap":"wrap",overflowX:isMobile?"hidden":"visible"}}>
             {APP_ORDER.map(a=>{
               const on=apps.has(a);
               const col=APP_COLORS[a];
               const Icon=APP_ICONS[a];
+              const label = (isMobile && a === "Corporate") ? "Corp" : a;
               return(
                 <div key={a} className="chip" onClick={()=>toggle(apps,setApps,a)}
-                  style={{display:"flex",alignItems:"center",gap:5,padding:isMobile?"7px 10px":"7px 12px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?13:13,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
-                  {Icon&&<Icon size={14} strokeWidth={2}/>}
-                  {a}
+                  style={{display:"flex",alignItems:"center",gap:isMobile?4:6,padding:isMobile?"5px 8px":"7px 12px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?12:13,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer",flexShrink:0}}>
+                  {Icon&&<Icon size={15} strokeWidth={2}/>}
+                  {label}
                   {on&&<Check size={12}/>}
                 </div>
               );
@@ -340,17 +340,36 @@ export default function App() {
               </div>
             </Section>
 
-            {/* Features */}
+            {/* Light Source */}
+            <Section label="Light Source" active={lamps.size}>
+              <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+                {allLamps.map(l=>(
+                  <MiniPill key={l} active={lamps.has(l)} onClick={()=>toggle(lamps,setLamps,l)} dot={LAMP_COLORS[l]}>{l}</MiniPill>
+                ))}
+              </div>
+            </Section>
+
+            {/* Features — icon-only on mobile, icon+label on desktop */}
             <Section label="Features" active={feats.size}>
-              <div style={{display:"flex",gap:isMobile?5:8,flexWrap:"wrap"}}>
-                {FEAT_FILTERS.map(({key,label,icon,color,field,mobileLabel})=>{
+              <div style={{display:"flex",gap:isMobile?6:8,flexWrap:isMobile?"nowrap":"wrap"}}>
+                {FEAT_FILTERS.map(({key,label,IconComp,color})=>{
                   const on=feats.has(key);
+                  if(isMobile){
+                    return(
+                      <div key={key} className="chip" onClick={()=>toggle(feats,setFeats,key)}
+                        title={label}
+                        style={{position:"relative",width:32,height:32,display:"flex",alignItems:"center",justifyContent:"center",background:on?color+"33":COLORS.bgElevated,border:`1.5px solid ${on?color:COLORS.borderDefault}`,borderRadius:RADIUS.md,color:on?color:COLORS.textSecondary,flexShrink:0,cursor:"pointer"}}>
+                        <IconComp size={15} strokeWidth={2}/>
+                        {on && <div style={{position:"absolute",top:-3,right:-3,width:8,height:8,borderRadius:"50%",background:color,border:`2px solid ${COLORS.bgBase}`}}/>}
+                      </div>
+                    );
+                  }
                   return(
                     <div key={key} className="chip" onClick={()=>toggle(feats,setFeats,key)}
-                      style={{display:"flex",alignItems:"center",gap:isMobile?5:8,padding:isMobile?"6px 9px":"10px 16px",background:on?color+"33":COLORS.bgElevated,border:`1.5px solid ${on?color:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?12:14,fontWeight:600,color:on?color:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
-                      {icon}
-                      {isMobile && mobileLabel ? mobileLabel : label}
-                      {on&&<Check size={12}/>}
+                      style={{display:"flex",alignItems:"center",gap:8,padding:"10px 16px",background:on?color+"33":COLORS.bgElevated,border:`1.5px solid ${on?color:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:14,fontWeight:600,color:on?color:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                      <IconComp size={14} strokeWidth={2}/>
+                      {label}
+                      {on&&<Check size={13}/>}
                     </div>
                   );
                 })}
@@ -389,15 +408,6 @@ export default function App() {
                     </div>
                   );
                 })()}
-              </div>
-            </Section>
-
-            {/* Light Source (advanced) */}
-            <Section label="Light Source" active={lamps.size}>
-              <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
-                {allLamps.map(l=>(
-                  <MiniPill key={l} active={lamps.has(l)} onClick={()=>toggle(lamps,setLamps,l)} dot={LAMP_COLORS[l]}>{l}</MiniPill>
-                ))}
               </div>
             </Section>
 
