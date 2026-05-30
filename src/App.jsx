@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { Search, X, GitCompare, ChevronDown, ChevronUp, Check, Plus, Minus, ExternalLink, Scissors, SlidersHorizontal, Droplets, Wifi, Zap, Star } from "lucide-react";
+import { Search, X, GitCompare, ChevronDown, ChevronUp, Check, Plus, Minus, ExternalLink, Scissors, SlidersHorizontal, Droplets, Wifi, Zap, Star, Menu } from "lucide-react";
 import { IconMasksTheater as Drama, IconMicrophone2 as Mic2, IconVideo as Video, IconBuilding as Building2 } from "@tabler/icons-react";
 
 import FIXTURES from "./fixtures.json";
@@ -11,6 +11,7 @@ const APP_COLORS = { "Theater":COLORS.actionAmber, "Concert":"#F4845F", "TV-Film
 const TIER_COLORS = { "Small":"#6EE7A8", "Medium":COLORS.actionAmber, "Large":"#F4845F" };
 const TIER_DESC = { "Small":"< 10k lm", "Medium":"10\u201330k lm", "Large":"\u2265 30k lm" };
 const APP_ORDER = ["Theater","Concert","TV-Film","Corporate"];
+const MAIN_BRANDS = ["Martin","Robe","Elation","Ayrton"];
 const APP_ICONS = {
   "Theater":   Drama,
   "Concert":   Mic2,
@@ -61,6 +62,9 @@ export default function App() {
   const [showCompare,setShowCompare] = useState(false);
   const [isMobile,setIsMobile] = useState(false);
   const [watchingFilterActive,setWatchingFilterActive] = useState(false);
+  const [showBrandPicker,setShowBrandPicker] = useState(false);
+  const [showMobileMenu,setShowMobileMenu] = useState(false);
+  const [showFilterSheet,setShowFilterSheet] = useState(false);
   const [watchlist,setWatchlist] = useState(()=>{
     try {
       const saved = localStorage.getItem("mld-watchlist");
@@ -82,6 +86,14 @@ export default function App() {
       // localStorage unavailable (private mode, etc.) — fail silently
     }
   },[watchlist]);
+
+  // Lock background scroll when any mobile sheet is open
+  useEffect(()=>{
+    const anyOpen = showBrandPicker || showMobileMenu || showFilterSheet;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = anyOpen ? "hidden" : prev || "";
+    return()=>{ document.body.style.overflow = prev || ""; };
+  },[showBrandPicker,showMobileMenu,showFilterSheet]);
 
   const allBrands = useMemo(()=>[...new Set(FIXTURES.map(f=>f.brand))].sort(),[]);
   const allCats   = ["Performance","Spot","Wash","Bar / Batten"];
@@ -234,147 +246,227 @@ export default function App() {
               </button>
             </div>
           )}
+          {isMobile&&(
+            <button onClick={()=>setShowMobileMenu(true)}
+              style={{marginLeft:"auto",display:"flex",alignItems:"center",justifyContent:"center",width:40,height:40,background:"transparent",border:`1px solid ${COLORS.borderDefault}`,borderRadius:RADIUS.md,position:"relative",cursor:"pointer",flexShrink:0,padding:0}}>
+              <Menu size={20} color={COLORS.textSecondary}/>
+              {(watchingFilterActive || compare.length > 0 || activeChips.length > 0) && (
+                <span style={{position:"absolute",top:-3,right:-3,width:10,height:10,borderRadius:"50%",background:COLORS.actionAmber,border:`2px solid ${COLORS.bgBase}`}}/>
+              )}
+            </button>
+          )}
         </div>
       </div>
 
       <div style={{maxWidth:1180,margin:"0 auto",padding:isMobile?"16px 16px 100px":"22px 28px 48px"}}>
 
-        {/* ── SEARCH ── */}
-        <div style={{position:"relative",marginBottom:22}}>
-          <Search size={17} color="#7E7E8C" style={{position:"absolute",left:14,top:"50%",transform:"translateY(-50%)"}}/>
-          <input value={query} onChange={e=>setQuery(e.target.value)}
-            placeholder="Search fixture, brand, or feature..."
-            style={{width:"100%",padding:isMobile?"13px 40px":"14px 44px",background:COLORS.bgElevated,border:"1px solid #222228",borderRadius:11,color:COLORS.textPrimary,fontSize:isMobile?18:17,outline:"none",fontFamily:FONTS.ui,fontWeight:400}}/>
-          {query&&<X size={16} onClick={()=>setQuery("")} style={{position:"absolute",right:13,top:"50%",transform:"translateY(-50%)",color:"#7E7E8C",cursor:"pointer"}}/>}
-        </div>
+        {/* ── FILTER CONTENT (shared by desktop inline + mobile sheet) ── */}
+        {(() => {
+          const filterContent = (
+            <>
+              {/* Search */}
+              <div style={{position:"relative",marginBottom:22}}>
+                <Search size={17} color="#7E7E8C" style={{position:"absolute",left:14,top:"50%",transform:"translateY(-50%)"}}/>
+                <input value={query} onChange={e=>setQuery(e.target.value)}
+                  placeholder="Search fixture, brand, or feature..."
+                  style={{width:"100%",padding:isMobile?"13px 40px":"14px 44px",background:COLORS.bgElevated,border:"1px solid #222228",borderRadius:11,color:COLORS.textPrimary,fontSize:isMobile?18:17,outline:"none",fontFamily:FONTS.ui,fontWeight:400}}/>
+                {query&&<X size={16} onClick={()=>setQuery("")} style={{position:"absolute",right:13,top:"50%",transform:"translateY(-50%)",color:"#7E7E8C",cursor:"pointer"}}/>}
+              </div>
 
-        {/* ── APPLICATION ── */}
-        <Section label="Application" active={apps.size}>
-          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-            {APP_ORDER.map(a=>{
-              const on=apps.has(a);
-              const col=APP_COLORS[a];
-              const Icon=APP_ICONS[a];
-              return(
-                <div key={a} className="chip" onClick={()=>toggle(apps,setApps,a)}
-                  style={{display:"flex",alignItems:"center",gap:6,padding:isMobile?"8px 11px":"7px 12px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?14:13,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
-                  {Icon&&<Icon size={15} strokeWidth={2}/>}
-                  {a}
-                  {on&&<Check size={13}/>}
+              {/* Application */}
+              <Section label="Application" active={apps.size}>
+                <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+                  {APP_ORDER.map(a=>{
+                    const on=apps.has(a);
+                    const col=APP_COLORS[a];
+                    const Icon=APP_ICONS[a];
+                    return(
+                      <div key={a} className="chip" onClick={()=>toggle(apps,setApps,a)}
+                        style={{display:"flex",alignItems:"center",gap:6,padding:isMobile?"8px 11px":"7px 12px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?14:13,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                        {Icon&&<Icon size={15} strokeWidth={2}/>}
+                        {a}
+                        {on&&<Check size={13}/>}
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
-          </div>
-        </Section>
+              </Section>
 
-        {/* ── OUTPUT TIER ── */}
-        <Section label="Output Tier" active={tiers.size}>
-          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-            {allTiers.map(t=>{
-              const on=tiers.has(t);
-              const col=TIER_COLORS[t];
-              return(
-                <div key={t} className="chip" onClick={()=>toggle(tiers,setTiers,t)}
-                  style={{display:"flex",flexDirection:"column",alignItems:"flex-start",padding:isMobile?"7px 12px":"8px 14px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontFamily:FONTS.ui,cursor:"pointer"}}>
-                  <div style={{display:"flex",alignItems:"center",gap:8,fontSize:isMobile?15:14,fontWeight:600,color:on?col:COLORS.textSecondary}}>
-                    <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
-                    {t}
-                    {on&&<Check size={13}/>}
+              {/* Output Tier */}
+              <Section label="Output Tier" active={tiers.size}>
+                <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+                  {allTiers.map(t=>{
+                    const on=tiers.has(t);
+                    const col=TIER_COLORS[t];
+                    return(
+                      <div key={t} className="chip" onClick={()=>toggle(tiers,setTiers,t)}
+                        style={{display:"flex",flexDirection:"column",alignItems:"flex-start",padding:isMobile?"7px 12px":"8px 14px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                        <div style={{display:"flex",alignItems:"center",gap:8,fontSize:isMobile?15:14,fontWeight:600,color:on?col:COLORS.textSecondary}}>
+                          <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
+                          {t}
+                          {on&&<Check size={13}/>}
+                        </div>
+                        <div style={{fontSize:12,fontFamily:FONTS.mono,color:on?col+"CC":COLORS.textMuted,marginTop:3,marginLeft:16}}>{TIER_DESC[t]}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Section>
+
+              {/* Type */}
+              <Section label="Type" active={cats.size}>
+                <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+                  {allCats.map(c=>{
+                    const on=cats.has(c);
+                    const col=CAT_COLORS[c];
+                    return(
+                      <div key={c} className="chip" onClick={()=>toggle(cats,setCats,c)}
+                        style={{display:"flex",alignItems:"center",gap:6,padding:isMobile?"8px 11px":"7px 12px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?14:13,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                        <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
+                        {catDisplayName(c)}
+                        {on&&<Check size={13}/>}
+                      </div>
+                    );
+                  })}
+                </div>
+              </Section>
+
+              {/* Features */}
+              <Section label="Features" active={feats.size}>
+                <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+                  {FEAT_FILTERS.map(({key,label,icon,color,field})=>{
+                    const on=feats.has(key);
+                    return(
+                      <div key={key} className="chip" onClick={()=>toggle(feats,setFeats,key)}
+                        style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 16px",background:on?color+"33":COLORS.bgElevated,border:`1.5px solid ${on?color:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?15:14,fontWeight:600,color:on?color:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                        {icon}
+                        {label}
+                        {on&&<Check size={13}/>}
+                      </div>
+                    );
+                  })}
+                </div>
+              </Section>
+
+              {/* Brand — main brands + "+N more" */}
+              <Section label="Brand" active={brands.size}>
+                <div style={{display:"flex",flexWrap:"wrap",gap:7}}>
+                  {MAIN_BRANDS.map(b=>{
+                    const on=brands.has(b);
+                    const n=FIXTURES.filter(f=>f.brand===b).length;
+                    if(n===0) return null;
+                    return(
+                      <div key={b} className="brand-pill" onClick={()=>toggle(brands,setBrands,b)}
+                        style={{display:"flex",alignItems:"center",gap:6,padding:"7px 11px",background:on?COLORS.standoutCyanBg:COLORS.bgElevated,border:`1.5px solid ${on?COLORS.standoutCyan:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:14,fontWeight:600,color:on?COLORS.standoutCyan:COLORS.brandPeriwinkle,flexShrink:0,fontFamily:FONTS.mono,letterSpacing:".03em",textTransform:"uppercase",cursor:"pointer"}}>
+                        <div style={{width:14,height:14,borderRadius:3,background:COLORS.brandLogoBg,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,fontWeight:700,color:COLORS.textMuted}}>{b[0]}</div>
+                        {b}
+                        <span style={{fontSize:11,fontFamily:FONTS.mono,color:on?COLORS.standoutCyan+"AA":COLORS.textDim,fontWeight:500}}>{n}</span>
+                        {on&&<Check size={11}/>}
+                      </div>
+                    );
+                  })}
+
+                  {(() => {
+                    const otherCount = allBrands.filter(b => !MAIN_BRANDS.includes(b)).length;
+                    if(otherCount === 0) return null;
+                    const hiddenSelected = [...brands].some(b => !MAIN_BRANDS.includes(b));
+                    return (
+                      <div className="brand-pill" onClick={()=>setShowBrandPicker(true)}
+                        style={{display:"flex",alignItems:"center",gap:6,padding:"7px 11px",background:hiddenSelected?COLORS.standoutCyanBg:COLORS.bgElevated,border:`1.5px solid ${hiddenSelected?COLORS.standoutCyan:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:14,fontWeight:600,color:hiddenSelected?COLORS.standoutCyan:COLORS.textSecondary,flexShrink:0,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                        <Plus size={13}/>
+                        {otherCount} more
+                      </div>
+                    );
+                  })()}
+                </div>
+              </Section>
+
+              {/* More filters */}
+              <div style={{marginBottom:22}}>
+                <div onClick={()=>setMoreOpen(o=>!o)}
+                  style={{display:"inline-flex",alignItems:"center",gap:7,cursor:"pointer",fontSize:14,color:moreOpen||moreCount>0?COLORS.textPrimary:COLORS.textSecondary,fontWeight:600,letterSpacing:".01em",fontFamily:FONTS.ui}}>
+                  <SlidersHorizontal size={14}/>
+                  More filters
+                  {moreCount>0&&<span style={{background:COLORS.actionAmber,color:COLORS.bgBase,borderRadius:RADIUS.sm,padding:"1px 7px",fontSize:12,fontWeight:700,fontFamily:FONTS.ui}}>{moreCount}</span>}
+                  {moreOpen?<ChevronUp size={13}/>:<ChevronDown size={13}/>}
+                </div>
+                {moreOpen&&(
+                  <div className="expand-in" style={{marginTop:12,padding:"16px 18px",background:COLORS.bgElevated,border:`1px solid ${COLORS.borderSubtle}`,borderRadius:RADIUS.xl}}>
+                    <SubGroup label="CRI">
+                      <div style={{display:"flex",gap:7}}>
+                        {[{l:"90+",m:90},{l:"80+",m:80},{l:"70+",m:70}].map(b=>(
+                          <MiniPill key={b.l} active={criMin===b.m} onClick={()=>setCriMin(criMin===b.m?0:b.m)}>CRI {b.l}</MiniPill>
+                        ))}
+                      </div>
+                    </SubGroup>
+                    <SubGroup label="Light Source">
+                      <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+                        {allLamps.map(l=>(
+                          <MiniPill key={l} active={lamps.has(l)} onClick={()=>toggle(lamps,setLamps,l)} dot={LAMP_COLORS[l]}>{l}</MiniPill>
+                        ))}
+                      </div>
+                    </SubGroup>
+                    <SubGroup label="Other">
+                      <MiniPill active={featAnim} onClick={()=>setFeatAnim(v=>!v)}>Animation wheel</MiniPill>
+                    </SubGroup>
                   </div>
-                  <div style={{fontSize:12,fontFamily:FONTS.mono,color:on?col+"CC":COLORS.textMuted,marginTop:3,marginLeft:16}}>{TIER_DESC[t]}</div>
-                </div>
-              );
-            })}
-          </div>
-        </Section>
+                )}
+              </div>
+            </>
+          );
 
-        {/* ── TYPE ── */}
-        <Section label="Type" active={cats.size}>
-          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-            {allCats.map(c=>{
-              const on=cats.has(c);
-              const col=CAT_COLORS[c];
-              return(
-                <div key={c} className="chip" onClick={()=>toggle(cats,setCats,c)}
-                  style={{display:"flex",alignItems:"center",gap:6,padding:isMobile?"8px 11px":"7px 12px",background:on?col+"33":COLORS.bgElevated,border:`1.5px solid ${on?col:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?14:13,fontWeight:600,color:on?col:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
-                  <span style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
-                  {catDisplayName(c)}
-                  {on&&<Check size={13}/>}
-                </div>
-              );
-            })}
-          </div>
-        </Section>
+          if(!isMobile){
+            // Desktop: render filter content inline as before
+            return <div className="filter-area">{filterContent}</div>;
+          }
 
-        {/* ── FEATURES ── */}
-        <Section label="Features" active={feats.size}>
-          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-            {FEAT_FILTERS.map(({key,label,icon,color,field})=>{
-              const on=feats.has(key);
-              return(
-                <div key={key} className="chip" onClick={()=>toggle(feats,setFeats,key)}
-                  style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 16px",background:on?color+"33":COLORS.bgElevated,border:`1.5px solid ${on?color:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?15:14,fontWeight:600,color:on?color:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
-                  {icon}
-                  {label}
-                  {on&&<Check size={13}/>}
-                </div>
-              );
-            })}
-          </div>
-        </Section>
+          // Mobile: a "Filters" pill that opens a bottom sheet
+          return (
+            <>
+              <div onClick={()=>setShowFilterSheet(true)}
+                style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"11px 16px",background:COLORS.bgElevated,border:`1px solid ${activeChips.length>0?COLORS.actionAmber:COLORS.borderDefault}`,borderRadius:RADIUS.lg,marginBottom:14,fontFamily:FONTS.ui,fontSize:15,fontWeight:600,color:COLORS.textPrimary,cursor:"pointer"}}>
+                <SlidersHorizontal size={15} color={activeChips.length>0?COLORS.actionAmber:COLORS.textSecondary}/>
+                <span>Filters</span>
+                {activeChips.length>0 && (
+                  <span style={{fontFamily:FONTS.mono,fontSize:12,background:COLORS.actionAmber,color:COLORS.bgBase,padding:"1px 7px",borderRadius:4,fontWeight:700}}>{activeChips.length}</span>
+                )}
+              </div>
 
-        {/* ── BRAND ── */}
-        <Section label="Brand" active={brands.size}>
-          <div style={{position:"relative"}}>
-            <div className="no-scrollbar" style={{display:"flex",gap:7,overflowX:"auto",paddingBottom:2,WebkitMaskImage:"linear-gradient(to right, transparent 0, black 16px, black calc(100% - 16px), transparent 100%)",maskImage:"linear-gradient(to right, transparent 0, black 16px, black calc(100% - 16px), transparent 100%)"}}>
-              {allBrands.map(b=>{
-                const on=brands.has(b);
-                const n=FIXTURES.filter(f=>f.brand===b).length;
-                return(
-                  <div key={b} className="brand-pill" onClick={()=>toggle(brands,setBrands,b)}
-                    style={{display:"flex",alignItems:"center",gap:6,padding:"7px 11px",background:on?COLORS.standoutCyanBg:COLORS.bgElevated,border:`1.5px solid ${on?COLORS.standoutCyan:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:14,fontWeight:600,color:on?COLORS.standoutCyan:COLORS.brandPeriwinkle,flexShrink:0,fontFamily:FONTS.mono,letterSpacing:".03em",textTransform:"uppercase",cursor:"pointer"}}>
-                    <div style={{width:14,height:14,borderRadius:3,background:COLORS.brandLogoBg,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,fontWeight:700,color:COLORS.textMuted}}>{b[0]}</div>
-                    {b}
-                    <span style={{fontSize:11,fontFamily:FONTS.mono,color:on?COLORS.standoutCyan+"AA":COLORS.textDim,fontWeight:500}}>{n}</span>
-                    {on&&<Check size={11}/>}
+              {showFilterSheet && (
+                <div onClick={()=>setShowFilterSheet(false)}
+                  style={{position:"fixed",inset:0,background:COLORS.sheetOverlay,zIndex:100,display:"flex",alignItems:"flex-end"}}>
+                  <div onClick={e=>e.stopPropagation()} className="slide-up"
+                    style={{background:COLORS.sheetSurface,width:"100%",height:"92dvh",maxHeight:"92dvh",borderTopLeftRadius:RADIUS.xl,borderTopRightRadius:RADIUS.xl,display:"flex",flexDirection:"column",border:`1px solid ${COLORS.borderSubtle}`}}>
+
+                    {/* Sheet header */}
+                    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px 20px",borderBottom:`1px solid ${COLORS.borderSubtle}`,flexShrink:0}}>
+                      <div style={{fontFamily:FONTS.display,fontSize:19,fontWeight:700,color:COLORS.textPrimary,letterSpacing:"-.01em"}}>Filters</div>
+                      <div style={{display:"flex",alignItems:"center",gap:14}}>
+                        {activeChips.length>0 && (
+                          <span onClick={clearAll} style={{cursor:"pointer",fontFamily:FONTS.ui,fontSize:12,fontWeight:600,color:COLORS.textMuted,letterSpacing:".06em",textTransform:"uppercase"}}>Clear all</span>
+                        )}
+                        <X size={22} onClick={()=>setShowFilterSheet(false)} style={{cursor:"pointer",color:COLORS.textMuted}}/>
+                      </div>
+                    </div>
+
+                    {/* Scrollable filter content */}
+                    <div style={{overflowY:"auto",padding:"16px 20px",flex:1,WebkitOverflowScrolling:"touch"}}>
+                      {filterContent}
+                    </div>
+
+                    {/* Sticky footer */}
+                    <div style={{padding:"14px 20px",borderTop:`1px solid ${COLORS.borderSubtle}`,background:COLORS.bgElevated,flexShrink:0}}>
+                      <button onClick={()=>setShowFilterSheet(false)}
+                        style={{width:"100%",padding:"14px",background:COLORS.actionAmber,color:COLORS.bgBase,border:"none",borderRadius:RADIUS.lg,fontFamily:FONTS.ui,fontSize:16,fontWeight:700,cursor:"pointer"}}>
+                        Show {filtered.length} fixture{filtered.length===1?"":"s"}
+                      </button>
+                    </div>
                   </div>
-                );
-              })}
-            </div>
-          </div>
-        </Section>
-
-        {/* ── MORE FILTERS ── */}
-        <div style={{marginBottom:22}}>
-          <div onClick={()=>setMoreOpen(o=>!o)}
-            style={{display:"inline-flex",alignItems:"center",gap:7,cursor:"pointer",fontSize:14,color:moreOpen||moreCount>0?COLORS.textPrimary:COLORS.textSecondary,fontWeight:600,letterSpacing:".01em",fontFamily:FONTS.ui}}>
-            <SlidersHorizontal size={14}/>
-            More filters
-            {moreCount>0&&<span style={{background:COLORS.actionAmber,color:COLORS.bgBase,borderRadius:RADIUS.sm,padding:"1px 7px",fontSize:12,fontWeight:700,fontFamily:FONTS.ui}}>{moreCount}</span>}
-            {moreOpen?<ChevronUp size={13}/>:<ChevronDown size={13}/>}
-          </div>
-          {moreOpen&&(
-            <div className="expand-in" style={{marginTop:12,padding:"16px 18px",background:COLORS.bgElevated,border:`1px solid ${COLORS.borderSubtle}`,borderRadius:RADIUS.xl}}>
-              <SubGroup label="CRI">
-                <div style={{display:"flex",gap:7}}>
-                  {[{l:"90+",m:90},{l:"80+",m:80},{l:"70+",m:70}].map(b=>(
-                    <MiniPill key={b.l} active={criMin===b.m} onClick={()=>setCriMin(criMin===b.m?0:b.m)}>CRI {b.l}</MiniPill>
-                  ))}
                 </div>
-              </SubGroup>
-              <SubGroup label="Light Source">
-                <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
-                  {allLamps.map(l=>(
-                    <MiniPill key={l} active={lamps.has(l)} onClick={()=>toggle(lamps,setLamps,l)} dot={LAMP_COLORS[l]}>{l}</MiniPill>
-                  ))}
-                </div>
-              </SubGroup>
-              <SubGroup label="Other">
-                <MiniPill active={featAnim} onClick={()=>setFeatAnim(v=>!v)}>Animation wheel</MiniPill>
-              </SubGroup>
-            </div>
-          )}
-        </div>
+              )}
+            </>
+          );
+        })()}
 
         {/* ── RESULTS ── */}
         {!hasFilter ? <EmptyState/> : filtered.length===0 ? (
@@ -453,6 +545,25 @@ export default function App() {
       )}
 
       {showCompare&&<CompareModal items={compare} isMobile={isMobile} onClose={()=>setShowCompare(false)} onRemove={id=>setCompare(c=>c.filter(x=>x.id!==id))}/>}
+
+      <BrandPickerSheet
+        open={showBrandPicker}
+        onClose={()=>setShowBrandPicker(false)}
+        allBrands={allBrands}
+        brands={brands}
+        toggleBrand={b => toggle(brands, setBrands, b)}
+        fixtures={FIXTURES}
+      />
+
+      <MobileMenu
+        open={showMobileMenu}
+        onClose={()=>setShowMobileMenu(false)}
+        watchingFilterActive={watchingFilterActive}
+        onToggleWatching={()=>setWatchingFilterActive(v=>!v)}
+        watchlistSize={watchlist.size}
+        compareCount={compare.length}
+        onOpenCompare={()=>setShowCompare(true)}
+      />
     </div>
   );
 }
@@ -535,7 +646,7 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
   return(
     <div style={{borderBottom:last&&!expanded?"none":"1px solid #131316",background:expanded?COLORS.bgElevated:"transparent"}}>
       <div className="fx-row" onClick={onToggle}
-        style={{display:"grid",gridTemplateColumns:isMobile?"56px 1fr auto 28px 28px":"56px 1fr 80px 70px 80px 60px 70px 28px 28px 28px",padding:isMobile?"11px 14px":"12px 16px",cursor:"pointer",alignItems:"center",gap:0}}>
+        style={{display:"grid",gridTemplateColumns:isMobile?"56px 1fr auto 36px 36px":"56px 1fr 80px 70px 80px 60px 70px 28px 28px 28px",padding:isMobile?"12px 14px":"12px 16px",cursor:"pointer",alignItems:"center",gap:0}}>
 
         {/* Thumbnail */}
         <div style={{width:48,height:48,borderRadius:7,overflow:"hidden",background:"#131316",border:"1px solid #1C1C22",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
@@ -599,20 +710,20 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
 
         {/* Mobile Watch button */}
         {isMobile&&(
-          <div style={{display:"flex",justifyContent:"center"}} onClick={e=>{e.stopPropagation();onWatch();}}>
-            <Star size={16} fill={isWatched?COLORS.actionAmber:"none"} color={isWatched?COLORS.actionAmber:COLORS.textGhost}/>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"center",width:36,height:36}} onClick={e=>{e.stopPropagation();onWatch();}}>
+            <Star size={18} fill={isWatched?COLORS.actionAmber:"none"} color={isWatched?COLORS.actionAmber:COLORS.textGhost}/>
           </div>
         )}
 
         {/* Mobile Compare button */}
         {isMobile&&(
-          <div style={{display:"flex",justifyContent:"center"}} onClick={e=>{e.stopPropagation();(!compareFull||inCompare)&&onCompare();}}>
-            <div style={{width:26,height:26,borderRadius:RADIUS.sm,
+          <div style={{display:"flex",alignItems:"center",justifyContent:"center",width:36,height:36}} onClick={e=>{e.stopPropagation();(!compareFull||inCompare)&&onCompare();}}>
+            <div style={{width:30,height:30,borderRadius:RADIUS.sm,
               border:`1px solid ${inCompare?COLORS.actionAmber:COLORS.borderDefault}`,
               background:inCompare?COLORS.actionAmber:"transparent",
               display:"flex",alignItems:"center",justifyContent:"center",
               color:inCompare?COLORS.bgBase:COLORS.textGhost}}>
-              {inCompare?<Check size={13}/>:<Plus size={13}/>}
+              {inCompare?<Check size={14}/>:<Plus size={14}/>}
             </div>
           </div>
         )}
@@ -665,7 +776,7 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
                   :<div style={{width:48,height:48,borderRadius:8,background:catCol+"22",border:`2px solid ${catCol}44`}}/>}
               </div>
               {/* Text panel */}
-              <div style={{flex:1,padding:isMobile?"16px 18px":"22px 26px",display:"flex",flexDirection:"column",justifyContent:"center"}}>
+              <div style={{flex:1,padding:isMobile?"18px 20px":"22px 26px",display:"flex",flexDirection:"column",justifyContent:"center"}}>
                 <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:12}}>
                   {(f.applications||[]).map(a=>(
                     <span key={a} style={{fontSize:11,fontWeight:700,color:APP_COLORS[a],background:APP_COLORS[a]+"1A",padding:"3px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:FONTS.mono}}>{a}</span>
@@ -735,6 +846,83 @@ function SB({label,value,wide,hl}){
     <div style={{background:COLORS.bgElevated,border:`1px solid ${COLORS.borderSubtle}`,borderRadius:RADIUS.md,padding:"11px 13px",gridColumn:wide?"1 / -1":"auto"}}>
       <div style={{fontFamily:FONTS.mono,fontSize:11,fontWeight:600,color:COLORS.specLabelAmber,textTransform:"uppercase",letterSpacing:".1em",marginBottom:6}}>{label}</div>
       <div style={{fontFamily:FONTS.mono,fontSize:14,color:COLORS.textSecondary,whiteSpace:"pre-line",lineHeight:1.4}}>{value}</div>
+    </div>
+  );
+}
+
+function BrandPickerSheet({open, onClose, allBrands, brands, toggleBrand, fixtures}){
+  if(!open) return null;
+  const others = allBrands.filter(b => !MAIN_BRANDS.includes(b)).sort();
+
+  return(
+    <div onClick={onClose}
+      style={{position:"fixed",inset:0,background:COLORS.sheetOverlay,zIndex:100,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
+      <div onClick={e=>e.stopPropagation()} className="slide-up"
+        style={{background:COLORS.sheetSurface,borderTopLeftRadius:RADIUS.xl,borderTopRightRadius:RADIUS.xl,width:"100%",maxWidth:480,maxHeight:"85dvh",display:"flex",flexDirection:"column",overflow:"hidden",border:`1px solid ${COLORS.borderSubtle}`}}>
+
+        {/* Sheet header */}
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"16px 20px",borderBottom:`1px solid ${COLORS.borderSubtle}`,flexShrink:0}}>
+          <div style={{fontFamily:FONTS.display,fontSize:19,fontWeight:700,color:COLORS.textPrimary,letterSpacing:"-.01em"}}>All brands</div>
+          <X size={22} onClick={onClose} style={{cursor:"pointer",color:COLORS.textMuted}}/>
+        </div>
+
+        {/* Scrollable brand list */}
+        <div style={{overflowY:"auto",padding:"12px 16px",display:"flex",flexDirection:"column",gap:4,WebkitOverflowScrolling:"touch"}}>
+          {others.map(b=>{
+            const on=brands.has(b);
+            const n=fixtures.filter(f=>f.brand===b).length;
+            if(n===0) return null;
+            return(
+              <div key={b} onClick={()=>toggleBrand(b)}
+                style={{display:"flex",alignItems:"center",gap:10,padding:"12px 12px",background:on?COLORS.standoutCyanBg:"transparent",border:`1px solid ${on?COLORS.standoutCyan:"transparent"}`,borderRadius:RADIUS.md,fontFamily:FONTS.mono,fontSize:15,fontWeight:600,color:on?COLORS.standoutCyan:COLORS.brandPeriwinkle,textTransform:"uppercase",letterSpacing:".03em",cursor:"pointer"}}>
+                <div style={{width:20,height:20,borderRadius:3,background:COLORS.brandLogoBg,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:COLORS.textMuted}}>{b[0]}</div>
+                <span style={{flex:1}}>{b}</span>
+                <span style={{fontSize:13,color:on?COLORS.standoutCyan+"AA":COLORS.textDim,fontWeight:500}}>{n}</span>
+                {on&&<Check size={15}/>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MobileMenu({open, onClose, watchingFilterActive, onToggleWatching, watchlistSize, compareCount, onOpenCompare}){
+  if(!open) return null;
+
+  return(
+    <div onClick={onClose}
+      style={{position:"fixed",inset:0,background:COLORS.sheetOverlay,zIndex:100,display:"flex",justifyContent:"flex-end"}}>
+      <div onClick={e=>e.stopPropagation()}
+        style={{background:COLORS.sheetSurface,width:"min(80vw, 320px)",height:"100%",display:"flex",flexDirection:"column",borderLeft:`1px solid ${COLORS.borderSubtle}`,padding:"20px",animation:"sr .22s cubic-bezier(.2,.8,.2,1)"}}>
+
+        <style>{`@keyframes sr{from{transform:translateX(100%)}to{transform:translateX(0)}}`}</style>
+
+        {/* Close button */}
+        <div style={{display:"flex",justifyContent:"flex-end",marginBottom:20}}>
+          <X size={24} onClick={onClose} style={{cursor:"pointer",color:COLORS.textMuted}}/>
+        </div>
+
+        {/* Watching */}
+        <div onClick={()=>{onToggleWatching();onClose();}}
+          style={{display:"flex",alignItems:"center",gap:12,padding:"14px 12px",borderRadius:RADIUS.md,background:watchingFilterActive?COLORS.actionAmber:"transparent",border:`1px solid ${watchingFilterActive?COLORS.actionAmber:COLORS.borderDefault}`,cursor:"pointer",marginBottom:8}}>
+          <Star size={17} fill={watchingFilterActive?COLORS.bgBase:(watchlistSize?COLORS.actionAmber:"none")} color={watchingFilterActive?COLORS.bgBase:COLORS.actionAmber}/>
+          <span style={{fontFamily:FONTS.ui,fontSize:16,fontWeight:600,color:watchingFilterActive?COLORS.bgBase:COLORS.textPrimary,flex:1}}>Watching</span>
+          <span style={{fontFamily:FONTS.mono,fontSize:14,color:watchingFilterActive?COLORS.bgBase+"DD":COLORS.textMuted,fontWeight:600}}>{watchlistSize}</span>
+        </div>
+
+        {/* Compare */}
+        <div onClick={()=>{if(compareCount){onOpenCompare();onClose();}}}
+          style={{display:"flex",alignItems:"center",gap:12,padding:"14px 12px",borderRadius:RADIUS.md,background:"transparent",border:`1px solid ${compareCount?COLORS.actionAmber:COLORS.borderDefault}`,opacity:compareCount?1:0.5,cursor:compareCount?"pointer":"default",marginBottom:24}}>
+          <GitCompare size={17} color={compareCount?COLORS.actionAmber:COLORS.textMuted}/>
+          <span style={{fontFamily:FONTS.ui,fontSize:16,fontWeight:600,color:COLORS.textPrimary,flex:1}}>Compare</span>
+          <span style={{fontFamily:FONTS.mono,fontSize:14,color:COLORS.textMuted,fontWeight:600}}>{compareCount}/4</span>
+        </div>
+
+        {/* Footer */}
+        <div style={{marginTop:"auto",fontFamily:FONTS.mono,fontSize:11,color:COLORS.textDim,letterSpacing:".05em",textTransform:"uppercase"}}>Moving Light Database</div>
+      </div>
     </div>
   );
 }

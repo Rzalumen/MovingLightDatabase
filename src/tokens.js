@@ -96,6 +96,10 @@ export const COLORS = {
   // ── ACTIVE FILTER BAR (sticky) ─────────────────────────
   activeBarBg:     "#0E0E11",
   activeBarBorder: "#1F1F25",
+
+  // ── MOBILE SHEET (full-screen overlays) ────────────────
+  sheetOverlay:  "rgba(8, 8, 11, 0.85)",  // backdrop behind sheets
+  sheetSurface:  "#0E0E11",                // sheet background — same as bgBase
 };
 
 // ── PALETTE GETTERS (for chip active states) ──────────────
