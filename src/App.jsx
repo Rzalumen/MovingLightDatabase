@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { Search, X, GitCompare, ChevronDown, ChevronUp, Check, Plus, Minus, ExternalLink, Scissors, SlidersHorizontal, Droplets, Wifi, Zap, Star, Menu } from "lucide-react";
+import { Search, X, GitCompare, ChevronDown, ChevronUp, Check, Plus, Minus, ExternalLink, Scissors, SlidersHorizontal, Droplets, Wifi, Zap, Star, Menu, Sparkles } from "lucide-react";
 import { IconMasksTheater as Drama, IconMicrophone2 as Mic2, IconVideo as Video, IconBuilding as Building2 } from "@tabler/icons-react";
 
 import FIXTURES from "./fixtures.json";
@@ -20,10 +20,11 @@ const APP_ICONS = {
 };
 
 const FEAT_FILTERS = [
-  { key:"framing",   label:"Framing Shutters", icon:<Scissors size={14}/>,  color:"#6EE7A8", field:f=>f.framing },
-  { key:"led",       label:"LED Source",        icon:<Zap size={14}/>,       color:"#6EE7A8", field:f=>f.lampType==="LED" },
-  { key:"dualFrost", label:"Dual Frost",        icon:<Droplets size={14}/>,  color:"#4ECDC4", field:f=>f.dualFrost },
-  { key:"ipRated",   label:"IP Rated",          icon:<Wifi size={14}/>,      color:"#9D8DF1", field:f=>f.ipRated },
+  { key:"framing",   label:"Framing Shutters", mobileLabel:"Framing",   icon:<Scissors size={13}/>,  color:"#6EE7A8", field:f=>f.framing },
+  { key:"led",       label:"LED Source",        mobileLabel:"LED",       icon:<Zap size={13}/>,       color:"#6EE7A8", field:f=>f.lampType==="LED" },
+  { key:"dualFrost", label:"Dual Frost",        mobileLabel:"Frost",     icon:<Droplets size={13}/>,  color:"#4ECDC4", field:f=>f.dualFrost },
+  { key:"ipRated",   label:"IP Rated",          mobileLabel:"IP",        icon:<Wifi size={13}/>,      color:"#9D8DF1", field:f=>f.ipRated },
+  { key:"animation", label:"Animation Wheel",   mobileLabel:"Animation", icon:<Sparkles size={13}/>,  color:"#F2D466", field:f=>f.animationWheel },
 ];
 
 function clean(s){ return (s||"").replace(/\s+/g," ").trim(); }
@@ -53,8 +54,6 @@ export default function App() {
   const [brands,setBrands]     = useState(new Set());
   const [feats,setFeats]       = useState(new Set());
   const [lamps,setLamps]       = useState(new Set());
-  const [criMin,setCriMin]     = useState(0);
-  const [featAnim,setFeatAnim] = useState(false);
   const [sortBy,setSortBy]     = useState("output-desc");
   const [expanded,setExpanded] = useState(new Set());
   const [compare,setCompare]   = useState([]);
@@ -103,8 +102,8 @@ export default function App() {
     const n=new Set(set); n.has(val)?n.delete(val):n.add(val); setter(n);
   }
 
-  const hasFilter = query||apps.size||cats.size||tiers.size||brands.size||feats.size||lamps.size||criMin||featAnim||watchingFilterActive;
-  const moreCount = lamps.size+(criMin?1:0)+(featAnim?1:0);
+  const hasFilter = query||apps.size||cats.size||tiers.size||brands.size||feats.size||lamps.size||watchingFilterActive;
+  const moreCount = lamps.size;
 
   const filtered = useMemo(()=>{
     if(!hasFilter) return [];
@@ -124,8 +123,6 @@ export default function App() {
         if(ff&&!ff.field(f)) return false;
       }
       if(lamps.size&&!lamps.has(f.lampType)) return false;
-      if(criMin&&!(f.cri!=null&&f.cri>=criMin)) return false;
-      if(featAnim&&!f.animationWheel) return false;
       return true;
     });
     const [key,dir]=sortBy.split("-");
@@ -140,7 +137,7 @@ export default function App() {
       if(av>bv) return dir==="asc"?1:-1;
       return 0;
     });
-  },[query,apps,cats,tiers,brands,feats,lamps,criMin,featAnim,sortBy,hasFilter,watchingFilterActive,watchlist]);
+  },[query,apps,cats,tiers,brands,feats,lamps,sortBy,hasFilter,watchingFilterActive,watchlist]);
 
   function toggleExpand(id){
     setExpanded(p=>{const n=new Set(p);n.has(id)?n.delete(id):n.add(id);return n;});
@@ -164,11 +161,10 @@ export default function App() {
   function clearAll(){
     setQuery(""); setApps(new Set()); setCats(new Set()); setTiers(new Set());
     setBrands(new Set()); setFeats(new Set()); setLamps(new Set());
-    setCriMin(0); setFeatAnim(false);
     setWatchingFilterActive(false);
   }
 
-  const activeCount=apps.size+cats.size+tiers.size+brands.size+feats.size+lamps.size+(criMin?1:0)+(featAnim?1:0);
+  const activeCount=apps.size+cats.size+tiers.size+brands.size+feats.size+lamps.size;
 
   const activeChips = useMemo(()=>{
     const chips = [];
@@ -179,10 +175,8 @@ export default function App() {
     brands.forEach(b => chips.push({key:`brand-${b}`, label:b, onRemove:()=>{const n=new Set(brands); n.delete(b); setBrands(n);}}));
     feats.forEach(f => chips.push({key:`feat-${f}`, label:f, onRemove:()=>{const n=new Set(feats); n.delete(f); setFeats(n);}}));
     lamps.forEach(l => chips.push({key:`lamp-${l}`, label:l, onRemove:()=>{const n=new Set(lamps); n.delete(l); setLamps(n);}}));
-    if(criMin>0) chips.push({key:"cri", label:`CRI ${criMin}+`, onRemove:()=>setCriMin(0)});
-    if(featAnim) chips.push({key:"anim", label:"Animation wheel", onRemove:()=>setFeatAnim(false)});
     return chips;
-  },[query, apps, cats, tiers, brands, feats, lamps, criMin, featAnim]);
+  },[query, apps, cats, tiers, brands, feats, lamps]);
 
   return (
     <div style={{minHeight:"100vh",background:COLORS.bgBase,color:COLORS.textPrimary,fontFamily:FONTS.ui}}>
@@ -316,8 +310,8 @@ export default function App() {
             style={{display:"flex",alignItems:"center",justifyContent:"center",gap:7,padding:"10px 12px",background:"transparent",border:`1px dashed ${COLORS.borderDefault}`,borderRadius:RADIUS.md,fontFamily:FONTS.ui,fontSize:13,fontWeight:600,color:COLORS.textMuted,width:"100%",marginTop:6,marginBottom:14,cursor:"pointer"}}>
             <SlidersHorizontal size={14}/>
             More filters
-            {(cats.size+feats.size+brands.size+moreCount)>0 && (
-              <span style={{background:COLORS.actionAmber,color:COLORS.bgBase,borderRadius:RADIUS.sm,padding:"1px 7px",fontSize:12,fontWeight:700,fontFamily:FONTS.ui}}>{cats.size+feats.size+brands.size+moreCount}</span>
+            {(cats.size+feats.size+brands.size+lamps.size)>0 && (
+              <span style={{background:COLORS.actionAmber,color:COLORS.bgBase,borderRadius:RADIUS.sm,padding:"1px 7px",fontSize:12,fontWeight:700,fontFamily:FONTS.ui}}>{cats.size+feats.size+brands.size+lamps.size}</span>
             )}
             {moreFiltersExpanded ? <ChevronUp size={13}/> : <ChevronDown size={13}/>}
           </button>
@@ -348,15 +342,15 @@ export default function App() {
 
             {/* Features */}
             <Section label="Features" active={feats.size}>
-              <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-                {FEAT_FILTERS.map(({key,label,icon,color,field})=>{
+              <div style={{display:"flex",gap:isMobile?5:8,flexWrap:"wrap"}}>
+                {FEAT_FILTERS.map(({key,label,icon,color,field,mobileLabel})=>{
                   const on=feats.has(key);
                   return(
                     <div key={key} className="chip" onClick={()=>toggle(feats,setFeats,key)}
-                      style={{display:"flex",alignItems:"center",gap:8,padding:isMobile?"9px 14px":"10px 16px",background:on?color+"33":COLORS.bgElevated,border:`1.5px solid ${on?color:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?15:14,fontWeight:600,color:on?color:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
+                      style={{display:"flex",alignItems:"center",gap:isMobile?5:8,padding:isMobile?"6px 9px":"10px 16px",background:on?color+"33":COLORS.bgElevated,border:`1.5px solid ${on?color:COLORS.borderDefault}`,borderRadius:RADIUS.md,fontSize:isMobile?12:14,fontWeight:600,color:on?color:COLORS.textSecondary,fontFamily:FONTS.ui,cursor:"pointer"}}>
                       {icon}
-                      {label}
-                      {on&&<Check size={13}/>}
+                      {isMobile && mobileLabel ? mobileLabel : label}
+                      {on&&<Check size={12}/>}
                     </div>
                   );
                 })}
@@ -398,25 +392,13 @@ export default function App() {
               </div>
             </Section>
 
-            {/* Advanced — CRI, Light Source, Animation (unified inline, no nested expand) */}
-            <Section label="Advanced" active={moreCount}>
-              <SubGroup label="CRI">
-                <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
-                  {[{l:"90+",m:90},{l:"80+",m:80},{l:"70+",m:70}].map(b=>(
-                    <MiniPill key={b.l} active={criMin===b.m} onClick={()=>setCriMin(criMin===b.m?0:b.m)}>CRI {b.l}</MiniPill>
-                  ))}
-                </div>
-              </SubGroup>
-              <SubGroup label="Light Source">
-                <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
-                  {allLamps.map(l=>(
-                    <MiniPill key={l} active={lamps.has(l)} onClick={()=>toggle(lamps,setLamps,l)} dot={LAMP_COLORS[l]}>{l}</MiniPill>
-                  ))}
-                </div>
-              </SubGroup>
-              <SubGroup label="Other">
-                <MiniPill active={featAnim} onClick={()=>setFeatAnim(v=>!v)}>Animation wheel</MiniPill>
-              </SubGroup>
+            {/* Light Source (advanced) */}
+            <Section label="Light Source" active={lamps.size}>
+              <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+                {allLamps.map(l=>(
+                  <MiniPill key={l} active={lamps.has(l)} onClick={()=>toggle(lamps,setLamps,l)} dot={LAMP_COLORS[l]}>{l}</MiniPill>
+                ))}
+              </div>
             </Section>
 
           </div>
@@ -723,80 +705,80 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
 
       {/* Expanded card */}
       {expanded&&(
-        <div className="expand-in" style={{padding:isMobile?"0 14px 16px":"0 16px 18px"}}>
+        <div className="expand-in" style={{padding:isMobile?"0 12px 12px":"0 16px 18px"}}>
           <div style={{background:COLORS.bgCardSurface,border:"1px solid #18181C",borderRadius:12,overflow:"hidden"}}>
 
             {/* Card header: image left, text right */}
             <div style={{display:"flex",flexDirection:isMobile?"column":"row",borderBottom:"1px solid #131316"}}>
               {/* Image panel */}
-              <div style={{width:isMobile?"100%":240,minWidth:isMobile?undefined:240,height:isMobile?200:220,background:COLORS.bgElevated,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+              <div style={{width:isMobile?"100%":240,minWidth:isMobile?undefined:240,height:isMobile?150:220,background:COLORS.bgElevated,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
                 {hasImg
-                  ?<img src={f.imageUrl} alt={f.model} style={{width:"100%",height:"100%",objectFit:"contain",padding:12}} onError={e=>{e.target.style.display="none";e.target.nextSibling&&(e.target.nextSibling.style.display="flex");}}/>
+                  ?<img src={f.imageUrl} alt={f.model} style={{width:"100%",height:"100%",objectFit:"contain",padding:isMobile?8:12}} onError={e=>{e.target.style.display="none";e.target.nextSibling&&(e.target.nextSibling.style.display="flex");}}/>
                   :null}
                 {hasImg
                   ?<div style={{display:"none",alignItems:"center",justifyContent:"center",width:"100%",height:"100%"}}>
-                    <div style={{width:48,height:48,borderRadius:8,background:catCol+"22",border:`2px solid ${catCol}44`}}/>
+                    <div style={{width:isMobile?40:48,height:isMobile?40:48,borderRadius:8,background:catCol+"22",border:`2px solid ${catCol}44`}}/>
                   </div>
-                  :<div style={{width:48,height:48,borderRadius:8,background:catCol+"22",border:`2px solid ${catCol}44`}}/>}
+                  :<div style={{width:isMobile?40:48,height:isMobile?40:48,borderRadius:8,background:catCol+"22",border:`2px solid ${catCol}44`}}/>}
               </div>
               {/* Text panel */}
-              <div style={{flex:1,padding:isMobile?"18px 20px":"22px 26px",display:"flex",flexDirection:"column",justifyContent:"center"}}>
-                <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:12}}>
+              <div style={{flex:1,padding:isMobile?"14px 16px":"22px 26px",display:"flex",flexDirection:"column",justifyContent:"center"}}>
+                <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:isMobile?8:12}}>
                   {(f.applications||[]).map(a=>(
-                    <span key={a} style={{fontSize:11,fontWeight:700,color:APP_COLORS[a],background:APP_COLORS[a]+"1A",padding:"3px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:FONTS.mono}}>{a}</span>
+                    <span key={a} style={{fontSize:isMobile?10:11,fontWeight:700,color:APP_COLORS[a],background:APP_COLORS[a]+"1A",padding:isMobile?"2px 6px":"3px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:FONTS.mono}}>{a}</span>
                   ))}
-                  {f.tier&&<span style={{fontSize:11,fontWeight:700,color:TIER_COLORS[f.tier],background:TIER_COLORS[f.tier]+"1A",padding:"3px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:FONTS.mono}}>{f.tier}</span>}
-                  {f.ipRated&&<span style={{fontSize:11,fontWeight:700,color:"#9D8DF1",background:"#9D8DF11A",padding:"3px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:FONTS.mono}}>{f.ipRating||"IP Rated"}</span>}
+                  {f.tier&&<span style={{fontSize:isMobile?10:11,fontWeight:700,color:TIER_COLORS[f.tier],background:TIER_COLORS[f.tier]+"1A",padding:isMobile?"2px 6px":"3px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:FONTS.mono}}>{f.tier}</span>}
+                  {f.ipRated&&<span style={{fontSize:isMobile?10:11,fontWeight:700,color:"#9D8DF1",background:"#9D8DF11A",padding:isMobile?"2px 6px":"3px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:".05em",fontFamily:FONTS.mono}}>{f.ipRating||"IP Rated"}</span>}
                 </div>
-                <div style={{fontFamily:FONTS.display,fontSize:isMobile?28:38,fontWeight:700,letterSpacing:"-.035em",lineHeight:1.05,color:COLORS.textPrimary}}>{clean(f.model)}</div>
-                <div style={{fontSize:14,fontWeight:600,color:COLORS.brandPeriwinkle,letterSpacing:".05em",textTransform:"uppercase",fontFamily:FONTS.mono,marginTop:8}}>{f.brand} · {catDisplayName(f.category)}</div>
+                <div style={{fontFamily:FONTS.display,fontSize:isMobile?23:38,fontWeight:700,letterSpacing:"-.035em",lineHeight:1.05,color:COLORS.textPrimary}}>{clean(f.model)}</div>
+                <div style={{fontSize:isMobile?12:14,fontWeight:600,color:COLORS.brandPeriwinkle,letterSpacing:".05em",textTransform:"uppercase",fontFamily:FONTS.mono,marginTop:isMobile?5:8}}>{f.brand} · {catDisplayName(f.category)}</div>
                 {f.standout&&(
-                  <div style={{display:"inline-flex",alignItems:"center",gap:7,marginTop:14,padding:"7px 11px",background:COLORS.standoutCyanBg,border:`1px solid ${COLORS.standoutCyanBorder}`,borderRadius:6,fontFamily:FONTS.ui,fontSize:13,fontWeight:500,color:COLORS.standoutCyanText,alignSelf:"flex-start"}}>
+                  <div style={{display:"inline-flex",alignItems:"center",gap:6,marginTop:isMobile?9:14,padding:isMobile?"5px 9px":"7px 11px",background:COLORS.standoutCyanBg,border:`1px solid ${COLORS.standoutCyanBorder}`,borderRadius:6,fontFamily:FONTS.ui,fontSize:isMobile?12:13,fontWeight:500,color:COLORS.standoutCyanText,alignSelf:"flex-start"}}>
                     <span style={{width:5,height:5,borderRadius:"50%",background:COLORS.standoutCyan,flexShrink:0}}/>
                     {clean(f.standout)}
                   </div>
                 )}
                 {f.description&&(
-                  <div style={{fontFamily:FONTS.ui,fontSize:14,color:COLORS.textMuted,lineHeight:1.55,marginTop:f.standout?12:14}}>{clean(f.description)}</div>
+                  <div style={{fontFamily:FONTS.ui,fontSize:isMobile?13:14,color:COLORS.textMuted,lineHeight:1.5,marginTop:isMobile?(f.standout?8:10):(f.standout?12:14)}}>{clean(f.description)}</div>
                 )}
               </div>
             </div>
 
             {/* Spec grid */}
-            <div style={{padding:isMobile?"12px 14px":"14px 20px"}}>
-              <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":"1fr 1fr 1fr",gap:8,marginBottom:12}}>
-                <SB label="Max Output" value={f.outputLumens?fmt(f.outputLumens)+" lm":"\u2014"}/>
-                <SB label="Framing Shutters" value={f.framing?"Yes":"No"} hl={f.framing}/>
-                <SB label="CRI" value={clean(f.criRaw)||(f.cri!=null?String(f.cri):"\u2014")}/>
-                <SB label="Lamp" value={(f.watts?f.watts+"W ":"")+(f.lampType||"")||"\u2014"}/>
-                <SB label="Color Temp" value={clean(f.cct)||clean(f.cctRange)||"\u2014"}/>
-                <SB label="Zoom" value={f.zoomMin!=null?zoomStr(f)+(f.zoomRatio?" ("+f.zoomRatio+")":""):(clean(f.zoomRaw)||"\u2014")}/>
-                <SB label="Color Mixing" value={clean(f.colorMixing)||"\u2014"}/>
-                <SB label="Pan / Tilt" value={clean(f.panTilt)||"\u2014"}/>
-                <SB label="Weight" value={f.weightKg?f.weightKg+" kg":"\u2014"}/>
-                <SB label="IP Rating" value={clean(f.ipRating)||"\u2014"}/>
-                <SB label="Power Draw" value={f.powerConsumption?f.powerConsumption+" W":"\u2014"}/>
-                <SB label="DMX Channels" value={clean(f.dmxChannels)||"\u2014"}/>
-                <SB label="Gobo" value={clean(f.gobo)||"\u2014"} wide/>
-                <SB label="Effects" value={clean(f.effectsRaw)||"\u2014"} wide/>
-                <SB label="Protocols" value={clean(f.protocols)||"\u2014"} wide/>
+            <div style={{padding:isMobile?"10px 12px":"14px 20px"}}>
+              <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":"1fr 1fr 1fr",gap:isMobile?6:8,marginBottom:isMobile?9:12}}>
+                <SB label="Max Output" value={f.outputLumens?fmt(f.outputLumens)+" lm":"\u2014"} isMobile={isMobile}/>
+                <SB label="Framing Shutters" value={f.framing?"Yes":"No"} hl={f.framing} isMobile={isMobile}/>
+                <SB label="CRI" value={clean(f.criRaw)||(f.cri!=null?String(f.cri):"\u2014")} isMobile={isMobile}/>
+                <SB label="Lamp" value={(f.watts?f.watts+"W ":"")+(f.lampType||"")||"\u2014"} isMobile={isMobile}/>
+                <SB label="Color Temp" value={clean(f.cct)||clean(f.cctRange)||"\u2014"} isMobile={isMobile}/>
+                <SB label="Zoom" value={f.zoomMin!=null?zoomStr(f)+(f.zoomRatio?" ("+f.zoomRatio+")":""):(clean(f.zoomRaw)||"\u2014")} isMobile={isMobile}/>
+                <SB label="Color Mixing" value={clean(f.colorMixing)||"\u2014"} isMobile={isMobile}/>
+                <SB label="Pan / Tilt" value={clean(f.panTilt)||"\u2014"} isMobile={isMobile}/>
+                <SB label="Weight" value={f.weightKg?f.weightKg+" kg":"\u2014"} isMobile={isMobile}/>
+                <SB label="IP Rating" value={clean(f.ipRating)||"\u2014"} isMobile={isMobile}/>
+                <SB label="Power Draw" value={f.powerConsumption?f.powerConsumption+" W":"\u2014"} isMobile={isMobile}/>
+                <SB label="DMX Channels" value={clean(f.dmxChannels)||"\u2014"} isMobile={isMobile}/>
+                <SB label="Gobo" value={clean(f.gobo)||"\u2014"} wide isMobile={isMobile}/>
+                <SB label="Effects" value={clean(f.effectsRaw)||"\u2014"} wide isMobile={isMobile}/>
+                <SB label="Protocols" value={clean(f.protocols)||"\u2014"} wide isMobile={isMobile}/>
               </div>
-              <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+              <div style={{display:"flex",gap:isMobile?6:8,flexWrap:"wrap"}}>
                 <button onClick={e=>{e.stopPropagation();onCompare();}} disabled={!inCompare&&compareFull}
-                  style={{flex:"1 1 140px",padding:"11px",background:inCompare?COLORS.actionAmber:COLORS.bgElevated,border:`1px solid ${inCompare?COLORS.actionAmber:COLORS.borderDefault}`,borderRadius:9,color:inCompare?COLORS.bgBase:(compareFull?"#6E6E7C":COLORS.textPrimary),fontSize:14,fontWeight:700,cursor:(!inCompare&&compareFull)?"default":"pointer",fontFamily:FONTS.ui,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+                  style={{flex:"1 1 140px",padding:isMobile?"10px":"11px",background:inCompare?COLORS.actionAmber:COLORS.bgElevated,border:`1px solid ${inCompare?COLORS.actionAmber:COLORS.borderDefault}`,borderRadius:9,color:inCompare?COLORS.bgBase:(compareFull?"#6E6E7C":COLORS.textPrimary),fontSize:isMobile?13:14,fontWeight:700,cursor:(!inCompare&&compareFull)?"default":"pointer",fontFamily:FONTS.ui,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
                   {inCompare?<><Minus size={13}/> Remove</>:<><Plus size={13}/> Compare</>}
                 </button>
                 {f.link
                   ?<a href={f.link} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()}
-                      style={{flex:"1 1 140px",padding:"11px",background:COLORS.bgElevated,border:"1px solid #222228",borderRadius:9,color:COLORS.textPrimary,fontSize:14,fontWeight:700,fontFamily:FONTS.ui,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+                      style={{flex:"1 1 140px",padding:isMobile?"10px":"11px",background:COLORS.bgElevated,border:"1px solid #222228",borderRadius:9,color:COLORS.textPrimary,fontSize:isMobile?13:14,fontWeight:700,fontFamily:FONTS.ui,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
                       <ExternalLink size={13}/> Product page
                     </a>
-                  :<div style={{flex:"1 1 140px",padding:"11px",background:COLORS.bgBase,borderRadius:9,color:"#6E6E7C",fontSize:14,fontWeight:600,fontFamily:FONTS.ui,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+                  :<div style={{flex:"1 1 140px",padding:isMobile?"10px":"11px",background:COLORS.bgBase,borderRadius:9,color:"#6E6E7C",fontSize:isMobile?13:14,fontWeight:600,fontFamily:FONTS.ui,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
                       <ExternalLink size={12}/> No link yet
                     </div>
                 }
               </div>
-              {f.lastVerified&&<div style={{fontFamily:FONTS.mono,fontSize:11,color:COLORS.textDim,marginTop:12,letterSpacing:".05em"}}>VERIFIED {f.lastVerified}</div>}
+              {f.lastVerified&&<div style={{fontFamily:FONTS.mono,fontSize:isMobile?10:11,color:COLORS.textDim,marginTop:isMobile?9:12,letterSpacing:".05em"}}>VERIFIED {f.lastVerified}</div>}
             </div>
           </div>
         </div>
@@ -805,11 +787,11 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
   );
 }
 
-function SB({label,value,wide,hl}){
+function SB({label,value,wide,hl,isMobile}){
   return(
-    <div style={{background:COLORS.bgElevated,border:`1px solid ${COLORS.borderSubtle}`,borderRadius:RADIUS.md,padding:"11px 13px",gridColumn:wide?"1 / -1":"auto"}}>
-      <div style={{fontFamily:FONTS.mono,fontSize:11,fontWeight:600,color:COLORS.specLabelAmber,textTransform:"uppercase",letterSpacing:".1em",marginBottom:6}}>{label}</div>
-      <div style={{fontFamily:FONTS.mono,fontSize:14,color:COLORS.textSecondary,whiteSpace:"pre-line",lineHeight:1.4}}>{value}</div>
+    <div style={{background:COLORS.bgElevated,border:`1px solid ${COLORS.borderSubtle}`,borderRadius:RADIUS.md,padding:isMobile?"8px 10px":"11px 13px",gridColumn:wide?"1 / -1":"auto"}}>
+      <div style={{fontFamily:FONTS.mono,fontSize:isMobile?10:11,fontWeight:600,color:COLORS.specLabelAmber,textTransform:"uppercase",letterSpacing:".1em",marginBottom:isMobile?4:6}}>{label}</div>
+      <div style={{fontFamily:FONTS.mono,fontSize:isMobile?12.5:14,color:COLORS.textSecondary,whiteSpace:"pre-line",lineHeight:1.4}}>{value}</div>
     </div>
   );
 }
