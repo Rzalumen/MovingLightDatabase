@@ -1,4 +1,4 @@
-const CACHE = 'mld-v11';
+const CACHE = 'mld-v12';
 self.addEventListener('install', e => self.skipWaiting());
 self.addEventListener('activate', e => e.waitUntil(clients.claim()));
 self.addEventListener('fetch', e => {

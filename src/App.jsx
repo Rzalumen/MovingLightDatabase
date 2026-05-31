@@ -199,6 +199,137 @@ export default function App() {
         a{color:inherit;text-decoration:none;}
         .no-scrollbar::-webkit-scrollbar{display:none;}
         .no-scrollbar{-ms-overflow-style:none;scrollbar-width:none;}
+
+        /* ── DESKTOP REDESIGN (≥1024px): 300px sticky sidebar + full-width rows ── */
+        @media (min-width: 1024px) {
+          /* Step 3 — Shell + sidebar */
+          .app-shell { display: flex; align-items: flex-start; max-width: none; margin: 0; padding: 0; }
+          .app-shell .sidebar {
+            width: 300px;
+            flex: 0 0 300px;
+            background: ${COLORS.bgElevated};
+            border-right: 1px solid rgba(255,255,255,0.06);
+            position: sticky;
+            top: 64px;
+            height: calc(100vh - 64px);
+            overflow-y: auto;
+            padding: 24px;
+          }
+          .app-shell .sidebar::-webkit-scrollbar { width: 8px; }
+          .app-shell .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.08);
+            border-radius: 4px;
+          }
+
+          /* Step 4 — Sidebar typography */
+          .app-shell .sidebar .ds-section-label {
+            font-family: ${FONTS.ui};
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.2px;
+            color: ${COLORS.textDim};
+            margin-bottom: 10px;
+          }
+          .app-shell .sidebar .chip {
+            font-size: 12.5px;
+          }
+          .app-shell .sidebar .brand-pill {
+            font-size: 12.5px;
+          }
+          /* Bump search input affordance */
+          .app-shell .sidebar > .ds-search-wrap {
+            margin-bottom: 24px;
+          }
+          .app-shell .sidebar > .ds-search-wrap input {
+            font-size: 12.5px !important;
+          }
+
+          /* Step 5 — 2-column chip grids */
+          .app-shell .sidebar .chips-2col {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            flex-wrap: initial !important;
+          }
+          .app-shell .sidebar .chips-2col > .chip,
+          .app-shell .sidebar .chips-2col > .brand-pill {
+            width: 100%;
+            justify-content: center;
+            flex: initial;
+          }
+
+          /* Step 6 — Output Tier single-line */
+          .app-shell .sidebar .ds-section-sub {
+            font-family: ${FONTS.mono};
+            font-size: 10px;
+            color: ${COLORS.specLabelAmber};
+            margin-top: -4px;
+            margin-bottom: 10px;
+          }
+          .app-shell .sidebar .chips-tier {
+            display: flex !important;
+            gap: 6px;
+            flex-wrap: initial !important;
+          }
+          .app-shell .sidebar .chips-tier > .chip {
+            flex: 1 !important;
+            justify-content: center !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            padding: 7px 11px !important;
+          }
+          .app-shell .sidebar .chips-tier .tier-sub {
+            display: none !important;
+          }
+
+          /* Step 8 — Main content + sticky active-filter bar */
+          .app-shell .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 24px 32px;
+            max-width: 1400px;
+          }
+          .app-shell .main-content > .ds-active-bar-host > .active-filter-bar,
+          .app-shell .main-content > .active-filter-bar {
+            position: sticky;
+            top: 80px;
+            z-index: 20;
+          }
+
+          /* Step 10 — Standout cyan edge + badge */
+          .app-shell .fx-row.standout-row {
+            box-shadow: inset 3px 0 0 0 ${COLORS.standoutCyan};
+          }
+          .app-shell .standout-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: ${COLORS.standoutCyan};
+            font-size: 9.5px;
+            font-weight: 600;
+            letter-spacing: .5px;
+            font-family: ${FONTS.mono};
+            text-transform: uppercase;
+            margin-left: 8px;
+            vertical-align: middle;
+          }
+          .app-shell .standout-badge .d {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: ${COLORS.standoutCyan};
+            display: inline-block;
+          }
+        }
+
+        /* Step 11 — preserve mobile layout below 1024 */
+        @media (max-width: 1023.98px) {
+          .app-shell { display: block; }
+          .app-shell .sidebar { display: contents; }
+          .app-shell .main-content { display: contents; }
+          .standout-badge { display: none !important; }
+          .ds-section-sub { display: none !important; }
+        }
       `}</style>
 
       {/* ── HEADER ── */}
@@ -250,12 +381,13 @@ export default function App() {
         </div>
       </div>
 
-      <div style={{maxWidth:1180,margin:"0 auto",padding:isMobile?"16px 16px 100px":"22px 28px 48px"}}>
+      <div className="app-shell" style={{maxWidth:1180,margin:"0 auto",padding:isMobile?"16px 16px 100px":"22px 28px 48px"}}>
+        <div className="sidebar">
 
         {/* ── ALWAYS-VISIBLE FILTERS ── */}
 
         {/* Search */}
-        <div style={{position:"relative",marginBottom:22}}>
+        <div className="ds-search-wrap" style={{position:"relative",marginBottom:22}}>
           <Search size={17} color="#7E7E8C" style={{position:"absolute",left:14,top:"50%",transform:"translateY(-50%)"}}/>
           <input value={query} onChange={e=>setQuery(e.target.value)}
             placeholder="Search fixture, brand, or feature..."
@@ -265,7 +397,7 @@ export default function App() {
 
         {/* Application */}
         <Section label="Application" active={apps.size}>
-          <div style={{display:"flex",gap:isMobile?4:6,flexWrap:isMobile?"nowrap":"wrap",overflowX:isMobile?"hidden":"visible"}}>
+          <div className="chips-2col" style={{display:"flex",gap:isMobile?4:6,flexWrap:isMobile?"nowrap":"wrap",overflowX:isMobile?"hidden":"visible"}}>
             {APP_ORDER.map(a=>{
               const on=apps.has(a);
               const col=APP_COLORS[a];
@@ -284,8 +416,8 @@ export default function App() {
         </Section>
 
         {/* Output Tier */}
-        <Section label="Output Tier" active={tiers.size}>
-          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+        <Section label="Output Tier" active={tiers.size} sub={"< 10k / 10–30k / ≥ 30k lm"}>
+          <div className="chips-tier" style={{display:"flex",gap:8,flexWrap:"wrap"}}>
             {allTiers.map(t=>{
               const on=tiers.has(t);
               const col=TIER_COLORS[t];
@@ -297,7 +429,7 @@ export default function App() {
                     {t}
                     {on&&<Check size={13}/>}
                   </div>
-                  <div style={{fontSize:12,fontFamily:FONTS.mono,color:on?col+"CC":COLORS.textMuted,marginTop:3,marginLeft:16}}>{TIER_DESC[t]}</div>
+                  <div className="tier-sub" style={{fontSize:12,fontFamily:FONTS.mono,color:on?col+"CC":COLORS.textMuted,marginTop:3,marginLeft:16}}>{TIER_DESC[t]}</div>
                 </div>
               );
             })}
@@ -324,7 +456,7 @@ export default function App() {
 
             {/* Type */}
             <Section label="Type" active={cats.size}>
-              <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+              <div className="chips-2col" style={{display:"flex",gap:8,flexWrap:"wrap"}}>
                 {allCats.map(c=>{
                   const on=cats.has(c);
                   const col=CAT_COLORS[c];
@@ -342,7 +474,7 @@ export default function App() {
 
             {/* Light Source */}
             <Section label="Light Source" active={lamps.size}>
-              <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
+              <div className="chips-2col" style={{display:"flex",gap:7,flexWrap:"wrap"}}>
                 {allLamps.map(l=>(
                   <MiniPill key={l} active={lamps.has(l)} onClick={()=>toggle(lamps,setLamps,l)} dot={LAMP_COLORS[l]}>{l}</MiniPill>
                 ))}
@@ -413,6 +545,9 @@ export default function App() {
 
           </div>
         )}
+
+        </div>
+        <div className="main-content">
 
         {/* Mobile helper text when no filter/search/watching active */}
         {isMobile && !hasFilter && (
@@ -488,6 +623,7 @@ export default function App() {
             </div>
           </>
         )}
+        </div>
       </div>
 
       {isMobile&&compare.length>0&&(
@@ -524,12 +660,13 @@ export default function App() {
   );
 }
 
-function Section({label,active,children}){
+function Section({label,active,children,sub}){
   return(
     <div style={{marginBottom:18}}>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:9}}>
-        <span style={{fontFamily:FONTS.ui,fontSize:12,fontWeight:700,color:COLORS.textMuted,letterSpacing:".08em",textTransform:"uppercase"}}>{label}</span>
+        <span className="ds-section-label" style={{fontFamily:FONTS.ui,fontSize:12,fontWeight:700,color:COLORS.textMuted,letterSpacing:".08em",textTransform:"uppercase"}}>{label}</span>
       </div>
+      {sub && <div className="ds-section-sub">{sub}</div>}
       {children}
     </div>
   );
@@ -546,7 +683,7 @@ function SubGroup({label,children}){
 
 function MiniPill({active,onClick,children,dot}){
   return(
-    <div className="chip" onClick={onClick}
+    <div className="chip mini-pill" onClick={onClick}
       style={{display:"inline-flex",alignItems:"center",gap:6,padding:"7px 12px",background:active?COLORS.actionAmberBg:"transparent",border:`1px solid ${active?COLORS.actionAmber:COLORS.borderDefault}`,borderRadius:RADIUS.sm,fontSize:13,color:active?COLORS.actionAmber:COLORS.textSecondary,fontWeight:600,cursor:"pointer",fontFamily:FONTS.ui}}>
       {dot&&<span style={{width:7,height:7,borderRadius:"50%",background:dot}}/>}
       {children}
@@ -599,9 +736,10 @@ function EmptyState(){
 function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isMobile,isWatched,onWatch}){
   const catCol=CAT_COLORS[f.category]||"#888";
   const hasImg=!!f.imageUrl;
+  const isStandout=!!f.standout;
   return(
     <div style={{borderBottom:last&&!expanded?"none":"1px solid #131316",background:expanded?COLORS.bgElevated:"transparent"}}>
-      <div className="fx-row" onClick={onToggle}
+      <div className={"fx-row"+(isStandout?" standout-row":"")} onClick={onToggle}
         style={{display:"grid",gridTemplateColumns:isMobile?"56px 1fr auto 36px 36px":"56px 1fr 80px 70px 80px 60px 70px 28px 28px 28px",padding:isMobile?"12px 14px":"12px 16px",cursor:"pointer",alignItems:"center",gap:0}}>
 
         {/* Thumbnail */}
@@ -616,6 +754,9 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
         <div style={{paddingLeft:12,minWidth:0}}>
           <div style={{display:"flex",alignItems:"center",gap:6}}>
             <span style={{fontFamily:FONTS.display,fontSize:isMobile?17:18,fontWeight:600,letterSpacing:"-.02em",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",color:COLORS.textPrimary}}>{clean(f.model)}</span>
+            {isStandout&&(
+              <span className="standout-badge"><span className="d"/>STANDOUT</span>
+            )}
           </div>
           <div style={{display:"flex",alignItems:"center",gap:6,marginTop:3}}>
             <span style={{fontSize:14,fontWeight:600,color:COLORS.brandPeriwinkle,letterSpacing:".04em",textTransform:"uppercase",fontFamily:FONTS.mono}}>{f.brand}</span>
