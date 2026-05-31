@@ -14345,7 +14345,14 @@
     "lastVerified": "2026-05-30",
     "dualFrost": false,
     "ipRated": true,
-    "imageUrl": "https://www.vellolight.com/upload/img/GY879209523016/ak550-1.png"
+    "imageUrl": "https://www.vellolight.com/upload/img/GY879209523016/ak550-1.png",
+    "goboInfo": {
+      "rotating": null,
+      "fixed": 15,
+      "wheelImage": null,
+      "wheelImage2": null,
+      "notes": "Manufacturer page lists 15 gobos + open; rotating vs fixed split not specified — likely all fixed (beam fixture)."
+    }
   },
   {
     "id": 307,
@@ -14444,7 +14451,14 @@
     "lastVerified": "2026-05-30",
     "dualFrost": false,
     "ipRated": false,
-    "imageUrl": "https://www.vellolight.com/upload/img/GY879209523016/bsw600-3.png"
+    "imageUrl": "https://www.vellolight.com/upload/img/GY879209523016/bsw600-3.png",
+    "goboInfo": {
+      "rotating": 7,
+      "fixed": 9,
+      "wheelImage": null,
+      "wheelImage2": null,
+      "notes": "Static gobos are metal."
+    }
   },
   {
     "id": 309,
@@ -14541,7 +14555,14 @@
     "lastVerified": "2026-05-30",
     "dualFrost": false,
     "ipRated": false,
-    "imageUrl": "https://www.vellolight.com/upload/img/GY879209523016/beam400-2.png"
+    "imageUrl": "https://www.vellolight.com/upload/img/GY879209523016/beam400-2.png",
+    "goboInfo": {
+      "rotating": 0,
+      "fixed": 12,
+      "wheelImage": null,
+      "wheelImage2": null,
+      "notes": null
+    }
   },
   {
     "id": 311,
@@ -14638,7 +14659,14 @@
     "lastVerified": "2026-05-30",
     "dualFrost": false,
     "ipRated": false,
-    "imageUrl": "https://www.vellolight.com/upload/img/GY879209523016/beam360-2-7.png"
+    "imageUrl": "https://www.vellolight.com/upload/img/GY879209523016/beam360-2-7.png",
+    "goboInfo": {
+      "rotating": 0,
+      "fixed": 12,
+      "wheelImage": null,
+      "wheelImage2": null,
+      "notes": "Static gobos are metal."
+    }
   },
   {
     "id": 313,
