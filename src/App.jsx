@@ -773,6 +773,7 @@ function ResultRow({f,expanded,onToggle,inCompare,compareFull,onCompare,last,isM
                 <SB label="Effects" value={clean(f.effectsRaw)||"\u2014"} wide isMobile={isMobile}/>
                 <SB label="Protocols" value={clean(f.protocols)||"\u2014"} wide isMobile={isMobile}/>
               </div>
+              <GoboSection goboInfo={f.goboInfo} model={f.model} isMobile={isMobile}/>
               <div style={{display:"flex",gap:isMobile?6:8,flexWrap:"wrap"}}>
                 <button onClick={e=>{e.stopPropagation();onCompare();}} disabled={!inCompare&&compareFull}
                   style={{flex:"1 1 140px",padding:isMobile?"10px":"11px",background:inCompare?COLORS.actionAmber:COLORS.bgElevated,border:`1px solid ${inCompare?COLORS.actionAmber:COLORS.borderDefault}`,borderRadius:9,color:inCompare?COLORS.bgBase:(compareFull?"#6E6E7C":COLORS.textPrimary),fontSize:isMobile?13:14,fontWeight:700,cursor:(!inCompare&&compareFull)?"default":"pointer",fontFamily:FONTS.ui,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
@@ -802,6 +803,48 @@ function SB({label,value,wide,hl,isMobile}){
     <div style={{background:COLORS.bgElevated,border:`1px solid ${COLORS.borderSubtle}`,borderRadius:RADIUS.md,padding:isMobile?"8px 10px":"11px 13px",gridColumn:wide?"1 / -1":"auto"}}>
       <div style={{fontFamily:FONTS.mono,fontSize:isMobile?10:11,fontWeight:600,color:COLORS.specLabelAmber,textTransform:"uppercase",letterSpacing:".1em",marginBottom:isMobile?4:6}}>{label}</div>
       <div style={{fontFamily:FONTS.mono,fontSize:isMobile?12.5:14,color:COLORS.textSecondary,whiteSpace:"pre-line",lineHeight:1.4}}>{value}</div>
+    </div>
+  );
+}
+
+function GoboSection({goboInfo,model,isMobile}){
+  if(!goboInfo) return null;
+  const {rotating,fixed,wheelImage,wheelImage2,notes} = goboInfo;
+  const hasAnything = rotating!=null || fixed!=null || wheelImage || wheelImage2 || notes;
+  if(!hasAnything) return null;
+  const imgMax = isMobile ? 200 : 280;
+  return(
+    <div style={{marginTop:isMobile?12:14,padding:isMobile?"12px":"14px 16px",background:COLORS.bgElevated,border:`1px solid ${COLORS.borderSubtle}`,borderRadius:RADIUS.md}}>
+      <div style={{fontFamily:FONTS.mono,fontSize:isMobile?10:11,fontWeight:600,color:COLORS.specLabelAmber,textTransform:"uppercase",letterSpacing:".1em",marginBottom:isMobile?8:10}}>Gobo</div>
+      {wheelImage&&(
+        <img src={wheelImage} alt={`${model} gobo wheel`} loading="lazy"
+          style={{display:"block",margin:"6px auto 10px",width:"100%",maxWidth:imgMax,maxHeight:imgMax,height:"auto",borderRadius:8,background:COLORS.bgBase,padding:8,border:"1px solid rgba(255,255,255,0.06)",objectFit:"contain"}}
+          onError={e=>{e.target.style.display="none";}}/>
+      )}
+      {wheelImage2&&(
+        <img src={wheelImage2} alt={`${model} second gobo wheel`} loading="lazy"
+          style={{display:"block",margin:"6px auto 10px",width:"100%",maxWidth:imgMax,maxHeight:imgMax,height:"auto",borderRadius:8,background:COLORS.bgBase,padding:8,border:"1px solid rgba(255,255,255,0.06)",objectFit:"contain"}}
+          onError={e=>{e.target.style.display="none";}}/>
+      )}
+      {(rotating!=null||fixed!=null)&&(
+        <div style={{display:"flex",gap:24,marginTop:wheelImage||wheelImage2?12:4}}>
+          {rotating!=null&&(
+            <div>
+              <div style={{fontFamily:FONTS.ui,fontSize:9,fontWeight:600,letterSpacing:"1px",color:COLORS.specLabelAmber,textTransform:"uppercase"}}>Rotating</div>
+              <div style={{fontFamily:FONTS.mono,fontSize:14,fontWeight:600,color:COLORS.textPrimary,marginTop:4}}>{rotating}</div>
+            </div>
+          )}
+          {fixed!=null&&(
+            <div>
+              <div style={{fontFamily:FONTS.ui,fontSize:9,fontWeight:600,letterSpacing:"1px",color:COLORS.specLabelAmber,textTransform:"uppercase"}}>Fixed</div>
+              <div style={{fontFamily:FONTS.mono,fontSize:14,fontWeight:600,color:COLORS.textPrimary,marginTop:4}}>{fixed}</div>
+            </div>
+          )}
+        </div>
+      )}
+      {notes&&(
+        <div style={{fontFamily:FONTS.ui,fontSize:12,lineHeight:1.5,color:COLORS.textMuted,marginTop:10}}>{notes}</div>
+      )}
     </div>
   );
 }
