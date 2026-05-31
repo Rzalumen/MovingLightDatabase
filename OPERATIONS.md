@@ -132,6 +132,7 @@ Use the highest-priority source available. Record which type was used (it inform
    - Vari-Lite: `vari-lite.com/en-US/products/`
    - High End Systems: `highend.com/products/`
    - PRG (own fixtures): `prg.com` or `prggear.com`
+   - VELLO: `vellolight.com/moving-head-series/` *(Chinese OEM tier — sparser specs; some fields will remain null. Not a touring-grade brand on par with Robe/Martin/Ayrton.)*
 
 2. **Manufacturer spec sheet / PDF** — often linked from the product page. Preferred over
    rental-house pages for technical accuracy.
