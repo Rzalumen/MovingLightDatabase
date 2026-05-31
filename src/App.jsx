@@ -322,13 +322,16 @@ export default function App() {
           }
         }
 
-        /* Step 11 — preserve mobile layout below 1024 */
+        /* Step 11 — preserve mobile/tablet layout below 1024 */
         @media (max-width: 1023.98px) {
-          .app-shell { display: block; }
+          .app-shell { display: block; max-width: 1180px; margin: 0 auto; padding: 22px 28px 48px; }
           .app-shell .sidebar { display: contents; }
           .app-shell .main-content { display: contents; }
           .standout-badge { display: none !important; }
           .ds-section-sub { display: none !important; }
+        }
+        @media (max-width: 759.98px) {
+          .app-shell { padding: 16px 16px 100px; }
         }
       `}</style>
 
@@ -381,7 +384,7 @@ export default function App() {
         </div>
       </div>
 
-      <div className="app-shell" style={{maxWidth:1180,margin:"0 auto",padding:isMobile?"16px 16px 100px":"22px 28px 48px"}}>
+      <div className="app-shell" style={isMobile?{maxWidth:1180,margin:"0 auto",padding:"16px 16px 100px"}:undefined}>
         <div className="sidebar">
 
         {/* ── ALWAYS-VISIBLE FILTERS ── */}
