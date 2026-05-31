@@ -286,8 +286,8 @@ export default function App() {
           .app-shell .main-content {
             flex: 1;
             min-width: 0;
-            padding: 24px 32px;
-            max-width: 1400px;
+            padding: 24px 28px;
+            max-width: none;
           }
           .app-shell .main-content > .ds-active-bar-host > .active-filter-bar,
           .app-shell .main-content > .active-filter-bar {
