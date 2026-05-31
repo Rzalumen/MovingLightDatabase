@@ -152,7 +152,13 @@ Use the highest-priority source available. Record which type was used (it inform
 4. **Open Fixture Library** (`open-fixture-library.org`) — reliable for DMX channel counts,
    dimensions, weight, and RDM data.
 
-5. **Distributor/reseller pages** — e.g. Full Compass, Solotech. Use only as a last resort,
+5. **Lighting & Sound America** (`lightingandsoundamerica.com`) — **use for `description`
+   flavour and news only.** Good for finding which fixtures shipped on which tours and for
+   catching announcements between manufacturer site updates. **Never** use as a source for
+   numeric specs (wattage, lumens, zoom, weight, CRI, etc.) — always confirm those against
+   the manufacturer. **Never** use as the `link` value.
+
+6. **Distributor/reseller pages** — e.g. Full Compass, Solotech. Use only as a last resort,
    and **never** as the `link` value.
 
 If sources disagree, prefer the manufacturer. If the manufacturer is silent on a field,
