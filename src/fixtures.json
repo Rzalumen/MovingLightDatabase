@@ -5671,7 +5671,14 @@
     "lastVerified": "2026-05-26",
     "dualFrost": false,
     "ipRated": false,
-    "imageUrl": "https://www.adj.com/cdn/shop/files/af3f9fa7ad2a421f9a55827593c592e5701ee630_VIZ120__IMG__001__4513a5f279a6.jpg"
+    "imageUrl": "https://www.adj.com/cdn/shop/files/af3f9fa7ad2a421f9a55827593c592e5701ee630_VIZ120__IMG__001__4513a5f279a6.jpg",
+    "goboInfo": {
+      "rotating": 0,
+      "fixed": 16,
+      "wheelImage": null,
+      "wheelImage2": null,
+      "notes": "4 of the 16 fixed gobos are beam reducers."
+    }
   },
   {
     "id": 122,
@@ -13976,7 +13983,14 @@
     "lastVerified": "2026-05-30",
     "dualFrost": false,
     "ipRated": false,
-    "imageUrl": "http://www.adj.com/cdn/shop/files/e73f9d6cca73396fd21e4d1e6cb269b21980f407_VIZ229__IMG__001__71aac13a915e.jpg?v=1776713184&width=2048"
+    "imageUrl": "http://www.adj.com/cdn/shop/files/e73f9d6cca73396fd21e4d1e6cb269b21980f407_VIZ229__IMG__001__71aac13a915e.jpg?v=1776713184&width=2048",
+    "goboInfo": {
+      "rotating": 12,
+      "fixed": 17,
+      "wheelImage": null,
+      "wheelImage2": null,
+      "notes": "Two-wheel system: 17-position static gobo wheel + 12-position replaceable rotating wheel."
+    }
   },
   {
     "id": 300,
@@ -14024,7 +14038,14 @@
     "lastVerified": "2026-05-30",
     "dualFrost": false,
     "ipRated": false,
-    "imageUrl": "http://www.adj.com/cdn/shop/files/d2955ef038890dc62bd727161c26ce4b12769d4b_VIZ354__IMG__001__872f0672d46d.jpg?v=1776712400&width=2048"
+    "imageUrl": "http://www.adj.com/cdn/shop/files/d2955ef038890dc62bd727161c26ce4b12769d4b_VIZ354__IMG__001__872f0672d46d.jpg?v=1776712400&width=2048",
+    "goboInfo": {
+      "rotating": 0,
+      "fixed": 15,
+      "wheelImage": null,
+      "wheelImage2": null,
+      "notes": null
+    }
   },
   {
     "id": 301,
@@ -14121,7 +14142,14 @@
     "lastVerified": "2026-05-30",
     "dualFrost": false,
     "ipRated": true,
-    "imageUrl": "http://www.adj.com/cdn/shop/files/396a72c9fef0add4a76df7689176221f5ef9f472_Hydro_Beam_X12_red.jpg?v=1778306540&width=2048"
+    "imageUrl": "http://www.adj.com/cdn/shop/files/396a72c9fef0add4a76df7689176221f5ef9f472_Hydro_Beam_X12_red.jpg?v=1778306540&width=2048",
+    "goboInfo": {
+      "rotating": 0,
+      "fixed": 16,
+      "wheelImage": null,
+      "wheelImage2": null,
+      "notes": "4 of the 16 fixed gobos are beam reducers."
+    }
   },
   {
     "id": 303,
